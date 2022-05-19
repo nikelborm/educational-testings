@@ -8,12 +8,14 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
+  JoinTable,
 } from 'typeorm';
 import {
   EducationalSpace,
   EducationalSpaceAccessScope,
   User,
   UserToUserGroup,
+  UserGroupManagementAccessScope,
 } from '.';
 
 @Entity({ name: 'user_group' })
@@ -63,6 +65,20 @@ export class UserGroup {
     (educationalSpaceAccessScope) => educationalSpaceAccessScope.userGroup,
   )
   educationalSpaceAccessScopes!: EducationalSpaceAccessScope[];
+
+  @OneToMany(
+    () => UserGroupManagementAccessScope,
+    (userGroupManagementAccessScope) =>
+      userGroupManagementAccessScope.leaderUserGroup,
+  )
+  mentionedAsLeaderInAccessScopes!: UserGroupManagementAccessScope[];
+
+  @OneToMany(
+    () => UserGroupManagementAccessScope,
+    (userGroupManagementAccessScope) =>
+      userGroupManagementAccessScope.subordinateUserGroup,
+  )
+  mentionedAsSubordinateInAccessScopes!: UserGroupManagementAccessScope[];
 
   @CreateDateColumn({
     name: 'created_at',
