@@ -5,12 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToMany,
-  JoinTable,
   OneToMany,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { AccessScope, UserToAccessScope } from '.';
 import { EducationalSpace } from './educationalSpace.model';
 import { User } from './user.model';
 import { UserToUserGroup } from './userToUserGroup.model';
