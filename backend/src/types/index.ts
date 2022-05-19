@@ -1,4 +1,4 @@
-export * from './accessScopeType';
+export * from './educationalSpaceAccessScopeType';
 export * from './authedRequest';
 export * from './bootstrapMode';
 export * from './configKeys';

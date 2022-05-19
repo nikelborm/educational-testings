@@ -9,9 +9,12 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { EducationalSpace } from './educationalSpace.model';
-import { User } from './user.model';
-import { UserToUserGroup } from './userToUserGroup.model';
+import {
+  EducationalSpace,
+  EducationalSpaceAccessScope,
+  User,
+  UserToUserGroup,
+} from '.';
 
 @Entity({ name: 'user_group' })
 export class UserGroup {
@@ -54,6 +57,12 @@ export class UserGroup {
 
   @ManyToMany(() => User, (user) => user.userGroups)
   users!: User[];
+
+  @OneToMany(
+    () => EducationalSpaceAccessScope,
+    (educationalSpaceAccessScope) => educationalSpaceAccessScope.userGroup,
+  )
+  educationalSpaceAccessScopes!: EducationalSpaceAccessScope[];
 
   @CreateDateColumn({
     name: 'created_at',

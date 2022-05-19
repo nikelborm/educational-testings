@@ -8,16 +8,16 @@ import {
   updateOneWithRelations,
 } from 'src/tools';
 import { Repository } from 'typeorm';
-import { AccessScope } from '../model';
+import { EducationalSpaceAccessScope } from '../model';
 
 @Injectable()
 export class AccessScopeRepo {
   constructor(
-    @InjectRepository(AccessScope)
-    private readonly repo: Repository<AccessScope>,
+    @InjectRepository(EducationalSpaceAccessScope)
+    private readonly repo: Repository<EducationalSpaceAccessScope>,
   ) {}
 
-  async getOneById(id: number): Promise<AccessScope> {
+  async getOneById(id: number): Promise<EducationalSpaceAccessScope> {
     const accessScope = await this.repo.findOne({ where: { id } });
     if (!accessScope)
       throw new BadRequestException(
@@ -27,8 +27,8 @@ export class AccessScopeRepo {
   }
 
   async updateOneWithRelations(
-    updatedAccessScope: UpdatedEntity<AccessScope>,
-  ): Promise<AccessScope> {
+    updatedAccessScope: UpdatedEntity<EducationalSpaceAccessScope>,
+  ): Promise<EducationalSpaceAccessScope> {
     return await updateOneWithRelations(
       this.repo,
       updatedAccessScope,
@@ -37,8 +37,8 @@ export class AccessScopeRepo {
   }
 
   async createOneWithRelations(
-    newAccessScope: NewEntity<AccessScope>,
-  ): Promise<AccessScope> {
+    newAccessScope: NewEntity<EducationalSpaceAccessScope>,
+  ): Promise<EducationalSpaceAccessScope> {
     return await createOneWithRelations(
       this.repo,
       newAccessScope,

@@ -8,8 +8,7 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { User } from '.';
-import { UserGroup } from './userGroup.model';
+import { User, UserGroup } from '.';
 
 @Entity({ name: 'educational_space' })
 export class EducationalSpace {
@@ -54,5 +53,5 @@ export class EducationalSpace {
     name: 'updated_at',
     type: 'timestamptz',
   })
-  updatedAt!: Date;
+  updatedAt?: Date;
 }

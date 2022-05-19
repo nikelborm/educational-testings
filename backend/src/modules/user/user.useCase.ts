@@ -73,5 +73,5 @@ interface InputUser {
   lastName: string;
   email: string;
   password: string;
-  accessScopes: model.AccessScope[];
+  accessScopes: model.EducationalSpaceAccessScope[];
 }

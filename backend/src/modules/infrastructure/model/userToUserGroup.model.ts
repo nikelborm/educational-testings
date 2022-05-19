@@ -5,8 +5,7 @@ import {
   JoinColumn,
   ManyToOne,
 } from 'typeorm';
-import { User } from '.';
-import { UserGroup } from './userGroup.model';
+import { User, UserGroup } from '.';
 
 @Entity({ name: 'user_to_user_group' })
 export class UserToUserGroup {
