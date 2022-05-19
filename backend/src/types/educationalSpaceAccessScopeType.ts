@@ -1,11 +1,11 @@
 export enum EducationalSpaceAccessScopeType {
-  addOwnAbstractTestingsIntoEducationalSpaceCatalog,
+  ADD_OWN_ABSTRACT_TESTINGS_INTO_EDUCATIONAL_SPACE_CATALOG = 'addOwnAbstractTestingsIntoEducationalSpaceCatalog',
 
-  viewRunnedTestings,
-  modifyRunnedTestings,
+  VIEW_RUNNED_TESTINGS = 'viewRunnedTestings',
+  MODIFY_RUNNED_TESTINGS = 'modifyRunnedTestings',
 
-  modifyUserGroups,
-  viewUserGroups,
+  MODIFY_USER_GROUPS = 'modifyUserGroups',
+  VIEW_USER_GROUPS = 'viewUserGroups',
 
-  editGroupInfo,
+  EDIT_GROUP_INFO = 'editGroupInfo',
 }
