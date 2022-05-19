@@ -3,14 +3,15 @@ import {
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  Unique,
 } from 'typeorm';
 import { EducationalSpaceAccessScopeType } from 'src/types';
 import { UserGroup } from '.';
 
 @Entity({ name: 'educational_space_access_scope' })
+@Unique(['userGroupId', 'type'])
 export class EducationalSpaceAccessScope {
   @PrimaryGeneratedColumn({ name: 'educational_space_access_scope_id' })
   id!: number;
@@ -45,11 +46,4 @@ export class EducationalSpaceAccessScope {
     nullable: false,
   })
   createdAt!: Date;
-
-  @UpdateDateColumn({
-    name: 'updated_at',
-    type: 'timestamptz',
-    nullable: true,
-  })
-  updatedAt?: Date;
 }
