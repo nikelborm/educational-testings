@@ -1,4 +1,4 @@
-import type { AccessScopeType } from 'src/types';
+import type { EducationalSpaceAccessScopeType } from 'src/types';
 
 export interface UserAuthInfo {
   id: number;
@@ -7,6 +7,6 @@ export interface UserAuthInfo {
   lastName: string;
   accessScopes: {
     id: number;
-    type: AccessScopeType;
+    type: EducationalSpaceAccessScopeType;
   }[];
 }

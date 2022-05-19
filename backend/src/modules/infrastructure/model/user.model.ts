@@ -8,10 +8,7 @@ import {
   JoinTable,
   OneToMany,
 } from 'typeorm';
-import { AccessScope, UserToAccessScope } from '.';
-import { EducationalSpace } from './educationalSpace.model';
-import { UserGroup } from './userGroup.model';
-import { UserToUserGroup } from './userToUserGroup.model';
+import { EducationalSpace, UserGroup, UserToUserGroup } from '.';
 
 @Entity({ name: 'user' })
 export class User {
@@ -71,20 +68,6 @@ export class User {
   })
   passwordHash!: string;
 
-  @ManyToMany(() => AccessScope, (accessScope) => accessScope.users)
-  @JoinTable({
-    name: 'user_to_access_scope',
-    joinColumn: { name: 'user_id' },
-    inverseJoinColumn: { name: 'access_scope_id' },
-  })
-  accessScopes!: AccessScope[];
-
-  @OneToMany(
-    () => UserToAccessScope,
-    (userToAccessScope) => userToAccessScope.user,
-  )
-  userToAccessScopeRelations!: UserToAccessScope[];
-
   @OneToMany(
     () => EducationalSpace,
     (educationalSpace) => educationalSpace.createdBy,
@@ -113,5 +96,5 @@ export class User {
     name: 'updated_at',
     type: 'timestamptz',
   })
-  updatedAt!: Date;
+  updatedAt?: Date;
 }

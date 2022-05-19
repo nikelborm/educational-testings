@@ -8,7 +8,7 @@ export class AccessScopeUseCase implements OnModuleDestroy, OnModuleInit {
 
   async updateOne(
     accessScope: UpdateAccessScopeDTO,
-  ): Promise<model.AccessScope> {
+  ): Promise<model.EducationalSpaceAccessScope> {
     return await this.accessScopeRepo.updateOneWithRelations(accessScope);
   }
 
