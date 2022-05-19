@@ -16,7 +16,7 @@ export class AccessScope {
   id!: number;
 
   @Column({
-    name: 'access_scope_type',
+    name: 'type',
     type: 'enum',
     enum: AccessScopeType,
     nullable: false,
@@ -24,7 +24,7 @@ export class AccessScope {
   type!: AccessScopeType;
 
   @ManyToMany(() => User, (user) => user.accessScopes)
-  usersWithThatAccessScope!: User[];
+  users!: User[];
 
   @OneToMany(
     () => UserToAccessScope,
@@ -33,16 +33,16 @@ export class AccessScope {
   userToAccessScopeRelations!: UserToAccessScope[];
 
   @CreateDateColumn({
-    name: 'access_scope_created_at',
+    name: 'created_at',
     type: 'timestamptz',
     nullable: false,
   })
   createdAt!: Date;
 
   @UpdateDateColumn({
-    name: 'access_scope_updated_at',
+    name: 'updated_at',
     type: 'timestamptz',
     nullable: true,
   })
-  updatedAt!: Date;
+  updatedAt?: Date;
 }

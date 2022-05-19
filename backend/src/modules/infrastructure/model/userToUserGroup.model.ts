@@ -5,11 +5,12 @@ import {
   JoinColumn,
   ManyToOne,
 } from 'typeorm';
-import { AccessScope, User } from '.';
+import { User } from '.';
+import { UserGroup } from './userGroup.model';
 
-@Entity({ name: 'user_to_access_scope' })
-export class UserToAccessScope {
-  @ManyToOne(() => User, (user) => user.userToAccessScopeRelations, {
+@Entity({ name: 'user_to_user_group' })
+export class UserToUserGroup {
+  @ManyToOne(() => User, (user) => user.userToUserGroupRelations, {
     nullable: false,
   })
   @JoinColumn({ name: 'user_id' })
@@ -23,19 +24,19 @@ export class UserToAccessScope {
   userId!: number;
 
   @ManyToOne(
-    () => AccessScope,
-    (accessScope) => accessScope.userToAccessScopeRelations,
+    () => UserGroup,
+    (userGroup) => userGroup.userToUserGroupRelations,
     { nullable: false },
   )
-  @JoinColumn({ name: 'access_scope_id' })
-  accessScope!: AccessScope;
+  @JoinColumn({ name: 'user_group_id' })
+  userGroup!: UserGroup;
 
   @Column({
-    name: 'access_scope_id',
+    name: 'user_group_id',
     primary: true,
     nullable: false,
   })
-  accessScopeId!: number;
+  userGroupId!: number;
 
   @CreateDateColumn({
     name: 'created_at',

@@ -9,6 +9,9 @@ import {
   OneToMany,
 } from 'typeorm';
 import { AccessScope, UserToAccessScope } from '.';
+import { EducationalSpace } from './educationalSpace.model';
+import { UserGroup } from './userGroup.model';
+import { UserToUserGroup } from './userToUserGroup.model';
 
 @Entity({ name: 'user' })
 export class User {
@@ -16,42 +19,59 @@ export class User {
   id!: number;
 
   @Column({
-    name: 'user_first_name',
+    name: 'first_name',
     nullable: false,
   })
   firstName!: string;
 
   @Column({
-    name: 'user_last_name',
+    name: 'last_name',
     nullable: false,
   })
   lastName!: string;
 
   @Column({
-    name: 'user_email',
+    name: 'patronymic',
+    nullable: false,
+  })
+  patronymic!: string;
+
+  @Column({
+    name: 'gender',
+    nullable: false,
+  })
+  gender!: string;
+
+  @Column({
+    name: 'email',
     nullable: false,
     unique: true,
   })
   email!: string;
 
   @Column({
-    name: 'user_salt',
+    name: 'phone',
+    type: 'varchar',
+    length: 15,
+    nullable: true,
+  })
+  phone!: string;
+
+  @Column({
+    name: 'salt',
     select: false,
     nullable: false,
   })
   salt!: string;
 
   @Column({
-    name: 'user_password_hash',
+    name: 'password_hash',
     select: false,
     nullable: false,
   })
   passwordHash!: string;
 
-  @ManyToMany(
-    () => AccessScope,
-    (accessScope) => accessScope.usersWithThatAccessScope,
-  )
+  @ManyToMany(() => AccessScope, (accessScope) => accessScope.users)
   @JoinTable({
     name: 'user_to_access_scope',
     joinColumn: { name: 'user_id' },
@@ -65,15 +85,32 @@ export class User {
   )
   userToAccessScopeRelations!: UserToAccessScope[];
 
+  @OneToMany(
+    () => EducationalSpace,
+    (educationalSpace) => educationalSpace.createdBy,
+  )
+  createdEducationalSpaces!: EducationalSpace[];
+
+  @OneToMany(() => UserToUserGroup, (userToUserGroup) => userToUserGroup.user)
+  userToUserGroupRelations!: UserToUserGroup[];
+
+  @ManyToMany(() => UserGroup, (userGroup) => userGroup.users)
+  @JoinTable({
+    name: 'user_to_user_group',
+    joinColumn: { name: 'user_id' },
+    inverseJoinColumn: { name: 'user_group_id' },
+  })
+  userGroups!: UserGroup[];
+
   @CreateDateColumn({
-    name: 'user_created_at',
+    name: 'created_at',
     type: 'timestamptz',
     nullable: false,
   })
   createdAt!: Date;
 
   @UpdateDateColumn({
-    name: 'user_updated_at',
+    name: 'updated_at',
     type: 'timestamptz',
   })
   updatedAt!: Date;
