@@ -8,8 +8,13 @@ import {
   JoinTable,
   OneToMany,
 } from 'typeorm';
-import { EducationalSpace, UserGroup, UserToUserGroup } from '.';
-import { AbstractTesting } from './abstractTesting.model';
+import {
+  EducationalSpace,
+  UserGroup,
+  UserToUserGroup,
+  AbstractTesting,
+  LaunchedTesting,
+} from '.';
 
 @Entity({ name: 'user' })
 export class User {
@@ -92,10 +97,15 @@ export class User {
   })
   userGroups!: UserGroup[];
 
+  @OneToMany(
+    () => LaunchedTesting,
+    (launchedTesting) => launchedTesting.launchedBy,
+  )
+  didLaunchTestings!: LaunchedTesting[];
+
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    nullable: false,
   })
   createdAt!: Date;
 

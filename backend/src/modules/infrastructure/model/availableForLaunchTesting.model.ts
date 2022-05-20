@@ -42,7 +42,6 @@ export class AvailableForLaunchTesting {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    nullable: false,
   })
   createdAt!: Date;
 }

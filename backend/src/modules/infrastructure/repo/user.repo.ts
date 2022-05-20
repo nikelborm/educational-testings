@@ -21,12 +21,12 @@ export class UserRepo {
     private readonly repo: Repository<User>,
   ) {}
 
-  getAll(): Promise<User[]> {
-    return this.repo.find();
+  async getAll(): Promise<User[]> {
+    return await this.repo.find();
   }
 
-  findManyWithAccessScopes(search?: string): Promise<User[]> {
-    return this.repo.find({
+  async findMany(search?: string): Promise<User[]> {
+    return await this.repo.find({
       where: search
         ? [
             { firstName: ILike(`%${search}%`) },
@@ -34,7 +34,6 @@ export class UserRepo {
             { email: ILike(`%${search}%`) },
           ]
         : void 0,
-      relations: ['accessScopes'],
     });
   }
 
@@ -44,13 +43,15 @@ export class UserRepo {
       relations: [
         'userGroups',
         'userGroups.educationalSpaceAccessScopes',
-        'userGroups.mentionedAsLeaderInAccessScopes',
+        'userGroups.launchedTestingAccessScopes',
+        'userGroups.leaderInAccessScopes',
       ],
       select: {
         id: true,
         email: true,
         firstName: true,
         lastName: true,
+        patronymic: true,
         userGroups: {
           id: true,
           educationalSpaceId: true,
@@ -58,7 +59,13 @@ export class UserRepo {
             id: true,
             type: true,
           },
-          mentionedAsLeaderInAccessScopes: {
+          launchedTestingAccessScopes: {
+            id: true,
+            type: true,
+            launchedTestingId: true,
+          },
+          leaderInAccessScopes: {
+            id: true,
             type: true,
             subordinateUserGroupId: true,
           },
@@ -118,16 +125,38 @@ export class UserRepo {
   ): Promise<UserForLoginAttemptValidation> {
     const user = await this.repo
       .createQueryBuilder('user')
-      .leftJoin('user.accessScopes', 'accessScopes')
+      .leftJoin('user.userGroups', 'userGroups')
+      .leftJoin(
+        'userGroups.educationalSpaceAccessScopes',
+        'educationalSpaceAccessScopes',
+      )
+      .leftJoin(
+        'userGroups.launchedTestingAccessScopes',
+        'launchedTestingAccessScopes',
+      )
+      .leftJoin('userGroups.leaderInAccessScopes', 'leaderInAccessScopes')
       .addSelect([
         'user.id',
         'user.email',
         'user.firstName',
         'user.lastName',
+        'user.patronymic',
         'user.salt',
         'user.passwordHash',
-        'accessScopes.id',
-        'accessScopes.type',
+
+        'userGroups.id',
+        'userGroups.educationalSpaceId',
+
+        'educationalSpaceAccessScopes.id',
+        'educationalSpaceAccessScopes.type',
+
+        'launchedTestingAccessScopes.id',
+        'launchedTestingAccessScopes.type',
+        'launchedTestingAccessScopes.launchedTestingId',
+
+        'leaderInAccessScopes.id',
+        'leaderInAccessScopes.type',
+        'leaderInAccessScopes.subordinateUserGroupId',
       ])
       .where('user.email = :email', { email })
       .getOne();

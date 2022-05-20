@@ -40,7 +40,6 @@ export class UserToUserGroup {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    nullable: false,
   })
   createdAt!: Date;
 }

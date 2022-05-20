@@ -1,14 +1,7 @@
-export class IUser {
-  id!: number;
-  firstName!: string;
-  lastName!: string;
-  email!: string;
-  salt!: string;
-  passwordHash!: string;
-}
+import { ClearedInsertedUserDTO } from '../clearedInsertedUser.dto';
 
 export class CreateManyUsersResponseDTO {
   response!: {
-    users: IUser[];
+    users: ClearedInsertedUserDTO[];
   };
 }

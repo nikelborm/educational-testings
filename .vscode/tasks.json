@@ -24,6 +24,16 @@
       "promptOnClose": true
     },
     {
+      "label": "Run dev detached",
+      "type": "shell",
+      "dependsOn": [
+        "Use docker builder"
+      ],
+      "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml up --build -d --remove-orphans --force-recreate",
+      "problemMatcher": [],
+      "promptOnClose": true
+    },
+    {
       "label": "Run prod",
       "type": "shell",
       "dependsOn": [
@@ -47,9 +57,9 @@
       "label": "ormgen database",
       "type": "shell",
       "dependsOn": [
-        "Run dev"
+        "Run dev detached"
       ],
-      "command": ". env/template; docker-compose exec backend-prod sh ./scripts/ormgen.sh",
+      "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml exec backend-dev sh ./scripts/ormgen.sh",
       "problemMatcher": [],
       "promptOnClose": true
     },
@@ -57,9 +67,9 @@
       "label": "migrate database",
       "type": "shell",
       "dependsOn": [
-        "Run dev"
+        "Run dev detached"
       ],
-      "command": ". env/template; docker-compose exec backend-prod sh ./scripts/migrate.sh",
+      "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml exec backend-dev sh ./scripts/migrate.sh",
       "problemMatcher": [],
       "promptOnClose": true
     },
@@ -67,9 +77,9 @@
       "label": "drop database",
       "type": "shell",
       "dependsOn": [
-        "Run dev"
+        "Run dev detached"
       ],
-      "command": ". env/template; docker-compose exec backend-prod sh ./scripts/drop.sh",
+      "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml exec backend-dev sh ./scripts/drop.sh",
       "problemMatcher": [],
       "promptOnClose": true
     },
@@ -77,9 +87,9 @@
       "label": "recreate database",
       "type": "shell",
       "dependsOn": [
-        "Run dev"
+        "Run dev detached"
       ],
-      "command": ". env/template; docker-compose exec backend-prod sh ./scripts/recreate.sh",
+      "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml exec backend-dev sh ./scripts/recreate.sh",
       "problemMatcher": [],
       "promptOnClose": true
     },

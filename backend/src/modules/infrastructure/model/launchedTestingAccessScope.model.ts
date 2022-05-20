@@ -59,7 +59,6 @@ export class LaunchedTestingAccessScope {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    nullable: false,
   })
   createdAt!: Date;
 }
