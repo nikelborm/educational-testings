@@ -6,8 +6,10 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { AbstractTesting } from '.';
+import { AbstractQuestion } from './abstractQuestion.model';
 
 @Entity({ name: 'abstract_testing_stage' })
 export class AbstractTestingStage {
@@ -41,6 +43,12 @@ export class AbstractTestingStage {
     nullable: false,
   })
   abstractTestingId!: number;
+
+  @OneToMany(
+    () => AbstractQuestion,
+    (abstractQuestion) => abstractQuestion.abstractTestingStage,
+  )
+  questions!: AbstractQuestion[];
 
   @Column({
     name: 'order',
