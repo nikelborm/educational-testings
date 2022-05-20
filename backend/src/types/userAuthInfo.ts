@@ -5,8 +5,7 @@ export interface UserAuthInfo {
   email: string;
   firstName: string;
   lastName: string;
-  accessScopes: {
+  userGroups: {
     id: number;
-    type: EducationalSpaceAccessScopeType;
   }[];
 }

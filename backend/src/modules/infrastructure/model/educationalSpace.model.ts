@@ -7,9 +7,15 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  ManyToMany,
 } from 'typeorm';
-import { User, UserGroup } from '.';
-import { LaunchedTesting } from './launchedTesting.model';
+import {
+  User,
+  LaunchedTesting,
+  AvailableForLaunchTesting,
+  UserGroup,
+  AbstractTesting,
+} from '.';
 
 @Entity({ name: 'educational_space' })
 export class EducationalSpace {
@@ -48,6 +54,18 @@ export class EducationalSpace {
     (launchedTesting) => launchedTesting.educationalSpace,
   )
   launchedTestings!: LaunchedTesting[];
+
+  @ManyToMany(
+    () => AbstractTesting,
+    (abstractTesting) => abstractTesting.availableForLaunchInEducationalSpaces,
+  )
+  availableForLaunchTestings!: AbstractTesting[];
+
+  @OneToMany(
+    () => AvailableForLaunchTesting,
+    (availableForLaunchTesting) => availableForLaunchTesting.educationalSpace,
+  )
+  availableForLaunchTestingRelations!: AvailableForLaunchTesting[];
 
   @CreateDateColumn({
     name: 'created_at',

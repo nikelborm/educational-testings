@@ -12,12 +12,7 @@ import {
   SetMyPasswordDTO,
   AuthedRequest,
 } from 'src/types';
-import {
-  AccessEnum,
-  AllowedFor,
-  AuthorizedOnly,
-  ValidatedBody,
-} from 'src/tools';
+import { AuthorizedOnly, ValidatedBody } from 'src/tools';
 
 @ApiTags('user')
 @Controller()
@@ -25,7 +20,7 @@ export class UserController {
   constructor(private readonly userUseCase: UserUseCase) {}
 
   @Get('users')
-  @AllowedFor(AccessEnum.SYSTEM_ADMIN)
+  // @AllowedFor(AccessEnum.SYSTEM_ADMIN)
   async findManyUsers(
     @Query('search') search?: string,
   ): Promise<FindManyUsersResponseDTO> {
@@ -38,7 +33,7 @@ export class UserController {
   }
 
   @Post('createUser')
-  @AllowedFor(AccessEnum.SYSTEM_ADMIN)
+  // @AllowedFor(AccessEnum.SYSTEM_ADMIN)
   async createUser(
     @ValidatedBody
     { firstName, lastName, email, password }: CreateUserDTO,
@@ -48,7 +43,7 @@ export class UserController {
       lastName,
       email,
       password,
-      accessScopes: [],
+      userGroups: [],
     });
     return {
       response: {
@@ -58,13 +53,13 @@ export class UserController {
   }
 
   @Post('createUsers')
-  @AllowedFor(AccessEnum.SYSTEM_ADMIN)
+  // @AllowedFor(AccessEnum.SYSTEM_ADMIN)
   async createUsers(
     @ValidatedBody
     { users }: CreateUsersDTO,
   ): Promise<CreateManyUsersResponseDTO> {
     const userModels = await this.userUseCase.createManyUsers(
-      users.map((user) => ({ ...user, accessScopes: [] })),
+      users.map((user) => ({ ...user, userGroups: [] })),
     );
     return {
       response: {
@@ -85,7 +80,7 @@ export class UserController {
   }
 
   @Post('deleteUserById')
-  @AllowedFor(AccessEnum.SYSTEM_ADMIN)
+  // @AllowedFor(AccessEnum.SYSTEM_ADMIN)
   async deleteUser(
     @ValidatedBody
     { id }: DeleteEntityByIdDTO,

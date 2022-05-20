@@ -17,6 +17,7 @@ import {
   UserGroupManagementAccessScope,
 } from '.';
 import { AbstractTesting } from './abstractTesting.model';
+import { LaunchedTestingAccessScope } from './launchedTestingAccessScope.model';
 
 @Entity({ name: 'launched_testing' })
 export class LaunchedTesting {
@@ -86,6 +87,12 @@ export class LaunchedTesting {
     nullable: true,
   })
   maximumAttemptDurationInMinutes?: number;
+
+  @OneToMany(
+    () => LaunchedTestingAccessScope,
+    (launchedTestingAccessScope) => launchedTestingAccessScope.launchedTesting,
+  )
+  accessScopes!: LaunchedTestingAccessScope[];
 
   @CreateDateColumn({
     name: 'created_at',
