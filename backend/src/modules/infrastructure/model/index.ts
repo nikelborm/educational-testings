@@ -5,3 +5,6 @@ export * from './userGroup.model';
 export * from './userToUserGroup.model';
 export * from './userGroupManagementAccessScope.model';
 export * from './launchedTesting.model';
+export * from './availableForLaunchTesting.model';
+export * from './abstractTesting.model';
+export * from './launchedTestingAccessScope.model';

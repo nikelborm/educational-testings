@@ -41,15 +41,27 @@ export class UserRepo {
   async getOneByIdWithAccessScopes(id: number): Promise<UserAuthInfo> {
     const user = await this.repo.findOne({
       where: { id },
-      relations: ['accessScopes'],
+      relations: [
+        'userGroups',
+        'userGroups.educationalSpaceAccessScopes',
+        'userGroups.mentionedAsLeaderInAccessScopes',
+      ],
       select: {
         id: true,
         email: true,
         firstName: true,
         lastName: true,
-        accessScopes: {
+        userGroups: {
           id: true,
-          type: true,
+          educationalSpaceId: true,
+          educationalSpaceAccessScopes: {
+            id: true,
+            type: true,
+          },
+          mentionedAsLeaderInAccessScopes: {
+            type: true,
+            subordinateUserGroupId: true,
+          },
         },
       },
     });

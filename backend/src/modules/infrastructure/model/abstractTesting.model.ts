@@ -7,9 +7,14 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  ManyToMany,
 } from 'typeorm';
-import { User } from '.';
-import { LaunchedTesting } from './launchedTesting.model';
+import {
+  EducationalSpace,
+  User,
+  AvailableForLaunchTesting,
+  LaunchedTesting,
+} from '.';
 
 @Entity({ name: 'abstract_testing' })
 export class AbstractTesting {
@@ -59,6 +64,19 @@ export class AbstractTesting {
     default: false,
   })
   isPublic!: boolean;
+
+  @ManyToMany(
+    () => EducationalSpace,
+    (educationalSpace) => educationalSpace.availableForLaunchTestings,
+  )
+  availableForLaunchInEducationalSpaces!: EducationalSpace[];
+
+  @OneToMany(
+    () => AvailableForLaunchTesting,
+    (availableForLaunchAbstractTestingCatalog) =>
+      availableForLaunchAbstractTestingCatalog.abstractTesting,
+  )
+  availableForLaunchAbstractTestingsRelations!: AvailableForLaunchTesting[];
 
   @OneToMany(
     () => LaunchedTesting,

@@ -70,7 +70,7 @@ export class AuthUseCase {
       lastName,
       email,
       password,
-      accessScopes: [],
+      userGroups: [],
     });
     return await this.login(user);
   }

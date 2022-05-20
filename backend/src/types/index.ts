@@ -10,4 +10,5 @@ export * from './errors';
 export * from './language';
 export * from './userAuthInfo';
 export * from './userForLoginAttemptValidation';
+export * from './launchedTestingAccessScopeType';
 export * from './userGroupManagementAccessScopeType';
