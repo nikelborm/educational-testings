@@ -7,9 +7,15 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  ManyToMany,
 } from 'typeorm';
 import { AbstractAnswerDataType, AbstractQuestionChoiceType } from 'src/types';
-import { AbstractTestingStage, AbstractAnswerOption } from '.';
+import {
+  AbstractTestingStage,
+  AbstractAnswerOption,
+  QuestionInstance,
+  LaunchedTesting,
+} from '.';
 
 @Entity({ name: 'abstract_question' })
 export class AbstractQuestion {
@@ -79,6 +85,18 @@ export class AbstractQuestion {
     (abstractAnswerOption) => abstractAnswerOption.abstractQuestion,
   )
   abstractAnswerOptions!: AbstractAnswerOption[];
+
+  @OneToMany(
+    () => QuestionInstance,
+    (questionInstance) => questionInstance.abstractQuestion,
+  )
+  instances!: QuestionInstance[];
+
+  @ManyToMany(
+    () => LaunchedTesting,
+    (launchedTesting) => launchedTesting.questionsAtCreationMomemt,
+  )
+  appearedInLaunchedTestings!: LaunchedTesting[];
 
   @CreateDateColumn({
     name: 'created_at',
