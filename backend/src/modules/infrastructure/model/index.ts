@@ -1,3 +1,4 @@
+export * from './abstractAnswerOption.model';
 export * from './abstractTesting.model';
 export * from './abstractTestingStage.model';
 export * from './availableForLaunchTesting.model';
@@ -10,3 +11,4 @@ export * from './user.model';
 export * from './userGroup.model';
 export * from './userGroupManagementAccessScope.model';
 export * from './userToUserGroup.model';
+export * from './abstractQuestion.model';
