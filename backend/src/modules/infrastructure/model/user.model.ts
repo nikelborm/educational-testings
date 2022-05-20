@@ -14,8 +14,8 @@ import {
   UserToUserGroup,
   AbstractTesting,
   LaunchedTesting,
+  TestingAttempt,
 } from '.';
-import { TestingAttempt } from './testingAttempt.model';
 
 @Entity({ name: 'user' })
 export class User {

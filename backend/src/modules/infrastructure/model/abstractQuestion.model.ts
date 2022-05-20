@@ -6,9 +6,10 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
-import { AbstractQuestionAnswerType } from 'src/types';
-import { AbstractTestingStage } from '.';
+import { AbstractAnswerDataType, AbstractQuestionChoiceType } from 'src/types';
+import { AbstractTestingStage, AbstractAnswerOption } from '.';
 
 @Entity({ name: 'abstract_question' })
 export class AbstractQuestion {
@@ -58,12 +59,26 @@ export class AbstractQuestion {
   abstractTestingStageId!: number;
 
   @Column({
-    name: 'type',
+    name: 'answer_choice_type',
     type: 'enum',
-    enum: AbstractQuestionAnswerType,
+    enum: AbstractQuestionChoiceType,
     nullable: false,
   })
-  answerType!: AbstractQuestionAnswerType;
+  answerChoiceType!: AbstractQuestionChoiceType;
+
+  @Column({
+    name: 'data_type_of_answers',
+    type: 'enum',
+    enum: AbstractAnswerDataType,
+    nullable: false,
+  })
+  dataTypeOfAnswers!: AbstractAnswerDataType;
+
+  @OneToMany(
+    () => AbstractAnswerOption,
+    (abstractAnswerOption) => abstractAnswerOption.abstractQuestion,
+  )
+  abstractAnswerOptions!: AbstractAnswerOption[];
 
   @CreateDateColumn({
     name: 'created_at',

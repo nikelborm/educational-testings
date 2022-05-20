@@ -1,4 +1,4 @@
-export enum AbstractQuestionAnswerType {
+export enum AbstractQuestionChoiceType {
   MULTIPLE_CHOICES = 'multipleChoices',
   MULTIPLE_CHOICES_WITH_FREE_FIELD = 'multipleChoicesWithFreeField',
   SINGLE_CHOICE = 'singleChoice',

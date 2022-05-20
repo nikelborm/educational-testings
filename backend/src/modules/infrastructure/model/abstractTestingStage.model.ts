@@ -8,8 +8,7 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { AbstractTesting } from '.';
-import { AbstractQuestion } from './abstractQuestion.model';
+import { AbstractTesting, AbstractQuestion } from '.';
 
 @Entity({ name: 'abstract_testing_stage' })
 export class AbstractTestingStage {

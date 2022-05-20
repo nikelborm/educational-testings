@@ -13,8 +13,8 @@ import {
   User,
   AbstractTesting,
   LaunchedTestingAccessScope,
+  TestingAttempt,
 } from '.';
-import { TestingAttempt } from './testingAttempt.model';
 
 @Entity({ name: 'launched_testing' })
 export class LaunchedTesting {
