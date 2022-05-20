@@ -6,9 +6,6 @@
     {
       "label": "Build docker node container",
       "type": "shell",
-      "dependsOn": [
-        "Use docker builder"
-      ],
       "command": "cat ./node.Dockerfile; docker buildx build --push --platform=linux/amd64,linux/arm64/v8 -t nikelborm/node - < node.Dockerfile",
       "problemMatcher": [],
       "promptOnClose": true
@@ -16,9 +13,6 @@
     {
       "label": "Run dev",
       "type": "shell",
-      "dependsOn": [
-        "Use docker builder"
-      ],
       "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml up --build --remove-orphans --force-recreate",
       "problemMatcher": [],
       "promptOnClose": true
@@ -26,9 +20,6 @@
     {
       "label": "Run dev detached",
       "type": "shell",
-      "dependsOn": [
-        "Use docker builder"
-      ],
       "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml up --build -d --remove-orphans --force-recreate",
       "problemMatcher": [],
       "promptOnClose": true
@@ -36,9 +27,6 @@
     {
       "label": "Run prod",
       "type": "shell",
-      "dependsOn": [
-        "Use docker builder"
-      ],
       "command": ". env/template; docker-compose -f ./docker-compose.yaml up --build --remove-orphans -d; echo; echo $(docker inspect -f \"{{(index .NetworkSettings.Networks \\`${COMPOSE_PROJECT_NAME}_nginx-back-net\\`).IPAddress}}\" ${COMPOSE_PROJECT_NAME}_nginx-prod_1):${INNER_NGINX_HTTP_PORT}",
       "problemMatcher": [],
       "promptOnClose": true
@@ -46,9 +34,6 @@
     {
       "label": "Build multiplatform production",
       "type": "shell",
-      "dependsOn": [
-        "Use docker builder"
-      ],
       "command": ". env/template; docker buildx bake -f docker-compose.yml --set *.platform=linux/amd64,linux/arm64/v8 --pull --push",
       "problemMatcher": [],
       "promptOnClose": true
@@ -134,7 +119,7 @@
     {
       "label": "Use docker builder",
       "type": "shell",
-      "command": "docker run --privileged --rm tonistiigi/binfmt --install all;docker buildx use mybuilder",
+      "command": "docker run --privileged --rm tonistiigi/binfmt --install all;docker buildx create --name mybuilder --platform=linux/arm64/v8,linux/amd64;docker buildx use mybuilder",
       "promptOnClose": false
     },
     {
