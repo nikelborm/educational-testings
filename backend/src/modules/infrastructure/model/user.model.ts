@@ -15,6 +15,7 @@ import {
   AbstractTesting,
   LaunchedTesting,
 } from '.';
+import { TestingAttempt } from './testingAttempt.model';
 
 @Entity({ name: 'user' })
 export class User {
@@ -103,6 +104,9 @@ export class User {
   )
   didLaunchTestings!: LaunchedTesting[];
 
+  @OneToMany(() => TestingAttempt, (testingAttempt) => testingAttempt.user)
+  testingAttempts!: TestingAttempt[];
+
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
@@ -113,5 +117,5 @@ export class User {
     name: 'updated_at',
     type: 'timestamptz',
   })
-  updatedAt?: Date;
+  updatedAt!: Date;
 }

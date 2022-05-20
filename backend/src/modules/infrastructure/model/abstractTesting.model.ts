@@ -94,5 +94,5 @@ export class AbstractTesting {
     name: 'updated_at',
     type: 'timestamptz',
   })
-  updatedAt?: Date;
+  updatedAt!: Date;
 }

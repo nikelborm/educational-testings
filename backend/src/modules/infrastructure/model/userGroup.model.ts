@@ -96,5 +96,5 @@ export class UserGroup {
     name: 'updated_at',
     type: 'timestamptz',
   })
-  updatedAt?: Date;
+  updatedAt!: Date;
 }
