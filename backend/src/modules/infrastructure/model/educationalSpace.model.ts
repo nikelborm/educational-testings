@@ -9,6 +9,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { User, UserGroup } from '.';
+import { LaunchedTesting } from './launchedTesting.model';
 
 @Entity({ name: 'educational_space' })
 export class EducationalSpace {
@@ -41,6 +42,12 @@ export class EducationalSpace {
 
   @OneToMany(() => UserGroup, (userGroup) => userGroup.educationalSpace)
   userGroups!: UserGroup[];
+
+  @OneToMany(
+    () => LaunchedTesting,
+    (launchedTesting) => launchedTesting.educationalSpace,
+  )
+  launchedTestings!: LaunchedTesting[];
 
   @CreateDateColumn({
     name: 'created_at',

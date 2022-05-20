@@ -8,7 +8,6 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
-  JoinTable,
 } from 'typeorm';
 import {
   EducationalSpace,
