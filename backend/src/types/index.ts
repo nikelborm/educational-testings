@@ -1,3 +1,4 @@
+export * from './abstractQuestionAnswerType';
 export * from './authedRequest';
 export * from './bootstrapMode';
 export * from './configKeys';
@@ -8,8 +9,8 @@ export * from './educationalSpaceAccessScopeType';
 export * from './endpointAccess';
 export * from './errors';
 export * from './language';
+export * from './launchedTestingAccessScopeType';
+export * from './testingAttemptStatus';
 export * from './userAuthInfo';
 export * from './userForLoginAttemptValidation';
-export * from './launchedTestingAccessScopeType';
 export * from './userGroupManagementAccessScopeType';
-export * from './testingAttemptStatus';
