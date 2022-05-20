@@ -11,7 +11,7 @@ import { EducationalSpaceAccessScopeType } from 'src/types';
 import { UserGroup } from '.';
 
 @Entity({ name: 'educational_space_access_scope' })
-@Unique(['userGroupId', 'type'])
+@Unique(['userGroup', 'type'])
 export class EducationalSpaceAccessScope {
   @PrimaryGeneratedColumn({ name: 'educational_space_access_scope_id' })
   id!: number;
@@ -43,7 +43,6 @@ export class EducationalSpaceAccessScope {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    nullable: false,
   })
   createdAt!: Date;
 }

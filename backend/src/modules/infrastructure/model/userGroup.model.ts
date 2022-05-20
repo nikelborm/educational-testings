@@ -15,8 +15,8 @@ import {
   User,
   UserToUserGroup,
   UserGroupManagementAccessScope,
+  LaunchedTestingAccessScope,
 } from '.';
-import { LaunchedTestingAccessScope } from './launchedTestingAccessScope.model';
 
 @Entity({ name: 'user_group' })
 export class UserGroup {
@@ -71,14 +71,14 @@ export class UserGroup {
     (userGroupManagementAccessScope) =>
       userGroupManagementAccessScope.leaderUserGroup,
   )
-  mentionedAsLeaderInAccessScopes!: UserGroupManagementAccessScope[];
+  leaderInAccessScopes!: UserGroupManagementAccessScope[];
 
   @OneToMany(
     () => UserGroupManagementAccessScope,
     (userGroupManagementAccessScope) =>
       userGroupManagementAccessScope.subordinateUserGroup,
   )
-  mentionedAsSubordinateInAccessScopes!: UserGroupManagementAccessScope[];
+  subordinateInAccessScopes!: UserGroupManagementAccessScope[];
 
   @OneToMany(
     () => LaunchedTestingAccessScope,
@@ -89,14 +89,12 @@ export class UserGroup {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    nullable: false,
   })
   createdAt!: Date;
 
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    nullable: true,
   })
   updatedAt?: Date;
 }

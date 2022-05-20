@@ -1,4 +1,8 @@
-import { EducationalSpaceAccessScopeType } from '.';
+import {
+  EducationalSpaceAccessScopeType,
+  UserGroupManagementAccessScopeType,
+  LaunchedTestingAccessScopeType,
+} from '.';
 
 export enum EndpointAccess {
   PUBLIC = 'public',
@@ -8,6 +12,12 @@ export enum EndpointAccess {
   DEVELOPMENT_ONLY = 'developmentOnly',
 }
 
-export type IAccessEnum = EducationalSpaceAccessScopeType | EndpointAccess;
-export type UserLevelScopes = EducationalSpaceAccessScopeType | EducationalSpaceAccessScopeType[];
+export type UserLevelScopes =
+  | EducationalSpaceAccessScopeType
+  // | EducationalSpaceAccessScopeType[]
+  | UserGroupManagementAccessScopeType
+  // | UserGroupManagementAccessScopeType[]
+  | LaunchedTestingAccessScopeType;
+// | LaunchedTestingAccessScopeType[];
+
 export type AllowedForArgs = (EndpointAccess | UserLevelScopes)[];

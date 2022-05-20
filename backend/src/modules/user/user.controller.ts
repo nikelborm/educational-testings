@@ -36,13 +36,10 @@ export class UserController {
   // @AllowedFor(AccessEnum.SYSTEM_ADMIN)
   async createUser(
     @ValidatedBody
-    { firstName, lastName, email, password }: CreateUserDTO,
+    createUserDTO: CreateUserDTO,
   ): Promise<CreateOneUserResponse> {
     const user = await this.userUseCase.createUser({
-      firstName,
-      lastName,
-      email,
-      password,
+      ...createUserDTO,
       userGroups: [],
     });
     return {

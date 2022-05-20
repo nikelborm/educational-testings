@@ -16,11 +16,9 @@ export class UserGroupManagementAccessScope {
   @PrimaryGeneratedColumn({ name: 'user_group_management_access_scope_id' })
   id!: number;
 
-  @ManyToOne(
-    () => UserGroup,
-    (userGroup) => userGroup.educationalSpaceAccessScopes,
-    { nullable: false },
-  )
+  @ManyToOne(() => UserGroup, (userGroup) => userGroup.leaderInAccessScopes, {
+    nullable: false,
+  })
   @JoinColumn({
     name: 'leader_user_group_id',
   })
@@ -34,7 +32,7 @@ export class UserGroupManagementAccessScope {
 
   @ManyToOne(
     () => UserGroup,
-    (userGroup) => userGroup.educationalSpaceAccessScopes,
+    (userGroup) => userGroup.subordinateInAccessScopes,
     { nullable: false },
   )
   @JoinColumn({
@@ -59,7 +57,6 @@ export class UserGroupManagementAccessScope {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    nullable: false,
   })
   createdAt!: Date;
 }

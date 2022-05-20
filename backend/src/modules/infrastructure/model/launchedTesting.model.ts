@@ -4,20 +4,16 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToMany,
   OneToMany,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
 import {
   EducationalSpace,
-  EducationalSpaceAccessScope,
   User,
-  UserToUserGroup,
-  UserGroupManagementAccessScope,
+  AbstractTesting,
+  LaunchedTestingAccessScope,
 } from '.';
-import { AbstractTesting } from './abstractTesting.model';
-import { LaunchedTestingAccessScope } from './launchedTestingAccessScope.model';
 
 @Entity({ name: 'launched_testing' })
 export class LaunchedTesting {
@@ -56,17 +52,17 @@ export class LaunchedTesting {
   })
   educationalSpaceId!: number;
 
-  @ManyToOne(() => User, (user) => user.createdAbstractTestings, {
+  @ManyToOne(() => User, (user) => user.didLaunchTestings, {
     nullable: false,
   })
-  @JoinColumn({ name: 'created_by_user_id' })
-  createdBy!: User;
+  @JoinColumn({ name: 'launched_by_user_id' })
+  launchedBy!: User;
 
   @Column({
-    name: 'created_by_user_id',
+    name: 'launched_by_user_id',
     nullable: false,
   })
-  createdByUserId!: number;
+  launchedByUserId!: number;
 
   @Column({
     name: 'opening_date',
@@ -97,14 +93,12 @@ export class LaunchedTesting {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    nullable: false,
   })
   createdAt!: Date;
 
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    nullable: true,
   })
   updatedAt?: Date;
 }

@@ -8,6 +8,7 @@ import {
   JoinColumn,
   OneToMany,
   ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import {
   User,
@@ -59,6 +60,11 @@ export class EducationalSpace {
     () => AbstractTesting,
     (abstractTesting) => abstractTesting.availableForLaunchInEducationalSpaces,
   )
+  @JoinTable({
+    name: 'available_for_launch_testing',
+    joinColumn: { name: 'educational_space_id' },
+    inverseJoinColumn: { name: 'abstract_testing_id' },
+  })
   availableForLaunchTestings!: AbstractTesting[];
 
   @OneToMany(
@@ -70,7 +76,6 @@ export class EducationalSpace {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    nullable: false,
   })
   createdAt!: Date;
 
