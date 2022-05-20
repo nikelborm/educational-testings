@@ -83,5 +83,5 @@ export class EducationalSpace {
     name: 'updated_at',
     type: 'timestamptz',
   })
-  updatedAt?: Date;
+  updatedAt!: Date;
 }

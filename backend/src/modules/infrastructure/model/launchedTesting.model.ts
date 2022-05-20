@@ -14,6 +14,7 @@ import {
   AbstractTesting,
   LaunchedTestingAccessScope,
 } from '.';
+import { TestingAttempt } from './testingAttempt.model';
 
 @Entity({ name: 'launched_testing' })
 export class LaunchedTesting {
@@ -90,6 +91,12 @@ export class LaunchedTesting {
   )
   accessScopes!: LaunchedTestingAccessScope[];
 
+  @OneToMany(
+    () => TestingAttempt,
+    (testingAttempt) => testingAttempt.launchedTesting,
+  )
+  testingAttempts!: TestingAttempt[];
+
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
@@ -100,5 +107,5 @@ export class LaunchedTesting {
     name: 'updated_at',
     type: 'timestamptz',
   })
-  updatedAt?: Date;
+  updatedAt!: Date;
 }
