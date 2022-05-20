@@ -1,4 +1,5 @@
 export * from './abstractTesting.model';
+export * from './abstractTestingStage.model';
 export * from './availableForLaunchTesting.model';
 export * from './educationalSpace.model';
 export * from './educationalSpaceAccessScope.model';

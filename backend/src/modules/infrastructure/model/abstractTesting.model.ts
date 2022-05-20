@@ -14,6 +14,7 @@ import {
   User,
   AvailableForLaunchTesting,
   LaunchedTesting,
+  AbstractTestingStage,
 } from '.';
 
 @Entity({ name: 'abstract_testing' })
@@ -83,6 +84,12 @@ export class AbstractTesting {
     (launchedTesting) => launchedTesting.abstractTesting,
   )
   launchedTestings!: LaunchedTesting[];
+
+  @OneToMany(
+    () => AbstractTestingStage,
+    (abstractTestingStage) => abstractTestingStage.abstractTesting,
+  )
+  stages!: AbstractTestingStage[];
 
   @CreateDateColumn({
     name: 'created_at',
