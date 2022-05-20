@@ -9,6 +9,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { EducationalSpace, UserGroup, UserToUserGroup } from '.';
+import { AbstractTesting } from './abstractTesting.model';
 
 @Entity({ name: 'user' })
 export class User {
@@ -52,7 +53,7 @@ export class User {
     length: 15,
     nullable: true,
   })
-  phone!: string;
+  phone?: string;
 
   @Column({
     name: 'salt',
@@ -73,6 +74,12 @@ export class User {
     (educationalSpace) => educationalSpace.createdBy,
   )
   createdEducationalSpaces!: EducationalSpace[];
+
+  @OneToMany(
+    () => AbstractTesting,
+    (abstractTesting) => abstractTesting.createdBy,
+  )
+  createdAbstractTestings!: AbstractTesting[];
 
   @OneToMany(() => UserToUserGroup, (userToUserGroup) => userToUserGroup.user)
   userToUserGroupRelations!: UserToUserGroup[];
