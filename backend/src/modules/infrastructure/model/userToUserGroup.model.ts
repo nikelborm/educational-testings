@@ -2,12 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
 } from 'typeorm';
 import { User, UserGroup } from '.';
 
 @Entity({ name: 'user_to_user_group' })
+@Index(['user', 'userGroup'], { unique: true })
 export class UserToUserGroup {
   @ManyToOne(() => User, (user) => user.userToUserGroupRelations, {
     nullable: false,

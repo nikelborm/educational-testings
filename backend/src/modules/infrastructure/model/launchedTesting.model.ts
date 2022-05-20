@@ -7,6 +7,8 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import {
   EducationalSpace,
@@ -14,6 +16,8 @@ import {
   AbstractTesting,
   LaunchedTestingAccessScope,
   TestingAttempt,
+  AbstractQuestion,
+  QuestionInstance,
 } from '.';
 
 @Entity({ name: 'launched_testing' })
@@ -96,6 +100,23 @@ export class LaunchedTesting {
     (testingAttempt) => testingAttempt.launchedTesting,
   )
   testingAttempts!: TestingAttempt[];
+
+  @OneToMany(
+    () => QuestionInstance,
+    (questionInstance) => questionInstance.launchedTesting,
+  )
+  questionInstances!: QuestionInstance[];
+
+  @ManyToMany(
+    () => AbstractQuestion,
+    (abstractQuestion) => abstractQuestion.appearedInLaunchedTestings,
+  )
+  @JoinTable({
+    name: 'question_instance',
+    joinColumn: { name: 'launched_testing_id' },
+    inverseJoinColumn: { name: 'abstract_question_id' },
+  })
+  questionsAtCreationMomemt!: AbstractQuestion[];
 
   @CreateDateColumn({
     name: 'created_at',
