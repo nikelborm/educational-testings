@@ -6,8 +6,9 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
-import { AbstractQuestion } from '.';
+import { AbstractQuestion, AnswerOptionInstance } from '.';
 
 @Entity({ name: 'abstract_answer_option' })
 export class AbstractAnswerOption {
@@ -47,6 +48,12 @@ export class AbstractAnswerOption {
     nullable: true,
   })
   description?: string;
+
+  @OneToMany(
+    () => AnswerOptionInstance,
+    (answerOptionInstance) => answerOptionInstance.abstractAnswerOption,
+  )
+  instances!: AnswerOptionInstance[];
 
   @CreateDateColumn({
     name: 'created_at',
