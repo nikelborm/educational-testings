@@ -1,10 +1,11 @@
 export function Root() {
   const asd = () => {
-    // debugger;
+    // eslint-disable-next-line no-debugger
+    debugger;
   };
   return (
     <div>
-      <div>Root page</div>
+      <div>#13 Лендинг с инфой о платформе</div>
       <button onClick={asd} type="button">
         Test debugger
       </button>

@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Link, Outlet, Navigate } from 'react-router-dom';
-import { Layout, Menu, PageHeader } from 'antd';
+import Layout from 'antd/lib/layout';
+import Menu from 'antd/lib/menu';
+import PageHeader from 'antd/lib/page-header';
 import { useTokenPairUpdater, usePath } from 'hooks';
 import { ISession, RoutesEnum } from 'types';
-import { canUserUseThisRoute } from 'utils';
-import { ItemType } from 'antd/lib/menu/hooks/useItems';
+import type { ItemType } from 'antd/lib/menu/hooks/useItems';
+import { LogoutOutlined } from '@ant-design/icons';
 import { notAuthedFallbackRoute, routesOnlyForAuthedUsers } from '../routes';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -37,13 +39,13 @@ export function AccountPagesWrapper({
               .map(
                 ([
                   path,
-                  { menuIcon, menuTitle, allowedForScopeTypes, isMenuPoint },
+                  { menuIcon, menuTitle, canUserOpenThisRoute, isMenuPoint },
                 ]) =>
-                  canUserUseThisRoute(session, allowedForScopeTypes) &&
+                  canUserOpenThisRoute(session) &&
                   isMenuPoint && {
                     label: <Link to={`/account/${path}`}>{menuTitle}</Link>,
                     key: path,
-                    icon: menuIcon,
+                    ...(menuIcon && { icon: menuIcon }),
                   },
               )
               .filter((isNotNullable) => isNotNullable) as ItemType[]),
@@ -54,6 +56,7 @@ export function AccountPagesWrapper({
             {
               label: 'Logout',
               key: 'logout',
+              icon: <LogoutOutlined />,
               onClick: () => updateTokenPair(null),
             },
           ]}

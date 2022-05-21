@@ -1,8 +1,30 @@
-import { Profile, Login, Registration, Root } from 'pages';
-import { UserOutlined } from '@ant-design/icons';
+import {
+  QuestionCircleOutlined,
+  SettingOutlined,
+  SmileOutlined,
+  TagsOutlined,
+} from '@ant-design/icons';
+import {
+  Login,
+  Registration,
+  Root,
+  PublicTestings,
+  ExistingTags,
+  Error404,
+  UserSettings,
+  MyEducationalSpaces,
+  EducationalSpaceView,
+  EducationalSpaceEdit,
+  UserGroupView,
+  UserGroupEdit,
+  AvailableTestings,
+  LaunchedTestingView,
+  PassingTestingStage,
+  AttemptView,
+  LaunchedTestingAnalytics,
+} from 'pages';
 import {
   RoutesEnum,
-  RouteAccessScopeType,
   AuthedRouteEntity,
   RoutesMap,
   SimpleRouteEntity,
@@ -12,6 +34,15 @@ import {
 export const publicRoutes: RoutesMap<SimpleRouteEntity> = {
   [RoutesEnum.ROOT]: {
     Component: Root,
+  },
+  [RoutesEnum.PUBLIC_TESTINGS]: {
+    Component: PublicTestings,
+  },
+  [RoutesEnum.EXISTING_TAGS]: {
+    Component: ExistingTags,
+  },
+  [RoutesEnum.ERROR_404]: {
+    Component: Error404,
   },
 };
 
@@ -25,26 +56,87 @@ export const routesOnlyForNotAuthedUsers: RoutesMap<SimpleRouteEntity> = {
 };
 
 export const routesOnlyForAuthedUsers: RoutesMap<AuthedRouteEntity> = {
-  [RoutesEnum.PROFILE]: {
-    Component: Profile,
+  [RoutesEnum.MY_EDUCATIONAL_SPACES]: {
+    Component: MyEducationalSpaces,
     isMenuPoint: true,
-    menuTitle: 'Profile menu item',
-    pageTitle: 'Profile page header',
-    description: 'Профиль',
-    allowedForScopeTypes: [RouteAccessScopeType.REGULAR_USER],
-    menuIcon: <UserOutlined />,
+    menuIcon: <SmileOutlined />,
+    menuTitle: 'My Educational Spaces',
+    pageTitle: 'My Educational Spaces',
+    canUserOpenThisRoute: () => true,
   },
-  [RoutesEnum.USER]: {
-    Component: Profile,
-    menuTitle: 'User menu item',
-    pageTitle: 'User page header',
-    description: 'User desc',
-    allowedForScopeTypes: [RouteAccessScopeType.REGULAR_USER],
-    menuIcon: <UserOutlined />,
+  [RoutesEnum.USER_SETTINGS]: {
+    Component: UserSettings,
+    isMenuPoint: true,
+    menuIcon: <SettingOutlined />,
+    menuTitle: 'User Settings',
+    pageTitle: 'User Settings',
+    canUserOpenThisRoute: () => true,
   },
+  [RoutesEnum.PUBLIC_TESTINGS]: {
+    Component: PublicTestings,
+    isMenuPoint: true,
+    menuIcon: <QuestionCircleOutlined />,
+    menuTitle: 'Public Testings',
+    pageTitle: 'Public Testings',
+    canUserOpenThisRoute: () => true,
+  },
+  [RoutesEnum.EXISTING_TAGS]: {
+    Component: ExistingTags,
+    isMenuPoint: true,
+    menuTitle: 'Existing Tags',
+    pageTitle: 'Existing Tags',
+    menuIcon: <TagsOutlined />,
+    canUserOpenThisRoute: () => true,
+  },
+  [RoutesEnum.EDUCATIONAL_SPACE_VIEW]: {
+    Component: EducationalSpaceView,
+    canUserOpenThisRoute: () => true,
+  },
+  [RoutesEnum.EDUCATIONAL_SPACE_EDIT]: {
+    Component: EducationalSpaceEdit,
+    canUserOpenThisRoute: () => true,
+  },
+  [RoutesEnum.USER_GROUP_VIEW]: {
+    Component: UserGroupView,
+    canUserOpenThisRoute: () => true,
+  },
+  [RoutesEnum.USER_GROUP_EDIT]: {
+    Component: UserGroupEdit,
+    canUserOpenThisRoute: () => true,
+  },
+  [RoutesEnum.AVAILABLE_TESTINGS]: {
+    Component: AvailableTestings,
+    canUserOpenThisRoute: () => true,
+  },
+  [RoutesEnum.LAUNCHED_TESTING_VIEW]: {
+    Component: LaunchedTestingView,
+    canUserOpenThisRoute: () => true,
+  },
+  [RoutesEnum.PASSING_TESTING_STAGE]: {
+    Component: PassingTestingStage,
+    canUserOpenThisRoute: () => true,
+  },
+  [RoutesEnum.ATTEMPT_VIEW]: {
+    Component: AttemptView,
+    canUserOpenThisRoute: () => true,
+  },
+  [RoutesEnum.LAUNCHED_TESTING_ANALYTICS]: {
+    Component: LaunchedTestingAnalytics,
+    canUserOpenThisRoute: () => true,
+  },
+
+  // [RoutesEnum.PROFILE]: {
+  //   Component: Profile,
+  //   isMenuPoint: true,
+  //   menuTitle: 'Profile menu item',
+  //   pageTitle: 'Profile page header',
+  //   description: 'Профиль',
+  //   menuIcon: <UserOutlined />,
+  // },
 };
 
-export const getAuthedFallbackRoute = (session: ISession) => RoutesEnum.PROFILE;
+export const getAuthedFallbackRoute = (session: ISession) =>
+  RoutesEnum.MY_EDUCATIONAL_SPACES;
 
 export const notAuthedFallbackRoute = RoutesEnum.LOGIN;
 export const publicFallbackRoute = RoutesEnum.ROOT;
