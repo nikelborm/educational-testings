@@ -8,6 +8,7 @@ import {
   JoinColumn,
   OneToMany,
   ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import {
   EducationalSpace,
@@ -15,6 +16,8 @@ import {
   AvailableForLaunchTesting,
   LaunchedTesting,
   AbstractTestingStage,
+  TestingAnalyticsModuleToAbstractTesting,
+  TestingAnalyticsModule,
 } from '.';
 
 @Entity({ name: 'abstract_testing' })
@@ -90,6 +93,24 @@ export class AbstractTesting {
     (abstractTestingStage) => abstractTestingStage.abstractTesting,
   )
   stages!: AbstractTestingStage[];
+
+  @OneToMany(
+    () => TestingAnalyticsModuleToAbstractTesting,
+    (testingAnalyticsModuleToAbstractTesting) =>
+      testingAnalyticsModuleToAbstractTesting.abstractTesting,
+  )
+  testingAnalyticsModuleToAbstractTestingRelations!: TestingAnalyticsModuleToAbstractTesting[];
+
+  @ManyToMany(
+    () => TestingAnalyticsModule,
+    (testingAnalyticsModule) => testingAnalyticsModule.abstractTestings,
+  )
+  @JoinTable({
+    name: 'testing_analytics_module_to_abstract_testing',
+    joinColumn: { name: 'abstract_testing_id' },
+    inverseJoinColumn: { name: 'testing_analytics_module_id' },
+  })
+  analyticsModules!: TestingAnalyticsModule[];
 
   @CreateDateColumn({
     name: 'created_at',

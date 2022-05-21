@@ -2,6 +2,7 @@ export * from './abstractAnswerOption.model';
 export * from './abstractQuestion.model';
 export * from './abstractTesting.model';
 export * from './abstractTestingStage.model';
+export * from './analyticsModuleToAbstractTesting.model';
 export * from './answerOptionInstance.model';
 export * from './availableForLaunchTesting.model';
 export * from './educationalSpace.model';
