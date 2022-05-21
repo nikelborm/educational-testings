@@ -4,10 +4,11 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-import { AbstractAnswerOption, LaunchedTesting } from '.';
+import { UserGivenAnswer, AbstractAnswerOption, LaunchedTesting } from '.';
 
 @Entity({ name: 'answer_option_instance' })
 @Unique(['abstractAnswerOption', 'launchedTesting'])
@@ -37,6 +38,12 @@ export class AnswerOptionInstance {
   )
   @JoinColumn({ name: 'launched_testing_id' })
   launchedTesting!: LaunchedTesting;
+
+  @OneToMany(
+    () => UserGivenAnswer,
+    (userGivenAnswer) => userGivenAnswer.answerOptionInstance,
+  )
+  chosenInAnswers!: UserGivenAnswer[];
 
   @Column({
     name: 'launched_testing_id',
