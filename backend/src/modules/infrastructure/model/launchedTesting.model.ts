@@ -7,8 +7,6 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
-  ManyToMany,
-  JoinTable,
 } from 'typeorm';
 import {
   EducationalSpace,
@@ -16,7 +14,6 @@ import {
   AbstractTesting,
   LaunchedTestingAccessScope,
   TestingAttempt,
-  AbstractQuestion,
   QuestionInstance,
   AnswerOptionInstance,
 } from '.';
@@ -113,17 +110,6 @@ export class LaunchedTesting {
     (answerOptionInstance) => answerOptionInstance.launchedTesting,
   )
   answerOptionInstances!: AnswerOptionInstance[];
-
-  @ManyToMany(
-    () => AbstractQuestion,
-    (abstractQuestion) => abstractQuestion.appearedInLaunchedTestings,
-  )
-  @JoinTable({
-    name: 'question_instance',
-    joinColumn: { name: 'launched_testing_id' },
-    inverseJoinColumn: { name: 'abstract_question_id' },
-  })
-  questionsAtCreationMomemt!: AbstractQuestion[];
 
   @CreateDateColumn({
     name: 'created_at',

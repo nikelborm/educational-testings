@@ -77,10 +77,9 @@ export class AbstractTesting {
 
   @OneToMany(
     () => AvailableForLaunchTesting,
-    (availableForLaunchAbstractTestingCatalog) =>
-      availableForLaunchAbstractTestingCatalog.abstractTesting,
+    (availableForLaunchTesting) => availableForLaunchTesting.abstractTesting,
   )
-  availableForLaunchAbstractTestingsRelations!: AvailableForLaunchTesting[];
+  availableForLaunchTestingRelations!: AvailableForLaunchTesting[];
 
   @OneToMany(
     () => LaunchedTesting,
