@@ -9,6 +9,7 @@ export * from './educationalSpaceAccessScope.model';
 export * from './launchedTesting.model';
 export * from './launchedTestingAccessScope.model';
 export * from './questionInstance.model';
+export * from './testingAnalyticsModule.model';
 export * from './testingAttempt.model';
 export * from './user.model';
 export * from './userGivenAnswer.model';
