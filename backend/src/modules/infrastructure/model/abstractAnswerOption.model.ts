@@ -8,7 +8,11 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { AbstractQuestion, AnswerOptionInstance } from '.';
+import {
+  AnswerOptionIntoTagContribution,
+  AbstractQuestion,
+  AnswerOptionInstance,
+} from '.';
 
 @Entity({ name: 'abstract_answer_option' })
 export class AbstractAnswerOption {
@@ -32,16 +36,16 @@ export class AbstractAnswerOption {
   abstractQuestionId!: number;
 
   @Column({
-    name: 'answer',
-    nullable: true,
-  })
-  answer!: string;
-
-  @Column({
     name: 'is_free_field',
     nullable: false,
   })
   isFreeField!: boolean;
+
+  @Column({
+    name: 'answer',
+    nullable: true,
+  })
+  answer?: string; // answer for free field
 
   @Column({
     name: 'description',
@@ -54,6 +58,13 @@ export class AbstractAnswerOption {
     (answerOptionInstance) => answerOptionInstance.abstractAnswerOption,
   )
   instances!: AnswerOptionInstance[];
+
+  @OneToMany(
+    () => AnswerOptionIntoTagContribution,
+    (answerOptionIntoTagContribution) =>
+      answerOptionIntoTagContribution.abstractAnswerOption,
+  )
+  contributions!: AnswerOptionIntoTagContribution[];
 
   @CreateDateColumn({
     name: 'created_at',
