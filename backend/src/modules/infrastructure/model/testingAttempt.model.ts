@@ -7,8 +7,9 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
-import { User, LaunchedTesting } from '.';
+import { User, LaunchedTesting, UserGivenAnswer } from '.';
 
 @Entity({ name: 'testing_attempt' })
 export class TestingAttempt {
@@ -66,6 +67,12 @@ export class TestingAttempt {
     nullable: false,
   })
   status!: TestingAttemptStatus;
+
+  @OneToMany(
+    () => UserGivenAnswer,
+    (userGivenAnswer) => userGivenAnswer.testingAttempt,
+  )
+  givenAnswers!: UserGivenAnswer[];
 
   @CreateDateColumn({
     name: 'created_at',

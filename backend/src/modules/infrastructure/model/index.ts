@@ -11,6 +11,7 @@ export * from './launchedTestingAccessScope.model';
 export * from './questionInstance.model';
 export * from './testingAttempt.model';
 export * from './user.model';
+export * from './userGivenAnswer.model';
 export * from './userGroup.model';
 export * from './userGroupManagementAccessScope.model';
 export * from './userToUserGroup.model';
