@@ -1,5 +1,8 @@
 import { useLoginMutation } from 'hooks';
-import { Form, Button, message, Input } from 'antd';
+import { Form, message, Input } from 'antd';
+import { LockOutlined, MailOutlined } from '@ant-design/icons';
+import { AuthFormSubmitButton, CenteredAuthFormHeader } from 'components';
+import { Link } from 'react-router-dom';
 
 export function Login() {
   const [form] = Form.useForm();
@@ -10,13 +13,14 @@ export function Login() {
   };
   return (
     <>
-      <h1>Login</h1>
+      <CenteredAuthFormHeader>Login</CenteredAuthFormHeader>
       <Form
         form={form}
         layout="vertical"
         onFinish={sendLoginQuery}
         onFinishFailed={onFinishCreationFailed}
-        autoComplete="off"
+        autoComplete="on"
+        initialValues={{ remember: true }}
       >
         <Form.Item
           name="email"
@@ -26,7 +30,11 @@ export function Login() {
             { type: 'string', min: 7, required: true },
           ]}
         >
-          <Input placeholder="user@mail.ru" spellCheck={false} />
+          <Input
+            prefix={<MailOutlined />}
+            placeholder="user@mail.ru"
+            spellCheck={false}
+          />
         </Form.Item>
         <Form.Item
           name="password"
@@ -40,13 +48,16 @@ export function Login() {
           ]}
           hasFeedback
         >
-          <Input.Password placeholder="***********" spellCheck={false} />
+          <Input.Password
+            prefix={<LockOutlined />}
+            placeholder="***********"
+            spellCheck={false}
+          />
         </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
+        <AuthFormSubmitButton
+          buttonText="Log in"
+          link={<Link to="/auth/registration">create an account now!</Link>}
+        />
       </Form>
     </>
   );
