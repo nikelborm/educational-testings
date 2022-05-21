@@ -11,42 +11,47 @@ import { Repository } from 'typeorm';
 import { EducationalSpaceAccessScope } from '../model';
 
 @Injectable()
-export class AccessScopeRepo {
+export class EducationalSpaceAccessScopeRepo {
   constructor(
     @InjectRepository(EducationalSpaceAccessScope)
     private readonly repo: Repository<EducationalSpaceAccessScope>,
   ) {}
 
   async getOneById(id: number): Promise<EducationalSpaceAccessScope> {
-    const accessScope = await this.repo.findOne({ where: { id } });
-    if (!accessScope)
+    const educationalSpaceAccessScope = await this.repo.findOne({
+      where: { id },
+    });
+    if (!educationalSpaceAccessScope)
       throw new BadRequestException(
-        messages.repo.common.cantGetNotFoundById(id, 'accessScope'),
+        messages.repo.common.cantGetNotFoundById(
+          id,
+          'educationalSpaceAccessScope',
+        ),
       );
-    return accessScope;
+    return educationalSpaceAccessScope;
   }
 
   async updateOneWithRelations(
-    updatedAccessScope: UpdatedEntity<EducationalSpaceAccessScope>,
+    updatedEducationalSpaceAccessScope: UpdatedEntity<EducationalSpaceAccessScope>,
   ): Promise<EducationalSpaceAccessScope> {
     return await updateOneWithRelations(
       this.repo,
-      updatedAccessScope,
-      'accessScope',
+      updatedEducationalSpaceAccessScope,
+      'educationalSpaceAccessScope',
     );
   }
 
   async createOneWithRelations(
-    newAccessScope: NewEntity<EducationalSpaceAccessScope>,
+    newEducationalSpaceAccessScope: NewEntity<EducationalSpaceAccessScope>,
   ): Promise<EducationalSpaceAccessScope> {
     return await createOneWithRelations(
       this.repo,
-      newAccessScope,
-      'accessScope',
+      newEducationalSpaceAccessScope,
+      'educationalSpaceAccessScope',
     );
   }
 
-  async deleteMany(accessScopeIds: number[]): Promise<void> {
-    await this.repo.delete(accessScopeIds);
+  async deleteMany(educationalSpaceAccessScopeIds: number[]): Promise<void> {
+    await this.repo.delete(educationalSpaceAccessScopeIds);
   }
 }

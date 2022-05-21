@@ -8,7 +8,7 @@ import * as MockServices from './mock';
 import {
   InfrastructureModule,
   UserModule,
-  AccessScopeModule,
+  EducationalSpaceModule,
   AuthModule,
 } from './modules';
 
@@ -21,7 +21,7 @@ import {
     }),
 
     InfrastructureModule,
-    AccessScopeModule,
+    EducationalSpaceModule,
     AuthModule,
     UserModule,
   ],
