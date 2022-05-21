@@ -19,6 +19,9 @@
     "resolveJsonModule": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
+    "noImplicitThis": true,
+    "strictBindCallApply": true,
+    "noUncheckedIndexedAccess":true,
     "strictPropertyInitialization": true,
     "alwaysStrict":true,
     "plugins": [
