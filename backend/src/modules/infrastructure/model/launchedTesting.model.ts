@@ -18,6 +18,7 @@ import {
   TestingAttempt,
   AbstractQuestion,
   QuestionInstance,
+  AnswerOptionInstance,
 } from '.';
 
 @Entity({ name: 'launched_testing' })
@@ -106,6 +107,12 @@ export class LaunchedTesting {
     (questionInstance) => questionInstance.launchedTesting,
   )
   questionInstances!: QuestionInstance[];
+
+  @OneToMany(
+    () => AnswerOptionInstance,
+    (answerOptionInstance) => answerOptionInstance.launchedTesting,
+  )
+  answerOptionInstances!: AnswerOptionInstance[];
 
   @ManyToMany(
     () => AbstractQuestion,
