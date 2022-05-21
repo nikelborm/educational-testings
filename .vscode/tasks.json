@@ -79,12 +79,6 @@
       "promptOnClose": true
     },
     {
-      "label": "Create new docker builder",
-      "type": "shell",
-      "command": "docker buildx create --name mybuilder --platform=linux/arm64,linux/amd64",
-      "promptOnClose": false
-    },
-    {
       "label": "Upgrade backend dependencies",
       "type": "shell",
       "command": "cd backend/; yarn upgrade-interactive --emoji true",
@@ -120,7 +114,8 @@
       "label": "Use docker builder",
       "type": "shell",
       "command": "docker run --privileged --rm tonistiigi/binfmt --install all;docker buildx create --name mybuilder --platform=linux/arm64/v8,linux/amd64;docker buildx use mybuilder",
-      "promptOnClose": false
+      "promptOnClose": false,
+      "problemMatcher": []
     },
     {
       "label": "clear docker",

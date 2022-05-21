@@ -1,7 +1,6 @@
 import {
   Column,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -12,7 +11,6 @@ import { UserGivenAnswer, AbstractAnswerOption, LaunchedTesting } from '.';
 
 @Entity({ name: 'answer_option_instance' })
 @Unique(['abstractAnswerOption', 'launchedTesting'])
-@Index(['abstractAnswerOption', 'launchedTesting'], { unique: true })
 export class AnswerOptionInstance {
   @PrimaryGeneratedColumn({ name: 'answer_option_instance_id' })
   id!: number;
