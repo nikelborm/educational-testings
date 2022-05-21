@@ -25,6 +25,11 @@ export class CreateUserDTO {
   @MaxLength(50)
   patronymic!: string;
 
+  @IsString()
+  @MinLength(2)
+  @MaxLength(50)
+  gender!: string;
+
   @IsEmail()
   @MinLength(2)
   @MaxLength(50)

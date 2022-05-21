@@ -33,6 +33,20 @@ export function Registration() {
           <Input placeholder="Doe" spellCheck={false} />
         </Form.Item>
         <Form.Item
+          name="patronymic"
+          label="Patronymic"
+          rules={[{ type: 'string', min: 2, required: true }]}
+        >
+          <Input placeholder="Sergeevich" spellCheck={false} />
+        </Form.Item>
+        <Form.Item
+          name="gender"
+          label="Gender"
+          rules={[{ type: 'string', min: 2, required: true }]}
+        >
+          <Input placeholder="Female|Male|other" spellCheck={false} />
+        </Form.Item>
+        <Form.Item
           name="email"
           label="Email"
           rules={[
