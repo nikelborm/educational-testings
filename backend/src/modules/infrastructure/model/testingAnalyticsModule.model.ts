@@ -3,8 +3,11 @@ import {
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
+  OneToMany,
+  ManyToMany,
 } from 'typeorm';
 import { TestingAnalyticsModuleSupport } from 'src/types';
+import { TestingAnalyticsModuleToAbstractTesting, AbstractTesting } from '.';
 
 @Entity({ name: 'testing_analytics_module' })
 export class TestingAnalyticsModule {
@@ -32,6 +35,19 @@ export class TestingAnalyticsModule {
     nullable: false,
   })
   support!: TestingAnalyticsModuleSupport;
+
+  @OneToMany(
+    () => TestingAnalyticsModuleToAbstractTesting,
+    (testingAnalyticsModuleToAbstractTesting) =>
+      testingAnalyticsModuleToAbstractTesting.testingAnalyticsModule,
+  )
+  testingAnalyticsModuleToAbstractTestingRelations!: TestingAnalyticsModuleToAbstractTesting[];
+
+  @ManyToMany(
+    () => AbstractTesting,
+    (abstractTesting) => abstractTesting.analyticsModules,
+  )
+  abstractTestings!: AbstractTesting[];
 
   @CreateDateColumn({
     name: 'created_at',
