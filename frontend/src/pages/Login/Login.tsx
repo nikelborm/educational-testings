@@ -1,7 +1,10 @@
 import { useLoginMutation } from 'hooks';
-import { Form, message, Input } from 'antd';
-import { LockOutlined, MailOutlined } from '@ant-design/icons';
-import { AuthFormSubmitButton, CenteredAuthFormHeader } from 'components';
+import { Form, message } from 'antd';
+import {
+  AuthFormSubmitButton,
+  CenteredAuthFormHeader,
+  LoginFormFields,
+} from 'components';
 import { Link } from 'react-router-dom';
 
 export function Login() {
@@ -22,38 +25,7 @@ export function Login() {
         autoComplete="on"
         initialValues={{ remember: true }}
       >
-        <Form.Item
-          name="email"
-          label="Email"
-          rules={[
-            { type: 'email' },
-            { type: 'string', min: 7, required: true },
-          ]}
-        >
-          <Input
-            prefix={<MailOutlined />}
-            placeholder="user@mail.ru"
-            spellCheck={false}
-          />
-        </Form.Item>
-        <Form.Item
-          name="password"
-          label="Password"
-          rules={[
-            {
-              required: true,
-              message: 'Please input your password!',
-            },
-            { type: 'string', min: 8 },
-          ]}
-          hasFeedback
-        >
-          <Input.Password
-            prefix={<LockOutlined />}
-            placeholder="***********"
-            spellCheck={false}
-          />
-        </Form.Item>
+        <LoginFormFields />
         <AuthFormSubmitButton
           buttonText="Log in"
           link={<Link to="/auth/registration">create an account now!</Link>}

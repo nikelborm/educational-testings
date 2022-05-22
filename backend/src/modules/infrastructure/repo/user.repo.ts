@@ -52,6 +52,9 @@ export class UserRepo {
         firstName: true,
         lastName: true,
         patronymic: true,
+        gender: true,
+        canCreateEducationalSpaces: true,
+        phone: true,
         userGroups: {
           id: true,
           educationalSpaceId: true,
@@ -141,6 +144,9 @@ export class UserRepo {
         'user.firstName',
         'user.lastName',
         'user.patronymic',
+        'user.gender',
+        'user.canCreateEducationalSpaces',
+        'user.phone',
         'user.salt',
         'user.passwordHash',
 

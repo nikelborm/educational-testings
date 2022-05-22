@@ -15,11 +15,11 @@ import {
 import { AuthorizedOnly, ValidatedBody } from 'src/tools';
 
 @ApiTags('user')
-@Controller()
+@Controller('user')
 export class UserController {
   constructor(private readonly userUseCase: UserUseCase) {}
 
-  @Get('users')
+  @Get('all')
   // @AllowedFor(AccessEnum.SYSTEM_ADMIN)
   async findManyUsers(
     @Query('search') search?: string,
@@ -32,7 +32,7 @@ export class UserController {
     };
   }
 
-  @Post('createUser')
+  @Post('create')
   // @AllowedFor(AccessEnum.SYSTEM_ADMIN)
   async createUser(
     @ValidatedBody
@@ -49,7 +49,7 @@ export class UserController {
     };
   }
 
-  @Post('createUsers')
+  @Post('createMany')
   // @AllowedFor(AccessEnum.SYSTEM_ADMIN)
   async createUsers(
     @ValidatedBody
@@ -76,7 +76,7 @@ export class UserController {
     return { response: {} };
   }
 
-  @Post('deleteUserById')
+  @Post('deleteById')
   // @AllowedFor(AccessEnum.SYSTEM_ADMIN)
   async deleteUser(
     @ValidatedBody

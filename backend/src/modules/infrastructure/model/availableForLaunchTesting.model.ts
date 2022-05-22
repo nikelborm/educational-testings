@@ -4,12 +4,12 @@ import {
   CreateDateColumn,
   ManyToOne,
   JoinColumn,
-  Index,
 } from 'typeorm';
 import { AbstractTesting, EducationalSpace } from '.';
 
-@Entity({ name: 'available_for_launch_testing' })
-@Index(['abstractTesting', 'educationalSpace'], { unique: true })
+@Entity({
+  name: 'available_for_launch_testing',
+})
 export class AvailableForLaunchTesting {
   @ManyToOne(
     () => AbstractTesting,

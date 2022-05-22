@@ -1,13 +1,30 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Post, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { EducationalSpaceUseCase } from './educationalSpace.useCase';
-import { EmptyResponseDTO } from 'src/types';
-import { ValidatedBody } from 'src/tools';
+import {
+  AuthedRequest,
+  CreateEducationalSpaceDTO,
+  EmptyResponseDTO,
+} from 'src/types';
+import { AuthorizedOnly, ValidatedBody } from 'src/tools';
 
 @ApiTags('educationalSpace')
-@Controller()
+@Controller('educationalSpace')
 export class EducationalSpaceController {
   constructor(
     private readonly educationalSpaceUseCase: EducationalSpaceUseCase,
   ) {}
+
+  @Post('create')
+  @AuthorizedOnly()
+  async createEducationalSpace(
+    @ValidatedBody educationalSpaceDto: CreateEducationalSpaceDTO,
+    @Req() { user }: AuthedRequest,
+  ): Promise<EmptyResponseDTO> {
+    await this.educationalSpaceUseCase.createEducationalSpace(
+      educationalSpaceDto,
+      user,
+    );
+    return { response: {} };
+  }
 }

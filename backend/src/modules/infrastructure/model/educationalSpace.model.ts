@@ -62,8 +62,11 @@ export class EducationalSpace {
   )
   @JoinTable({
     name: 'available_for_launch_testing',
-    joinColumn: { name: 'educational_space_id' },
-    inverseJoinColumn: { name: 'abstract_testing_id' },
+    joinColumn: { name: 'educational_space_id', referencedColumnName: 'id' },
+    inverseJoinColumn: {
+      name: 'abstract_testing_id',
+      referencedColumnName: 'id',
+    },
   })
   availableForLaunchTestings!: AbstractTesting[];
 

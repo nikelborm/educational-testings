@@ -24,10 +24,10 @@ export const messages = {
   },
   user: {
     exists: 'User with this email already exists',
+    cantCreateEducationalSpace:
+      'You cannot create educational space for now. You need to activate checkbox in your settings to change your account type',
   },
   accessScope: {
-    notSingleAdminScope: `${messagesRepeating.moreThanOne} Admin access scope in the database`,
-    notSingleSuperAdminScope: `${messagesRepeating.moreThanOne} Super Admin access scope in the database`,
     cannotPromoteYourself: 'Cannot set additional role for yourself',
   },
   repo: {

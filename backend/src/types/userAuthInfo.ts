@@ -10,6 +10,9 @@ export interface UserAuthInfo {
   firstName: string;
   lastName: string;
   patronymic: string;
+  gender: string;
+  canCreateEducationalSpaces: boolean;
+  phone?: string | undefined;
   userGroups: {
     id: number;
     educationalSpaceId: number;

@@ -106,8 +106,11 @@ export class AbstractTesting {
   )
   @JoinTable({
     name: 'testing_analytics_module_to_abstract_testing',
-    joinColumn: { name: 'abstract_testing_id' },
-    inverseJoinColumn: { name: 'testing_analytics_module_id' },
+    joinColumn: { name: 'abstract_testing_id', referencedColumnName: 'id' },
+    inverseJoinColumn: {
+      name: 'testing_analytics_module_id',
+      referencedColumnName: 'id',
+    },
   })
   analyticsModules!: TestingAnalyticsModule[];
 

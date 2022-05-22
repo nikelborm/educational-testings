@@ -2,14 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
 } from 'typeorm';
 import { TestingAnalyticsModule, AbstractTesting } from '.';
 
-@Entity({ name: 'testing_analytics_module_to_abstract_testing' })
-@Index(['testingAnalyticsModule', 'abstractTesting'], { unique: true })
+@Entity({
+  name: 'testing_analytics_module_to_abstract_testing',
+})
 export class TestingAnalyticsModuleToAbstractTesting {
   @ManyToOne(
     () => TestingAnalyticsModule,
