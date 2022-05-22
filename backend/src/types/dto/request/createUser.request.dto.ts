@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsBoolean,
   IsDefined,
   IsEmail,
   IsString,
@@ -29,6 +30,9 @@ export class CreateUserDTO {
   @MinLength(2)
   @MaxLength(50)
   gender!: string;
+
+  @IsBoolean()
+  canCreateEducationalSpaces!: boolean;
 
   @IsEmail()
   @MinLength(2)

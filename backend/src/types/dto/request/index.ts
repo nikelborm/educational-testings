@@ -1,3 +1,4 @@
+export * from './createEducationalSpace.request.dto';
 export * from './createUser.request.dto';
 export * from './deleteEntityById.request.dto';
 export * from './refreshToken.dto';

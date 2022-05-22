@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Init1653125731934 implements MigrationInterface {
-  name = 'Init1653125731934';
+export class Init1653216575255 implements MigrationInterface {
+  name = 'Init1653216575255';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -89,9 +89,6 @@ export class Init1653125731934 implements MigrationInterface {
         "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
         CONSTRAINT "PK_54a12fbdc9989bd921c8cbb4372" PRIMARY KEY ("abstract_testing_id", "educational_space_id")
       )
-    `);
-    await queryRunner.query(`
-      CREATE UNIQUE INDEX "IDX_54a12fbdc9989bd921c8cbb437" ON "available_for_launch_testing" ("abstract_testing_id", "educational_space_id")
     `);
     await queryRunner.query(`
       CREATE TABLE "educational_space" (
@@ -205,12 +202,6 @@ export class Init1653125731934 implements MigrationInterface {
       )
     `);
     await queryRunner.query(`
-      CREATE UNIQUE INDEX "IDX_6050f3b34ffdf2588b10a36a44" ON "testing_analytics_module_to_abstract_testing" (
-        "testing_analytics_module_id",
-        "abstract_testing_id"
-      )
-    `);
-    await queryRunner.query(`
       CREATE TYPE "public"."testing_attempt_status_enum" AS ENUM('draft', 'finishedAttempt')
     `);
     await queryRunner.query(`
@@ -234,6 +225,7 @@ export class Init1653125731934 implements MigrationInterface {
         "patronymic" character varying NOT NULL,
         "gender" character varying NOT NULL,
         "email" character varying NOT NULL,
+        "can_create_educational_spaces" boolean NOT NULL,
         "phone" character varying(15),
         "salt" character varying NOT NULL,
         "password_hash" character varying NOT NULL,
@@ -296,9 +288,6 @@ export class Init1653125731934 implements MigrationInterface {
       )
     `);
     await queryRunner.query(`
-      CREATE UNIQUE INDEX "IDX_344fa928c1069c2c344153dcad" ON "user_to_user_group" ("user_id", "user_group_id")
-    `);
-    await queryRunner.query(`
       CREATE TABLE "abstract_answer_option" (
         "abstract_answer_option_id" SERIAL NOT NULL,
         "abstract_question_id" integer NOT NULL,
@@ -309,27 +298,6 @@ export class Init1653125731934 implements MigrationInterface {
         "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
         CONSTRAINT "PK_1ada2d7b5c93b1fcf4d89269c51" PRIMARY KEY ("abstract_answer_option_id")
       )
-    `);
-    await queryRunner.query(`
-      ALTER TABLE "testing_analytics_module_to_abstract_testing" DROP COLUMN "created_at"
-    `);
-    await queryRunner.query(`
-      ALTER TABLE "available_for_launch_testing" DROP COLUMN "created_at"
-    `);
-    await queryRunner.query(`
-      ALTER TABLE "user_to_user_group" DROP COLUMN "created_at"
-    `);
-    await queryRunner.query(`
-      ALTER TABLE "available_for_launch_testing"
-      ADD "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
-    `);
-    await queryRunner.query(`
-      ALTER TABLE "testing_analytics_module_to_abstract_testing"
-      ADD "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
-    `);
-    await queryRunner.query(`
-      ALTER TABLE "user_to_user_group"
-      ADD "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
     `);
     await queryRunner.query(`
       CREATE INDEX "IDX_84670dfb307676d934812be530" ON "testing_analytics_module_to_abstract_testing" ("abstract_testing_id")
@@ -581,31 +549,7 @@ export class Init1653125731934 implements MigrationInterface {
       DROP INDEX "public"."IDX_84670dfb307676d934812be530"
     `);
     await queryRunner.query(`
-      ALTER TABLE "user_to_user_group" DROP COLUMN "created_at"
-    `);
-    await queryRunner.query(`
-      ALTER TABLE "testing_analytics_module_to_abstract_testing" DROP COLUMN "created_at"
-    `);
-    await queryRunner.query(`
-      ALTER TABLE "available_for_launch_testing" DROP COLUMN "created_at"
-    `);
-    await queryRunner.query(`
-      ALTER TABLE "user_to_user_group"
-      ADD "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
-    `);
-    await queryRunner.query(`
-      ALTER TABLE "available_for_launch_testing"
-      ADD "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
-    `);
-    await queryRunner.query(`
-      ALTER TABLE "testing_analytics_module_to_abstract_testing"
-      ADD "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
-    `);
-    await queryRunner.query(`
       DROP TABLE "abstract_answer_option"
-    `);
-    await queryRunner.query(`
-      DROP INDEX "public"."IDX_344fa928c1069c2c344153dcad"
     `);
     await queryRunner.query(`
       DROP TABLE "user_to_user_group"
@@ -630,9 +574,6 @@ export class Init1653125731934 implements MigrationInterface {
     `);
     await queryRunner.query(`
       DROP TYPE "public"."testing_attempt_status_enum"
-    `);
-    await queryRunner.query(`
-      DROP INDEX "public"."IDX_6050f3b34ffdf2588b10a36a44"
     `);
     await queryRunner.query(`
       DROP TABLE "testing_analytics_module_to_abstract_testing"
@@ -666,9 +607,6 @@ export class Init1653125731934 implements MigrationInterface {
     `);
     await queryRunner.query(`
       DROP TABLE "educational_space"
-    `);
-    await queryRunner.query(`
-      DROP INDEX "public"."IDX_54a12fbdc9989bd921c8cbb437"
     `);
     await queryRunner.query(`
       DROP TABLE "available_for_launch_testing"

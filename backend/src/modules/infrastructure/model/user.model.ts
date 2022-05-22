@@ -54,6 +54,12 @@ export class User {
   email!: string;
 
   @Column({
+    name: 'can_create_educational_spaces',
+    nullable: false,
+  })
+  canCreateEducationalSpaces!: boolean;
+
+  @Column({
     name: 'phone',
     type: 'varchar',
     length: 15,
@@ -93,8 +99,8 @@ export class User {
   @ManyToMany(() => UserGroup, (userGroup) => userGroup.users)
   @JoinTable({
     name: 'user_to_user_group',
-    joinColumn: { name: 'user_id' },
-    inverseJoinColumn: { name: 'user_group_id' },
+    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'user_group_id', referencedColumnName: 'id' },
   })
   userGroups!: UserGroup[];
 
