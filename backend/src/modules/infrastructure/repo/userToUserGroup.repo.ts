@@ -1,6 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreatedEntity, createOneWithRelations, NewEntity } from 'src/tools';
+import {
+  CreatedEntity,
+  CreatedPlainEntity,
+  createOnePlain,
+  createOneWithRelations,
+  NewEntity,
+  NewPlainEntity,
+} from 'src/tools';
 import { Repository } from 'typeorm';
 import { UserToUserGroup } from '../model';
 
@@ -26,6 +33,7 @@ export class UserToUserGroupRepo {
       select: {
         userGroup: {
           id: true,
+          name: true,
           educationalSpace: {
             id: true,
             name: true,
@@ -40,5 +48,11 @@ export class UserToUserGroupRepo {
     newUserToUserGroup: NewEntity<UserToUserGroup, never>,
   ): Promise<CreatedEntity<UserToUserGroup, never>> {
     return await createOneWithRelations(this.repo, newUserToUserGroup);
+  }
+
+  async createOnePlain(
+    newUserToUserGroup: NewPlainEntity<UserToUserGroup, never>,
+  ): Promise<CreatedPlainEntity<UserToUserGroup, never>> {
+    return await createOnePlain(this.repo, newUserToUserGroup);
   }
 }

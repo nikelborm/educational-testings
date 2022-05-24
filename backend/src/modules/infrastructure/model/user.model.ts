@@ -99,8 +99,8 @@ export class User {
   @ManyToMany(() => UserGroup, (userGroup) => userGroup.users)
   @JoinTable({
     name: 'user_to_user_group',
-    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'user_group_id', referencedColumnName: 'id' },
+    joinColumn: { name: 'user_id' },
+    inverseJoinColumn: { name: 'user_group_id' },
   })
   userGroups!: UserGroup[];
 

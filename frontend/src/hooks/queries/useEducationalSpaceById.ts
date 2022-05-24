@@ -1,21 +1,18 @@
 import { useQuery } from 'react-query';
 import { customFetch } from 'utils';
 
-export function useMyEducationalSpaces() {
+export function useEducationalSpaceBy(id: number) {
   const { isLoading, isError, isSuccess, data } = useQuery(
-    'useMyEducationalSpaces',
+    ['useEducationalSpaceById', id],
     () =>
       customFetch<{
-        myEducationalSpaces: {
+        educationalSpace: {
           id: number;
           name: string;
           description?: string;
-          userGroups: {
-            id: number;
-            name: string;
-          }[];
-        }[];
-      }>('educationalSpace/getMine', {
+        };
+      }>('educationalSpace/getOneBy', {
+        params: { id },
         method: 'GET',
       }),
   );
@@ -23,6 +20,6 @@ export function useMyEducationalSpaces() {
     isLoading,
     isError,
     isSuccess,
-    myEducationalSpaces: data?.myEducationalSpaces,
+    educationalSpace: data?.educationalSpace,
   };
 }

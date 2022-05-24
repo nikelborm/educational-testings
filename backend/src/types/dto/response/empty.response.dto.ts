@@ -1,3 +1,1 @@
-export class EmptyResponseDTO {
-  response!: Record<string, never>;
-}
+export class EmptyResponseDTO {}

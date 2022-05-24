@@ -11,7 +11,7 @@ export const messages = {
     incorrectUser: 'User with this email was not found',
     incorrectPassword: 'Incorrect password',
     userHasNoAccessScopes:
-      'This user has no access scopes. The user is not assigned to any access scope and has no additional role. Please contact the administrator',
+      'This user has no access scopes. \nThe user is not assigned to any access scope and has no additional role. \nPlease contact the administrator',
     developmentOnly: 'Development only',
     unauthorizedOnly: 'You should not be authorized to use this route',
     missingAuthHeader: 'Missing Authorization header (with Token)',
@@ -26,6 +26,9 @@ export const messages = {
     exists: 'User with this email already exists',
     cantCreateEducationalSpace:
       'You cannot create educational space for now. You need to activate checkbox in your settings to change your account type',
+  },
+  educationalSpace: {
+    cantView: `${messagesRepeating.notEnoughAccess} view this educational space. \nThis Account was not found in any group of this educational space. \nTry to ask space owners for invite link`,
   },
   accessScope: {
     cannotPromoteYourself: 'Cannot set additional role for yourself',

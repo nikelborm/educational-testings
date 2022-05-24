@@ -61,9 +61,6 @@
     {
       "label": "drop database",
       "type": "shell",
-      "dependsOn": [
-        "Run dev detached"
-      ],
       "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml exec backend-dev sh ./scripts/drop.sh",
       "problemMatcher": [],
       "promptOnClose": true
@@ -71,9 +68,6 @@
     {
       "label": "recreate database",
       "type": "shell",
-      "dependsOn": [
-        "Run dev detached"
-      ],
       "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml exec backend-dev sh ./scripts/recreate.sh",
       "problemMatcher": [],
       "promptOnClose": true

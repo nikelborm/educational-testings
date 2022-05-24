@@ -9,19 +9,11 @@ export async function createManyWithRelations<
   newEntities: NewEntity<BaseEntity, KeysGeneratedByDB>[],
   config?: { chunk?: number },
 ): Promise<CreatedEntity<BaseEntity, KeysGeneratedByDB>[]> {
-  console.log(
-    'createManyWithRelations before repo.save newEntities: ',
-    newEntities,
+  const insertedEntitiesWithGeneratedParts = await repo.save(
+    // @ts-expect-error при создании мы не можем указать айди, поэтому мы его выпилили
+    newEntities.map(({ ...rest }) => rest), // это необходимо чтобы тайпорм не вписывала добавленные айдишники в исходные newEntities
+    { chunk: config?.chunk },
   );
   // @ts-expect-error при создании мы не можем указать айди, поэтому мы его выпилили
-  const shit = await repo.save(newEntities, {
-    chunk: config?.chunk,
-  });
-  console.log('createManyWithRelations repo.save shit: ', shit);
-  console.log(
-    'createManyWithRelations after repo.save newEntities: ',
-    newEntities,
-  );
-  // @ts-expect-error TODO
-  return newEntities;
+  return insertedEntitiesWithGeneratedParts;
 }

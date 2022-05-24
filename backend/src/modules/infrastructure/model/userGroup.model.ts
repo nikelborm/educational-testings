@@ -54,6 +54,7 @@ export class UserGroup {
   @OneToMany(
     () => UserToUserGroup,
     (userToUserGroup) => userToUserGroup.userGroup,
+    { cascade: ['insert'] },
   )
   userToUserGroupRelations!: UserToUserGroup[];
 

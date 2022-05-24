@@ -11,7 +11,5 @@ export class UserFromFindManyUsersResponseDTO {
 }
 
 export class FindManyUsersResponseDTO {
-  response!: {
-    users: UserFromFindManyUsersResponseDTO[];
-  };
+  users!: UserFromFindManyUsersResponseDTO[];
 }

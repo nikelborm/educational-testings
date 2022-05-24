@@ -1,7 +1,5 @@
 import { ClearedInsertedUserDTO } from '../clearedInsertedUser.dto';
 
 export class CreateOneUserResponse {
-  response!: {
-    user: ClearedInsertedUserDTO;
-  };
+  user!: ClearedInsertedUserDTO;
 }
