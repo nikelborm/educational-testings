@@ -2,9 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { messages } from 'src/config';
 import {
+  CreatedEntity,
+  createManyWithRelations,
   createOneWithRelations,
   NewEntity,
-  UpdatedEntity,
+  UpdateEntity,
   updateOneWithRelations,
 } from 'src/tools';
 import { Repository } from 'typeorm';
@@ -27,23 +29,24 @@ export class AnswerOptionInstanceRepo {
   }
 
   async updateOneWithRelations(
-    updatedAnswerOptionInstance: UpdatedEntity<AnswerOptionInstance>,
+    updatedAnswerOptionInstance: UpdateEntity<AnswerOptionInstance, 'id'>,
   ): Promise<AnswerOptionInstance> {
-    return await updateOneWithRelations(
+    return await updateOneWithRelations<AnswerOptionInstance, 'id'>(
       this.repo,
       updatedAnswerOptionInstance,
-      'answerOptionInstance',
     );
   }
 
   async createOneWithRelations(
-    newAnswerOptionInstance: NewEntity<AnswerOptionInstance>,
-  ): Promise<AnswerOptionInstance> {
-    return await createOneWithRelations(
-      this.repo,
-      newAnswerOptionInstance,
-      'answerOptionInstance',
-    );
+    newAnswerOptionInstance: NewEntity<AnswerOptionInstance, 'id'>,
+  ): Promise<CreatedEntity<AnswerOptionInstance, 'id'>> {
+    return await createOneWithRelations(this.repo, newAnswerOptionInstance);
+  }
+
+  async createManyWithRelations(
+    newAnswerOptionInstances: NewEntity<AnswerOptionInstance, 'id'>[],
+  ): Promise<CreatedEntity<AnswerOptionInstance, 'id'>[]> {
+    return await createManyWithRelations(this.repo, newAnswerOptionInstances);
   }
 
   async deleteMany(answerOptionInstanceIds: number[]): Promise<void> {

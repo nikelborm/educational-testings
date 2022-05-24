@@ -7,5 +7,6 @@ export enum EducationalSpaceAccessScopeType {
   MODIFY_USER_GROUPS = 'modifyUserGroups',
   VIEW_USER_GROUPS = 'viewUserGroups',
 
-  EDIT_GROUP_INFO = 'editGroupInfo',
+  MODIFY_SPACE_INFO = 'modifySpaceInfo',
+  DELETE_OWN_SPACE = 'deleteOwnSpace',
 }

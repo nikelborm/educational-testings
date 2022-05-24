@@ -2,13 +2,14 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { messages } from 'src/config';
 import {
+  CreatedEntity,
   createManyWithRelations,
   createOneWithRelations,
   NewEntity,
-  PlainEntityWithoutId,
-  UpdatedEntity,
+  UpdateEntity,
   updateOnePlain,
   updateOneWithRelations,
+  UpdatePlainEntity,
 } from 'src/tools';
 import { UserAuthInfo, UserForLoginAttemptValidation } from 'src/types';
 import { ILike, Repository } from 'typeorm';
@@ -40,12 +41,13 @@ export class UserRepo {
   async getOneByIdWithAccessScopes(id: number): Promise<UserAuthInfo> {
     const user = await this.repo.findOne({
       where: { id },
-      relations: [
-        'userGroups',
-        'userGroups.educationalSpaceAccessScopes',
-        'userGroups.launchedTestingAccessScopes',
-        'userGroups.leaderInAccessScopes',
-      ],
+      relations: {
+        userGroups: {
+          educationalSpaceAccessScopes: true,
+          launchedTestingAccessScopes: true,
+          leaderInAccessScopes: true,
+        },
+      },
       select: {
         id: true,
         email: true,
@@ -104,23 +106,28 @@ export class UserRepo {
     return await this.repo.findOne({ where: { firstName, lastName } });
   }
 
-  async createOneWithRelations(newUser: NewEntity<User>): Promise<User> {
-    return await createOneWithRelations(this.repo, newUser, 'user');
+  async updateOneWithRelations(
+    updatedUser: UpdateEntity<User, 'id'>,
+  ): Promise<User> {
+    return await updateOneWithRelations<User, 'id'>(this.repo, updatedUser);
   }
 
-  async createManyWithRelations(newUsers: NewEntity<User>[]): Promise<User[]> {
-    return await createManyWithRelations(this.repo, newUsers, 'user');
+  async createOneWithRelations(
+    newUser: NewEntity<User, 'id'>,
+  ): Promise<CreatedEntity<User, 'id'>> {
+    return await createOneWithRelations(this.repo, newUser);
+  }
+
+  async createManyWithRelations(
+    newUsers: NewEntity<User, 'id'>[],
+  ): Promise<CreatedEntity<User, 'id'>[]> {
+    return await createManyWithRelations(this.repo, newUsers);
   }
 
   async updateOnePlain(
-    id: number,
-    updated: PlainEntityWithoutId<User>,
+    updatedUser: UpdatePlainEntity<User, 'id'>,
   ): Promise<void> {
-    return await updateOnePlain(this.repo, id, updated, 'user');
-  }
-
-  async updateOneWithRelations(newUser: UpdatedEntity<User>): Promise<User> {
-    return await updateOneWithRelations(this.repo, newUser, 'user');
+    return await updateOnePlain<User, 'id'>(this.repo, updatedUser);
   }
 
   async findOneByEmailWithAccessScopesAndPassword(

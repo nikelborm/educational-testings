@@ -113,6 +113,9 @@ export class User {
   @OneToMany(() => TestingAttempt, (testingAttempt) => testingAttempt.user)
   testingAttempts!: TestingAttempt[];
 
+  @OneToMany(() => UserGroup, (userGroup) => userGroup.createdBy)
+  createdUserGroups!: UserGroup[];
+
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',

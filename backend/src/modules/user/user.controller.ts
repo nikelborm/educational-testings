@@ -38,10 +38,7 @@ export class UserController {
     @ValidatedBody
     createUserDTO: CreateUserDTO,
   ): Promise<CreateOneUserResponse> {
-    const user = await this.userUseCase.createUser({
-      ...createUserDTO,
-      userGroups: [],
-    });
+    const user = await this.userUseCase.createUser(createUserDTO);
     return {
       response: {
         user,

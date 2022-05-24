@@ -2,9 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { messages } from 'src/config';
 import {
+  CreatedEntity,
+  createManyWithRelations,
   createOneWithRelations,
   NewEntity,
-  UpdatedEntity,
+  UpdateEntity,
   updateOneWithRelations,
 } from 'src/tools';
 import { Repository } from 'typeorm';
@@ -32,22 +34,38 @@ export class AnswerOptionIntoTagContributionRepo {
   }
 
   async updateOneWithRelations(
-    updatedAnswerOptionIntoTagContribution: UpdatedEntity<AnswerOptionIntoTagContribution>,
+    updatedAnswerOptionIntoTagContribution: UpdateEntity<
+      AnswerOptionIntoTagContribution,
+      'id'
+    >,
   ): Promise<AnswerOptionIntoTagContribution> {
-    return await updateOneWithRelations(
+    return await updateOneWithRelations<AnswerOptionIntoTagContribution, 'id'>(
       this.repo,
       updatedAnswerOptionIntoTagContribution,
-      'answerOptionIntoTagContribution',
     );
   }
 
   async createOneWithRelations(
-    newAnswerOptionIntoTagContribution: NewEntity<AnswerOptionIntoTagContribution>,
-  ): Promise<AnswerOptionIntoTagContribution> {
+    newAnswerOptionIntoTagContribution: NewEntity<
+      AnswerOptionIntoTagContribution,
+      'id'
+    >,
+  ): Promise<CreatedEntity<AnswerOptionIntoTagContribution, 'id'>> {
     return await createOneWithRelations(
       this.repo,
       newAnswerOptionIntoTagContribution,
-      'answerOptionIntoTagContribution',
+    );
+  }
+
+  async createManyWithRelations(
+    newAnswerOptionIntoTagContributions: NewEntity<
+      AnswerOptionIntoTagContribution,
+      'id'
+    >[],
+  ): Promise<CreatedEntity<AnswerOptionIntoTagContribution, 'id'>[]> {
+    return await createManyWithRelations(
+      this.repo,
+      newAnswerOptionIntoTagContributions,
     );
   }
 

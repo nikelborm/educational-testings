@@ -60,11 +60,11 @@ export class AuthUseCase {
   async registerNewUserAndLogin(
     createUserDTO: CreateUserDTO,
   ): Promise<TokenPairDTO> {
-    const user = await this.userUseCase.createUser({
-      ...createUserDTO,
+    const user = await this.userUseCase.createUser(createUserDTO);
+    return await this.login({
+      ...user,
       userGroups: [],
     });
-    return await this.login(user);
   }
 
   async login(user: UserAuthInfo): Promise<TokenPairDTO> {

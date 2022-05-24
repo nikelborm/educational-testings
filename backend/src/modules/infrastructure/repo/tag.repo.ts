@@ -2,9 +2,10 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { messages } from 'src/config';
 import {
+  CreatedEntity,
   createOneWithRelations,
   NewEntity,
-  UpdatedEntity,
+  UpdateEntity,
   updateOneWithRelations,
 } from 'src/tools';
 import { Repository } from 'typeorm';
@@ -28,12 +29,16 @@ export class TagRepo {
     return tag;
   }
 
-  async updateOneWithRelations(updatedTag: UpdatedEntity<Tag>): Promise<Tag> {
-    return await updateOneWithRelations(this.repo, updatedTag, 'tag');
+  async updateOneWithRelations(
+    updatedTag: UpdateEntity<Tag, 'id'>,
+  ): Promise<Tag> {
+    return await updateOneWithRelations<Tag, 'id'>(this.repo, updatedTag);
   }
 
-  async createOneWithRelations(newTag: NewEntity<Tag>): Promise<Tag> {
-    return await createOneWithRelations(this.repo, newTag, 'tag');
+  async createOneWithRelations(
+    newTag: NewEntity<Tag, 'id'>,
+  ): Promise<CreatedEntity<Tag, 'id'>> {
+    return await createOneWithRelations(this.repo, newTag);
   }
 
   async deleteMany(tagIds: number[]): Promise<void> {
