@@ -1,17 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { EducationalSpaceUseCase, UserUseCase } from 'src/modules';
+import { EducationalSpaceUseCase, repo, UserUseCase } from 'src/modules';
 import { ClearedInsertedUserDTO } from 'src/types';
 
 @Injectable()
 export class MockDataUseCase {
   constructor(
     private readonly userUseCase: UserUseCase,
+    private readonly userToUserGroupRepo: repo.UserToUserGroupRepo,
     private readonly educationalSpaceUseCase: EducationalSpaceUseCase,
   ) {}
 
+  // TODO: wrap into migrarion
   async fillDBScript(): Promise<void> {
     console.log('fillDBScript called');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [owner, student] = (await this.userUseCase.createManyUsers([
       {
         email: 'owner@mail.ru',
@@ -33,7 +34,6 @@ export class MockDataUseCase {
       },
     ])) as [ClearedInsertedUserDTO, ClearedInsertedUserDTO];
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { studentsGroup } =
       await this.educationalSpaceUseCase.createEducationalSpace(
         {
@@ -42,6 +42,24 @@ export class MockDataUseCase {
         },
         owner,
       );
-    // this.userToUserGroupRepo.
+
+    await this.userToUserGroupRepo.createOnePlain({
+      userId: student.id,
+      userGroupId: studentsGroup.id,
+    });
+
+    const { studentsGroup: secondSpaceUserGroup } =
+      await this.educationalSpaceUseCase.createEducationalSpace(
+        {
+          name: 'Второе образовательное пространство',
+          description: 'Описание второго образовательного пространства',
+        },
+        owner,
+      );
+
+    await this.userToUserGroupRepo.createOnePlain({
+      userId: student.id,
+      userGroupId: secondSpaceUserGroup.id,
+    });
   }
 }

@@ -1,10 +1,19 @@
-import { Controller, Post, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  ParseIntPipe,
+  Post,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { EducationalSpaceUseCase } from './educationalSpace.useCase';
 import {
   AuthedRequest,
   CreateEducationalSpaceDTO,
   EmptyResponseDTO,
+  GetEducationalSpaceDTO,
+  GetMyEducationalSpacesResponseDTO,
 } from 'src/types';
 import { AuthorizedOnly, ValidatedBody } from 'src/tools';
 
@@ -25,15 +34,33 @@ export class EducationalSpaceController {
       educationalSpaceDto,
       user,
     );
-    return { response: {} };
+    return {};
   }
 
-  @Post('getMine')
+  @Get('getMine')
   @AuthorizedOnly()
   async getMyEducationalSpaces(
     @Req() { user }: AuthedRequest,
-  ): Promise<EmptyResponseDTO> {
-    await this.educationalSpaceUseCase.getAllowedEducationalSpacesOf(user.id);
-    return { response: {} };
+  ): Promise<GetMyEducationalSpacesResponseDTO> {
+    const myEducationalSpaces =
+      await this.educationalSpaceUseCase.getAllowedEducationalSpacesOf(user.id);
+    return {
+      myEducationalSpaces,
+    };
+  }
+
+  @Get('getOneBy')
+  @AuthorizedOnly()
+  async getOneById(
+    @Query('id', ParseIntPipe) id: number,
+    @Req() { user }: AuthedRequest,
+  ): Promise<GetEducationalSpaceDTO> {
+    const educationalSpace = await this.educationalSpaceUseCase.getOneBy(
+      id,
+      user,
+    );
+    return {
+      educationalSpace,
+    };
   }
 }

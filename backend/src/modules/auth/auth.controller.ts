@@ -42,7 +42,7 @@ export class AuthController {
     @Request() { user, sessionUUID }: AuthedRequest,
   ): Promise<EmptyResponseDTO> {
     await this.authUseCase.logoutSessionOf(user.id, sessionUUID);
-    return { response: {} };
+    return {};
   }
 
   @Post('logoutAllSessions')
@@ -51,7 +51,7 @@ export class AuthController {
     @Request() { user }: AuthedRequest,
   ): Promise<EmptyResponseDTO> {
     await this.authUseCase.logoutAllSessions(user.id);
-    return { response: {} };
+    return {};
   }
 
   @Post('refresh')

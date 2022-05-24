@@ -6,18 +6,16 @@ export async function createOnePlain<
   KeysGeneratedByDB extends string = 'id',
 >(
   repo: Repository<BaseEntity>,
-  newEntity: NewPlainEntity<BaseEntity, KeysGeneratedByDB>,
-): Promise<CreatedPlainEntity<BaseEntity, KeysGeneratedByDB>[]> {
-  console.log('createOnePlain before repo.insert newEntity: ', newEntity);
+  { ...newEntity }: NewPlainEntity<BaseEntity, KeysGeneratedByDB>,
+): Promise<CreatedPlainEntity<BaseEntity, KeysGeneratedByDB>> {
   // @ts-expect-error при создании мы не можем указать айди, поэтому мы его выпилили
-  const shit = await repo.insert(newEntity);
-  console.log('createOnePlain repo.insert shit: ', shit);
-  console.log('createOnePlain after repo.insert newEntity: ', newEntity);
-  // if (!entityWithOnlyId?.id)
-  //   throw new InternalServerErrorException(
-  //     messages.repo.common.cantCreateOne(newEntity, entityName),
-  //   );
+  const { generatedMaps, identifiers, raw } = await repo.insert(newEntity);
+  console.log('createOnePlain repo.insert result: ', {
+    generatedMaps,
+    identifiers,
+    raw,
+  });
 
   // @ts-expect-error TODO
-  return { ...newEntity, ...entityWithOnlyId };
+  return { ...newEntity, ...generatedMaps, ...identifiers };
 }

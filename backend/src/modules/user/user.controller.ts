@@ -26,9 +26,7 @@ export class UserController {
   ): Promise<FindManyUsersResponseDTO> {
     const users = await this.userUseCase.findMany(search);
     return {
-      response: {
-        users,
-      },
+      users,
     };
   }
 
@@ -40,9 +38,7 @@ export class UserController {
   ): Promise<CreateOneUserResponse> {
     const user = await this.userUseCase.createUser(createUserDTO);
     return {
-      response: {
-        user,
-      },
+      user,
     };
   }
 
@@ -56,9 +52,7 @@ export class UserController {
       users.map((user) => ({ ...user, userGroups: [] })),
     );
     return {
-      response: {
-        users: userModels,
-      },
+      users: userModels,
     };
   }
 
@@ -70,7 +64,7 @@ export class UserController {
     { password }: SetMyPasswordDTO,
   ): Promise<EmptyResponseDTO> {
     await this.userUseCase.setUserPassword(user.id, password);
-    return { response: {} };
+    return {};
   }
 
   @Post('deleteById')
@@ -80,6 +74,6 @@ export class UserController {
     { id }: DeleteEntityByIdDTO,
   ): Promise<EmptyResponseDTO> {
     await this.userUseCase.deleteOne(id);
-    return { response: {} };
+    return {};
   }
 }

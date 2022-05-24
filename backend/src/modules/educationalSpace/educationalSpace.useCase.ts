@@ -9,6 +9,7 @@ import { messages } from 'src/config';
 import {
   CreateEducationalSpaceDTO,
   EducationalSpaceAccessScopeType,
+  UserAuthInfo,
   UserGroupManagementAccessScopeType,
 } from 'src/types';
 import { EntityManager } from 'typeorm';
@@ -48,6 +49,7 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
     teachersGroup: model.UserGroup;
     studentsGroup: model.UserGroup;
   }> {
+    console.log(educationalSpaceDTO);
     if (!userCreator.canCreateEducationalSpaces)
       throw new BadRequestException(messages.user.cantCreateEducationalSpace);
 
@@ -62,7 +64,7 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
         {
           name: 'Владельцы пространства',
           educationalSpace,
-          users: [userCreator],
+          userToUserGroupRelations: [{ userId: userCreator.id }],
           createdBy: userCreator,
         },
         {
@@ -131,14 +133,45 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
     };
   }
 
-  async getAllowedEducationalSpacesOf(
-    userId: number,
-  ): Promise<Pick<model.EducationalSpace, 'id' | 'name' | 'description'>[]> {
-    return (
+  async getOneBy(
+    id: number,
+    user: UserAuthInfo,
+  ): Promise<model.EducationalSpace> {
+    if (!user.userGroups.some((group) => group.educationalSpaceId === id))
+      throw new BadRequestException(messages.educationalSpace.cantView);
+
+    const educationalSpace = await this.educationalSpaceRepo.getOneById(id);
+
+    return educationalSpace;
+  }
+
+  async getAllowedEducationalSpacesOf(userId: number): Promise<
+    (Pick<model.EducationalSpace, 'id' | 'name' | 'description'> & {
+      userGroups: Pick<model.UserGroup, 'id' | 'name'>[];
+    })[]
+  > {
+    const userToUserGroups =
       await this.userToUserGroupRepo.findWithUserGroupWithSimpleEducationalSpaceBy(
         userId,
-      )
-    ).map(({ userGroup }) => userGroup.educationalSpace);
+      );
+    const educationalSpaces: model.EducationalSpace[] = [];
+    for (const {
+      userGroup: { id, name, educationalSpace },
+    } of userToUserGroups) {
+      const previouslyPushedSpace = educationalSpaces.find(
+        (space) => space.id === educationalSpace.id,
+      );
+
+      if (previouslyPushedSpace) {
+        previouslyPushedSpace.userGroups.push({ id, name } as model.UserGroup);
+      } else {
+        educationalSpaces.push({
+          ...educationalSpace,
+          userGroups: [{ id, name } as model.UserGroup],
+        });
+      }
+    }
+    return educationalSpaces;
   }
 
   onModuleDestroy(): void {

@@ -11,7 +11,19 @@ import { message } from 'antd';
 import App from './App';
 
 const onErrorHandler = (err: any) => {
-  void message.error(`Error: ${err?.message}`);
+  void message.error(
+    <>
+      Error
+      <div style={{ textAlign: 'left' }}>
+        {err?.message?.split('\n').map((e) => (
+          <>
+            {e}
+            <br />
+          </>
+        ))}
+      </div>
+    </>,
+  );
 };
 
 const queryClient = new QueryClient({
