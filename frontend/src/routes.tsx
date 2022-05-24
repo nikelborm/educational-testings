@@ -4,6 +4,7 @@ import {
   SmileOutlined,
   TagsOutlined,
 } from '@ant-design/icons';
+import { Button } from 'antd';
 import {
   Login,
   Registration,
@@ -60,6 +61,7 @@ export const routesOnlyForAuthedUsers: RoutesMap<AuthedRouteEntity> = {
     Component: MyEducationalSpaces,
     isMenuPoint: true,
     menuIcon: <SmileOutlined />,
+    Extras: () => <Button type="primary">Create New Educational Space</Button>,
     menuTitle: 'My Educational Spaces',
     pageTitle: 'My Educational Spaces',
     canUserOpenThisRoute: () => true,
@@ -90,6 +92,8 @@ export const routesOnlyForAuthedUsers: RoutesMap<AuthedRouteEntity> = {
   },
   [RoutesEnum.EDUCATIONAL_SPACE_VIEW]: {
     Component: EducationalSpaceView,
+    pageTitle: 'Educational Space',
+    description: '(view)',
     canUserOpenThisRoute: () => true,
   },
   [RoutesEnum.EDUCATIONAL_SPACE_EDIT]: {
