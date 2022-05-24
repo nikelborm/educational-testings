@@ -1,5 +1,4 @@
-import { Controller, Get, Post, Query, Req } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Get, Post, Query, Req } from '@nestjs/common';
 import { UserUseCase } from './user.useCase';
 import {
   CreateUserDTO,
@@ -12,10 +11,9 @@ import {
   SetMyPasswordDTO,
   AuthedRequest,
 } from 'src/types';
-import { AuthorizedOnly, ValidatedBody } from 'src/tools';
+import { ApiController, AuthorizedOnly, ValidatedBody } from 'src/tools';
 
-@ApiTags('user')
-@Controller('user')
+@ApiController('user')
 export class UserController {
   constructor(private readonly userUseCase: UserUseCase) {}
 

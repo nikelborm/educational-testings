@@ -1,3 +1,4 @@
+import React from 'react';
 import { ISession } from './localStorageAuth';
 
 export enum RoutesEnum {
@@ -27,9 +28,10 @@ export interface SimpleRouteEntity {
 export interface AuthedRouteEntity extends SimpleRouteEntity {
   Component: React.FC<React.PropsWithChildren<any>>;
   isMenuPoint?: boolean;
-  menuTitle?: string;
-  pageTitle?: string;
-  description?: string;
+  menuTitle?: React.ReactNode;
+  pageTitle?: React.ReactNode;
+  description?: React.ReactNode;
+  Extras?: React.FC;
   menuIcon?: React.ReactElement;
   canUserOpenThisRoute(session: ISession): boolean;
 }

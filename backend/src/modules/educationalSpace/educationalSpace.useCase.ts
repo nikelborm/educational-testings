@@ -5,6 +5,8 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
+import { model, repo } from '../infrastructure';
 import { messages } from 'src/config';
 import {
   CreateEducationalSpaceDTO,
@@ -12,8 +14,6 @@ import {
   UserAuthInfo,
   UserGroupManagementAccessScopeType,
 } from 'src/types';
-import { EntityManager } from 'typeorm';
-import { model, repo } from '../infrastructure';
 
 @Injectable()
 export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
@@ -172,6 +172,16 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
       }
     }
     return educationalSpaces;
+  }
+
+  async useInviteLink(
+    givenByUserId: number,
+    inviteToUserGroupId: number,
+    signature: string,
+
+    user: UserAuthInfo,
+  ): Promise<void> {
+    console.log();
   }
 
   onModuleDestroy(): void {

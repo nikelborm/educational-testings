@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { Link, Outlet, Navigate } from 'react-router-dom';
-import Layout from 'antd/lib/layout';
-import Menu from 'antd/lib/menu';
-import PageHeader from 'antd/lib/page-header';
-import { useTokenPairUpdater, usePath } from 'hooks';
-import { ISession, RoutesEnum } from 'types';
 import type { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { LogoutOutlined } from '@ant-design/icons';
+import { Layout, PageHeader, Menu } from 'antd';
+import { useTokenPairUpdater, usePath } from 'hooks';
+import { ISession, RoutesEnum } from 'types';
 import { notAuthedFallbackRoute, routesOnlyForAuthedUsers } from '../routes';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -65,6 +63,11 @@ export function AccountPagesWrapper({
       <Layout>
         <Header style={{ background: '#fff', padding: 0 }}>
           <PageHeader
+            {...(() => {
+              const Extras =
+                routesOnlyForAuthedUsers[deepestPathPart as RoutesEnum]?.Extras;
+              return Extras ? { extra: <Extras /> } : {};
+            })()}
             title={
               routesOnlyForAuthedUsers[deepestPathPart as RoutesEnum]?.pageTitle
             }

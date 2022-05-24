@@ -1,6 +1,5 @@
-import { Controller, Post, Query, Request, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { AuthorizedOnly, ValidatedBody } from 'src/tools';
+import { Post, Query, Request, UseGuards } from '@nestjs/common';
+import { ApiController, AuthorizedOnly, ValidatedBody } from 'src/tools';
 import {
   AuthedRequest,
   CreateUserDTO,
@@ -12,8 +11,7 @@ import { AuthUseCase } from './services';
 import { TokenPairDTO } from './types';
 import { LocalAuthGuard } from './guards';
 
-@ApiTags('auth')
-@Controller('auth')
+@ApiController('auth')
 export class AuthController {
   constructor(private readonly authUseCase: AuthUseCase) {}
 
