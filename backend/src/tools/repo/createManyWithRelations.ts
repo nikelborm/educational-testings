@@ -1,21 +1,27 @@
-import { messages } from 'src/config';
 import { Repository } from 'typeorm';
-import { EntityWithId, NewEntity } from '.';
-import { validateExistingId } from '..';
+import { CreatedEntity, NewEntity } from '.';
 
-export async function createManyWithRelations<T extends EntityWithId>(
-  repo: Repository<T>,
-  newEntities: NewEntity<T>[],
-  entityName?: string,
+export async function createManyWithRelations<
+  BaseEntity,
+  KeysGeneratedByDB extends string = 'id',
+>(
+  repo: Repository<BaseEntity>,
+  newEntities: NewEntity<BaseEntity, KeysGeneratedByDB>[],
   config?: { chunk?: number },
-): Promise<T[]> {
-  validateExistingId({
-    entities: newEntities,
-    shouldIdExist: false,
-    errorText: messages.repo.common.cantCreateWithIds(newEntities, entityName),
-  });
+): Promise<CreatedEntity<BaseEntity, KeysGeneratedByDB>[]> {
+  console.log(
+    'createManyWithRelations before repo.save newEntities: ',
+    newEntities,
+  );
   // @ts-expect-error при создании мы не можем указать айди, поэтому мы его выпилили
-  return await repo.save(newEntities, {
+  const shit = await repo.save(newEntities, {
     chunk: config?.chunk,
   });
+  console.log('createManyWithRelations repo.save shit: ', shit);
+  console.log(
+    'createManyWithRelations after repo.save newEntities: ',
+    newEntities,
+  );
+  // @ts-expect-error TODO
+  return newEntities;
 }

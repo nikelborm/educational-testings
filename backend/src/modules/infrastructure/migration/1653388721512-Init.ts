@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Init1653216575255 implements MigrationInterface {
-  name = 'Init1653216575255';
+export class Init1653388721512 implements MigrationInterface {
+  name = 'Init1653388721512';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -108,7 +108,8 @@ export class Init1653216575255 implements MigrationInterface {
         'modifyLaunchedTestings',
         'modifyUserGroups',
         'viewUserGroups',
-        'editGroupInfo'
+        'modifySpaceInfo',
+        'deleteOwnSpace'
       )
     `);
     await queryRunner.query(`
@@ -256,6 +257,7 @@ export class Init1653216575255 implements MigrationInterface {
         "name" character varying NOT NULL,
         "description" character varying,
         "educational_space_id" integer NOT NULL,
+        "created_by_user_id" integer NOT NULL,
         "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
         "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
         CONSTRAINT "PK_a2ab1a9327f7690227a298a4025" PRIMARY KEY ("user_group_id")
@@ -418,6 +420,10 @@ export class Init1653216575255 implements MigrationInterface {
       ADD CONSTRAINT "FK_3f581159e14c5fbc80cea46b80f" FOREIGN KEY ("educational_space_id") REFERENCES "educational_space"("educational_space_id") ON DELETE NO ACTION ON UPDATE NO ACTION
     `);
     await queryRunner.query(`
+      ALTER TABLE "user_group"
+      ADD CONSTRAINT "FK_f3a3fcf31a4a3632e26a8d0c4bd" FOREIGN KEY ("created_by_user_id") REFERENCES "user"("user_id") ON DELETE NO ACTION ON UPDATE NO ACTION
+    `);
+    await queryRunner.query(`
       ALTER TABLE "user_group_management_access_scope"
       ADD CONSTRAINT "FK_bf420a1837ac038c746559630b9" FOREIGN KEY ("leader_user_group_id") REFERENCES "user_group"("user_group_id") ON DELETE NO ACTION ON UPDATE NO ACTION
     `);
@@ -454,6 +460,9 @@ export class Init1653216575255 implements MigrationInterface {
     `);
     await queryRunner.query(`
       ALTER TABLE "user_group_management_access_scope" DROP CONSTRAINT "FK_bf420a1837ac038c746559630b9"
+    `);
+    await queryRunner.query(`
+      ALTER TABLE "user_group" DROP CONSTRAINT "FK_f3a3fcf31a4a3632e26a8d0c4bd"
     `);
     await queryRunner.query(`
       ALTER TABLE "user_group" DROP CONSTRAINT "FK_3f581159e14c5fbc80cea46b80f"

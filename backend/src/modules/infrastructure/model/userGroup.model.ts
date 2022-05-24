@@ -86,6 +86,18 @@ export class UserGroup {
   )
   launchedTestingAccessScopes!: LaunchedTestingAccessScope[];
 
+  @ManyToOne(() => User, (user) => user.createdUserGroups, {
+    nullable: false,
+  })
+  @JoinColumn({ name: 'created_by_user_id' })
+  createdBy!: User;
+
+  @Column({
+    name: 'created_by_user_id',
+    nullable: false,
+  })
+  createdByUserId!: number;
+
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',

@@ -2,9 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { messages } from 'src/config';
 import {
+  CreatedEntity,
+  createManyWithRelations,
   createOneWithRelations,
   NewEntity,
-  UpdatedEntity,
+  UpdateEntity,
   updateOneWithRelations,
 } from 'src/tools';
 import { Repository } from 'typeorm';
@@ -29,19 +31,24 @@ export class UserGroupRepo {
   }
 
   async updateOneWithRelations(
-    updatedUserGroup: UpdatedEntity<UserGroup>,
+    updatedUserGroup: UpdateEntity<UserGroup, 'id'>,
   ): Promise<UserGroup> {
-    return await updateOneWithRelations(
+    return await updateOneWithRelations<UserGroup, 'id'>(
       this.repo,
       updatedUserGroup,
-      'userGroup',
     );
   }
 
   async createOneWithRelations(
-    newUserGroup: NewEntity<UserGroup>,
-  ): Promise<UserGroup> {
-    return await createOneWithRelations(this.repo, newUserGroup, 'userGroup');
+    newUserGroup: NewEntity<UserGroup, 'id'>,
+  ): Promise<CreatedEntity<UserGroup, 'id'>> {
+    return await createOneWithRelations(this.repo, newUserGroup);
+  }
+
+  async createManyWithRelations(
+    newUserGroups: NewEntity<UserGroup, 'id'>[],
+  ): Promise<CreatedEntity<UserGroup, 'id'>[]> {
+    return await createManyWithRelations(this.repo, newUserGroups);
   }
 
   async deleteMany(userGroupIds: number[]): Promise<void> {

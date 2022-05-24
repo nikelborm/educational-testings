@@ -27,4 +27,13 @@ export class EducationalSpaceController {
     );
     return { response: {} };
   }
+
+  @Post('getMine')
+  @AuthorizedOnly()
+  async getMyEducationalSpaces(
+    @Req() { user }: AuthedRequest,
+  ): Promise<EmptyResponseDTO> {
+    await this.educationalSpaceUseCase.getAllowedEducationalSpacesOf(user.id);
+    return { response: {} };
+  }
 }

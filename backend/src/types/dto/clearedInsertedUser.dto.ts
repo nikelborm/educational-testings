@@ -1,5 +1,3 @@
-import type { model } from 'src/modules';
-
 export class ClearedInsertedUserDTO implements Omit<InputUser, 'password'> {
   id!: number;
   firstName!: string;
@@ -8,7 +6,6 @@ export class ClearedInsertedUserDTO implements Omit<InputUser, 'password'> {
   canCreateEducationalSpaces!: boolean;
   gender!: string;
   email!: string;
-  userGroups!: model.UserGroup[];
 }
 
 export interface InputUser {
@@ -19,5 +16,4 @@ export interface InputUser {
   canCreateEducationalSpaces: boolean;
   email: string;
   password: string;
-  userGroups: model.UserGroup[];
 }

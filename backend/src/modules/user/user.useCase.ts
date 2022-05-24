@@ -59,7 +59,7 @@ export class UserUseCase {
     const candidate = await this.userRepo.getOneById(id);
 
     const updatedUser = this.createUserModel({ ...candidate, password });
-    return await this.userRepo.updateOnePlain(id, updatedUser);
+    return await this.userRepo.updateOnePlain({ id, ...updatedUser });
   }
 
   private createUserModel({ password, ...rest }: InputUser): UserModelToInsert {
@@ -67,7 +67,6 @@ export class UserUseCase {
     return {
       ...rest,
       salt,
-      userGroups: [],
       passwordHash: createHash('sha256')
         .update(salt)
         .update(password)

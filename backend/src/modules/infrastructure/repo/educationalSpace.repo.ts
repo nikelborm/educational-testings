@@ -2,9 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { messages } from 'src/config';
 import {
+  CreatedEntity,
+  createManyWithRelations,
   createOneWithRelations,
   NewEntity,
-  UpdatedEntity,
+  UpdateEntity,
   updateOneWithRelations,
 } from 'src/tools';
 import { Repository } from 'typeorm';
@@ -27,23 +29,24 @@ export class EducationalSpaceRepo {
   }
 
   async updateOneWithRelations(
-    updatedEducationalSpace: UpdatedEntity<EducationalSpace>,
+    updatedEducationalSpace: UpdateEntity<EducationalSpace, 'id'>,
   ): Promise<EducationalSpace> {
-    return await updateOneWithRelations(
+    return await updateOneWithRelations<EducationalSpace, 'id'>(
       this.repo,
       updatedEducationalSpace,
-      'educationalSpace',
     );
   }
 
   async createOneWithRelations(
-    newEducationalSpace: NewEntity<EducationalSpace>,
-  ): Promise<EducationalSpace> {
-    return await createOneWithRelations(
-      this.repo,
-      newEducationalSpace,
-      'educationalSpace',
-    );
+    newEducationalSpace: NewEntity<EducationalSpace, 'id'>,
+  ): Promise<CreatedEntity<EducationalSpace, 'id'>> {
+    return await createOneWithRelations(this.repo, newEducationalSpace);
+  }
+
+  async createManyWithRelations(
+    newEducationalSpaces: NewEntity<EducationalSpace, 'id'>[],
+  ): Promise<CreatedEntity<EducationalSpace, 'id'>[]> {
+    return await createManyWithRelations(this.repo, newEducationalSpaces);
   }
 
   async deleteMany(educationalSpaceIds: number[]): Promise<void> {

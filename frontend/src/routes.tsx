@@ -135,6 +135,7 @@ export const routesOnlyForAuthedUsers: RoutesMap<AuthedRouteEntity> = {
   // },
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getAuthedFallbackRoute = (session: ISession) =>
   RoutesEnum.MY_EDUCATIONAL_SPACES;
 

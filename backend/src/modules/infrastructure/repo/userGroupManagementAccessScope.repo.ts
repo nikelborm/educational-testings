@@ -2,9 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { messages } from 'src/config';
 import {
+  CreatedEntity,
+  createManyWithRelations,
   createOneWithRelations,
   NewEntity,
-  UpdatedEntity,
+  UpdateEntity,
   updateOneWithRelations,
 } from 'src/tools';
 import { Repository } from 'typeorm';
@@ -32,22 +34,38 @@ export class UserGroupManagementAccessScopeRepo {
   }
 
   async updateOneWithRelations(
-    updatedUserGroupManagementAccessScope: UpdatedEntity<UserGroupManagementAccessScope>,
+    updatedUserGroupManagementAccessScope: UpdateEntity<
+      UserGroupManagementAccessScope,
+      'id'
+    >,
   ): Promise<UserGroupManagementAccessScope> {
-    return await updateOneWithRelations(
+    return await updateOneWithRelations<UserGroupManagementAccessScope, 'id'>(
       this.repo,
       updatedUserGroupManagementAccessScope,
-      'userGroupManagementAccessScope',
     );
   }
 
   async createOneWithRelations(
-    newUserGroupManagementAccessScope: NewEntity<UserGroupManagementAccessScope>,
-  ): Promise<UserGroupManagementAccessScope> {
+    newUserGroupManagementAccessScope: NewEntity<
+      UserGroupManagementAccessScope,
+      'id'
+    >,
+  ): Promise<CreatedEntity<UserGroupManagementAccessScope, 'id'>> {
     return await createOneWithRelations(
       this.repo,
       newUserGroupManagementAccessScope,
-      'userGroupManagementAccessScope',
+    );
+  }
+
+  async createManyWithRelations(
+    newUserGroupManagementAccessScopes: NewEntity<
+      UserGroupManagementAccessScope,
+      'id'
+    >[],
+  ): Promise<CreatedEntity<UserGroupManagementAccessScope, 'id'>[]> {
+    return await createManyWithRelations(
+      this.repo,
+      newUserGroupManagementAccessScopes,
     );
   }
 

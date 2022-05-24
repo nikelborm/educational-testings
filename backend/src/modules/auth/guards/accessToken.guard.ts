@@ -44,9 +44,9 @@ export class AccessTokenGuard implements CanActivate {
       Object.values(EndpointAccess).includes(scope as any),
     ) as EndpointAccess;
 
-    const userLevelScopes = (allScopes as UserLevelScopes[]).filter(
+    const userLevelScopes = allScopes.filter(
       (scope) => !Object.values(EndpointAccess).includes(scope as any),
-    );
+    ) as UserLevelScopes[];
 
     if (routeLevelScope === AccessEnum.PUBLIC) return true;
 

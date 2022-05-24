@@ -2,9 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { messages } from 'src/config';
 import {
+  CreatedEntity,
+  createManyWithRelations,
   createOneWithRelations,
   NewEntity,
-  UpdatedEntity,
+  UpdateEntity,
   updateOneWithRelations,
 } from 'src/tools';
 import { Repository } from 'typeorm';
@@ -32,22 +34,38 @@ export class EducationalSpaceAccessScopeRepo {
   }
 
   async updateOneWithRelations(
-    updatedEducationalSpaceAccessScope: UpdatedEntity<EducationalSpaceAccessScope>,
+    updatedEducationalSpaceAccessScope: UpdateEntity<
+      EducationalSpaceAccessScope,
+      'id'
+    >,
   ): Promise<EducationalSpaceAccessScope> {
-    return await updateOneWithRelations(
+    return await updateOneWithRelations<EducationalSpaceAccessScope, 'id'>(
       this.repo,
       updatedEducationalSpaceAccessScope,
-      'educationalSpaceAccessScope',
     );
   }
 
   async createOneWithRelations(
-    newEducationalSpaceAccessScope: NewEntity<EducationalSpaceAccessScope>,
-  ): Promise<EducationalSpaceAccessScope> {
+    newEducationalSpaceAccessScope: NewEntity<
+      EducationalSpaceAccessScope,
+      'id'
+    >,
+  ): Promise<CreatedEntity<EducationalSpaceAccessScope, 'id'>> {
     return await createOneWithRelations(
       this.repo,
       newEducationalSpaceAccessScope,
-      'educationalSpaceAccessScope',
+    );
+  }
+
+  async createManyWithRelations(
+    newEducationalSpaceAccessScopes: NewEntity<
+      EducationalSpaceAccessScope,
+      'id'
+    >[],
+  ): Promise<CreatedEntity<EducationalSpaceAccessScope, 'id'>[]> {
+    return await createManyWithRelations(
+      this.repo,
+      newEducationalSpaceAccessScopes,
     );
   }
 
