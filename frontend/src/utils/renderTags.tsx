@@ -1,6 +1,6 @@
 import { Tag } from 'antd';
 
-export default function renderKeywords(keywords: string | string[]) {
+export function renderTags(keywords: string | string[]) {
   const stringArray = Array.isArray(keywords)
     ? keywords
     : [...new Set(keywords?.split(','))];
