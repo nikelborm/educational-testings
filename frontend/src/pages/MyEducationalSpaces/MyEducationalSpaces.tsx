@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Table } from 'antd';
 import { useMyEducationalSpaces } from 'hooks';
 import { SortOrder } from 'antd/lib/table/interface';
-import renderKeywords from 'utils/renderKeywords';
+import { renderTags } from 'utils';
 
 export function MyEducationalSpaces() {
   const navigate = useNavigate();
@@ -41,9 +41,7 @@ export function MyEducationalSpaces() {
           key: 'userGroups',
           width: '30%',
           render: (_, dataUsedForRowRender) =>
-            renderKeywords(
-              dataUsedForRowRender.userGroups.map(({ name }) => name),
-            ),
+            renderTags(dataUsedForRowRender.userGroups.map(({ name }) => name)),
         },
       ]}
     />

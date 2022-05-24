@@ -66,6 +66,16 @@
       "promptOnClose": true
     },
     {
+      "label": "mock",
+      "type": "shell",
+      "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml exec backend-dev rm wasMockScriptCalledOnStartup",
+      "dependsOn": [
+        "recreate database"
+      ],
+      "problemMatcher": [],
+      "promptOnClose": true
+    },
+    {
       "label": "recreate database",
       "type": "shell",
       "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml exec backend-dev sh ./scripts/recreate.sh",
