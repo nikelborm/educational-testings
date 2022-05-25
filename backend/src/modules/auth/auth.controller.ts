@@ -6,9 +6,9 @@ import {
   EmptyResponseDTO,
   RefreshTokenDTO,
   UserAuthInfo,
+  TokenPairDTO,
 } from 'src/types';
 import { AuthUseCase } from './services';
-import { TokenPairDTO } from './types';
 import { LocalAuthGuard } from './guards';
 
 @ApiController('auth')

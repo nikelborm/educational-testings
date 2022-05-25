@@ -8,7 +8,8 @@ services:
       - postgres-admin
       - frontend-dev
     build:
-      context: ./frontend/
+      context: ./
+      dockerfile: ./frontend/Dockerfile
       target: dev_nginx
       args:
         - INNER_NGINX_HTTP_PORT=${INNER_NGINX_HTTP_PORT}
@@ -31,7 +32,8 @@ services:
     image: "${COMPOSE_PROJECT_NAME}-frontend-dev"
     restart: always
     build:
-      context: ./frontend/
+      context: ./
+      dockerfile: ./frontend/Dockerfile
       target: dev_front
       args:
         - DEV_INNER_FRONTEND_DEBUGGER_PORT=${EXTERNAL_NGINX_HTTP_PORT}
@@ -46,6 +48,10 @@ services:
       - type: bind
         source: ./frontend/src
         target: /app/src
+        consistency: delegated
+      - type: bind
+        source: ./backend/src/types/shared
+        target: /backend/src/types/shared
         consistency: delegated
     networks:
       nginx-back-net:

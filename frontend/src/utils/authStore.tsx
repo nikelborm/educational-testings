@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useContext, useState } from 'react';
 import decodeJWT from 'jwt-decode';
+import { ISession } from 'types';
 import {
-  IAccessTokenPayload,
-  IRefreshTokenPayload,
-  ISession,
-  ITokenPair,
-} from 'types';
+  UserAccessTokenPayload,
+  UserRefreshTokenPayload,
+  TokenPairDTO,
+} from '@backendTypes';
 import { LOCAL_STORAGE_TOKEN_PAIR_KEY } from 'constant';
 // eslint-disable-next-line import/no-cycle
 import { customFetch } from './customFetch';
@@ -27,7 +27,8 @@ class AuthStore {
     }
   }
 
-  private lastTokenPairRefreshPromise: Promise<ITokenPair | null> | null = null;
+  private lastTokenPairRefreshPromise: Promise<TokenPairDTO | null> | null =
+    null;
 
   private automaticTokenPairRefreshingInterval: NodeJS.Timer | undefined;
 
@@ -63,7 +64,7 @@ class AuthStore {
     if (!tokenPair) return null;
 
     if (!this.lastTokenPairRefreshPromise) {
-      this.lastTokenPairRefreshPromise = customFetch<ITokenPair>(
+      this.lastTokenPairRefreshPromise = customFetch<TokenPairDTO>(
         'auth/refresh',
         {
           method: 'POST',
@@ -104,7 +105,7 @@ export function useTokenPairUpdater() {
 
   return {
     requestTokenPairRefreshing: authStore.requestTokenPairRefreshing,
-    updateTokenPair: (tokenPair: ITokenPair | null) => {
+    updateTokenPair: (tokenPair: TokenPairDTO | null) => {
       const prevTokenPair = getLastSavedTokenPair();
 
       const areTokenPairsEqual =
@@ -136,7 +137,7 @@ export function SessionProvider({ children }) {
   );
 }
 
-function setTokenPair(tokenPair: ITokenPair | null): void {
+function setTokenPair(tokenPair: TokenPairDTO | null): void {
   if (!tokenPair) return localStorage.removeItem(LOCAL_STORAGE_TOKEN_PAIR_KEY);
 
   return localStorage.setItem(
@@ -149,8 +150,8 @@ function getLastSavedSession() {
   return convertTokenPairToSession(getLastSavedTokenPair());
 }
 
-function getLastSavedTokenPair(): ITokenPair | null {
-  let tokenPair: ITokenPair | null;
+function getLastSavedTokenPair(): TokenPairDTO | null {
+  let tokenPair: TokenPairDTO | null;
   try {
     tokenPair =
       JSON.parse(
@@ -162,13 +163,13 @@ function getLastSavedTokenPair(): ITokenPair | null {
   return tokenPair;
 }
 
-function convertTokenPairToSession(tokenPair: ITokenPair | null): ISession {
+function convertTokenPairToSession(tokenPair: TokenPairDTO | null): ISession {
   if (!tokenPair) return { isAuthed: false };
 
-  const accessTokenPayload = decodeJWT<IAccessTokenPayload>(
+  const accessTokenPayload = decodeJWT<UserAccessTokenPayload>(
     tokenPair.accessToken,
   );
-  const refreshTokenPayload = decodeJWT<IRefreshTokenPayload>(
+  const refreshTokenPayload = decodeJWT<UserRefreshTokenPayload>(
     tokenPair.refreshToken,
   );
 

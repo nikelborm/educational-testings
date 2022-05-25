@@ -1,4 +1,4 @@
-import { UserAuthInfo } from 'src/types';
+import { UserAuthInfo } from './userAuthInfo';
 import { UniversalTokenPart } from './universalTokenPart';
 
 export interface UserAccessTokenPayload extends UniversalTokenPart {

@@ -63,11 +63,19 @@ function getWebpackAliases(options = {}) {
 
   const baseUrlResolved = path.resolve(paths.appPath, baseUrl);
 
+  console.log('paths.appPath: ', paths.appPath);
+  console.log('baseUrlResolved: ', baseUrlResolved);
+  console.log('path.relative(paths.appPath, baseUrlResolved): ', path.relative(paths.appPath, baseUrlResolved));
   if (path.relative(paths.appPath, baseUrlResolved) === '') {
     return {
       src: paths.appSrc,
     };
   }
+  return Object.fromEntries(
+    Object
+      .entries(options.paths)
+      .map(([aliasFrom, [aliasTo]]) => [aliasFrom, aliasTo])
+  );
 }
 
 function getModules() {
@@ -98,6 +106,7 @@ function getModules() {
   }
 
   config = config || {};
+  console.log('config: ', config);
   const options = config.compilerOptions || {};
 
   const additionalModulePaths = getAdditionalModulePaths(options);

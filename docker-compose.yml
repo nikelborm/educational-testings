@@ -7,7 +7,8 @@ services:
       - backend-prod
       - postgres-admin
     build:
-      context: ./frontend/
+      context: ./
+      dockerfile: ./frontend/Dockerfile
       target: prod_nginx_with_front_static
       args:
         - INNER_NGINX_HTTP_PORT=${INNER_NGINX_HTTP_PORT}

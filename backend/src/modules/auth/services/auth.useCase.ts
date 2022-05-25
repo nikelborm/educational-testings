@@ -3,9 +3,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { messages } from 'src/config';
 import { repo } from '../../infrastructure';
-import { TokenPairDTO } from '../types';
 import {
   ConfigKeys,
+  TokenPairDTO,
   CreateUserDTO,
   IAppConfigMap,
   UserAuthInfo,

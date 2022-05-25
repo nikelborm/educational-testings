@@ -11,7 +11,10 @@ export function MyEducationalSpaces() {
   return (
     <Table
       tableLayout="fixed"
-      dataSource={myEducationalSpaces}
+      dataSource={myEducationalSpaces?.map((space) => ({
+        ...space,
+        key: space.id,
+      }))}
       pagination={false}
       style={{ marginTop: '24px' }}
       onRow={(record) => ({

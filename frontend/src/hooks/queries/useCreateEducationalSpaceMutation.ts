@@ -1,16 +1,24 @@
 import { useMutation, useQueryClient } from 'react-query';
-import { ITokenPair } from 'types';
-import { customFetch } from 'utils';
+import type {
+  CreateEducationalSpaceDTO,
+  EmptyResponseDTO,
+} from '@backendTypes';
+import { customFetch, invalidatePassthrough } from 'utils';
 
-export function useCreateEducationalSpaceMutation() {
+export function useCreateEducationalSpaceMutation(onSuccess: () => void) {
   const queryClient = useQueryClient();
   const { mutate, isLoading, isError, isSuccess } = useMutation(
-    (newEducationalSpace: { name: string; description?: string | undefined }) =>
-      customFetch<ITokenPair>('educationalSpace/create', {
+    (newEducationalSpace: CreateEducationalSpaceDTO) =>
+      customFetch<EmptyResponseDTO>('educationalSpace/create', {
         method: 'POST',
-        needsAccessToken: false,
         body: newEducationalSpace,
-      }),
+      }).then(invalidatePassthrough(queryClient, 'useMyEducationalSpaces')),
+    { onSuccess },
   );
-  return { sendLoginQuery: mutate, isLoading, isError, isSuccess };
+  return {
+    sendCreateEducationalSpaceQuery: mutate,
+    isLoading,
+    isError,
+    isSuccess,
+  };
 }
