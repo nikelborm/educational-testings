@@ -48,7 +48,12 @@ export function EducationalSpaceView() {
             title: 'Description',
             dataIndex: 'description',
             key: 'description',
-            sortDirections: ['ascend', 'descend'] as SortOrder[],
+            width: '40%',
+          },
+          {
+            title: 'Ссылка для приглашения',
+            dataIndex: 'inviteLink',
+            key: 'inviteLink',
             width: '40%',
           },
         ]}

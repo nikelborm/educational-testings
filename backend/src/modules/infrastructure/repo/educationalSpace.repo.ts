@@ -9,6 +9,7 @@ import {
   UpdateEntity,
   updateOneWithRelations,
 } from 'src/tools';
+import { EducationalSpaceFromDBDTO } from 'src/types';
 import { Repository } from 'typeorm';
 import { EducationalSpace } from '../model';
 
@@ -25,29 +26,31 @@ export class EducationalSpaceRepo {
       filterForLaunchedTestings: { ids?: number[] };
       filterForUserGroups: { ids?: number[] };
     },
-  ): Promise<EducationalSpace> {
-    let qb = this.repo.createQueryBuilder('educationalSpace');
-    if (filters.filterForUserGroups.ids?.length)
-      qb = qb.leftJoinAndSelect(
+  ): Promise<EducationalSpaceFromDBDTO> {
+    const educationalSpace = await this.repo
+      .createQueryBuilder('educationalSpace')
+      .leftJoin(
         'educationalSpace.userGroups',
         'userGroups',
-        `userGroups.id in (${filters.filterForUserGroups.ids})`,
-      );
-    else qb = qb.leftJoinAndSelect('educationalSpace.userGroups', 'userGroups');
-
-    if (filters.filterForLaunchedTestings.ids?.length)
-      qb = qb.leftJoinAndSelect(
+        filters.filterForUserGroups.ids?.length
+          ? `userGroups.id in (${filters.filterForUserGroups.ids})`
+          : undefined,
+      )
+      .leftJoin(
         'educationalSpace.launchedTestings',
         'launchedTestings',
-        `launchedTestings.id in (${filters.filterForLaunchedTestings.ids})`,
-      );
-    else
-      qb = qb.leftJoinAndSelect(
-        'educationalSpace.launchedTestings',
-        'launchedTestings',
-      );
-
-    const educationalSpace = await qb
+        filters.filterForLaunchedTestings.ids?.length
+          ? `launchedTestings.id in (${filters.filterForLaunchedTestings.ids})`
+          : undefined,
+      )
+      .select([
+        'educationalSpace.id',
+        'educationalSpace.name',
+        'educationalSpace.description',
+        'userGroups.id',
+        'userGroups.name',
+        'userGroups.description',
+      ])
       .where('educationalSpace.id = :educationalSpaceId', {
         educationalSpaceId: id,
       })
