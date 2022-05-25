@@ -78,14 +78,16 @@ export function AccountPagesWrapper({
           />
         </Header>
         <div style={{ margin: '16px', opacity: '0' }} />
-        <Content style={{ margin: '0 16px' }}>
-          <div style={{ background: '#fff', padding: 24, minHeight: 360 }}>
-            <Outlet />
-          </div>
-        </Content>
-        <Footer style={{ textAlign: 'center' }}>
-          Made with ❤️ by nikelborm
-        </Footer>
+        <div style={{ width: '100%', height: '100%' }}>
+          <Content style={{ margin: '0 16px' }}>
+            <div style={{ background: '#fff', padding: 24, minHeight: 360 }}>
+              <Outlet />
+            </div>
+          </Content>
+          <Footer style={{ textAlign: 'center' }}>
+            Made with ❤️ by nikelborm
+          </Footer>
+        </div>
       </Layout>
     </Layout>
   );
