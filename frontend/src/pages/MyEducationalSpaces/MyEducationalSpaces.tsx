@@ -3,6 +3,7 @@ import { Table } from 'antd';
 import { useMyEducationalSpaces } from 'hooks';
 import { SortOrder } from 'antd/lib/table/interface';
 import { renderTags } from 'utils';
+import { RoutesEnum } from 'types';
 
 export function MyEducationalSpaces() {
   const navigate = useNavigate();
@@ -19,7 +20,9 @@ export function MyEducationalSpaces() {
       style={{ marginTop: '24px' }}
       onRow={(record) => ({
         onClick: () => {
-          navigate(`/account/educationalSpaceView?id=${record.id}`);
+          navigate(
+            `/account/${RoutesEnum.EDUCATIONAL_SPACE_VIEW}?id=${record.id}`,
+          );
         },
       })}
       columns={[
