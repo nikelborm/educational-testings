@@ -12,8 +12,10 @@ import {
   CreateEducationalSpaceDTO,
   EducationalSpaceAccessScopeType,
   UserAuthInfo,
+  UserAuthInfoTrimmedUserGroup,
   UserGroupManagementAccessScopeType,
 } from 'src/types';
+import { doesUserHaveSpaceAccess } from 'src/tools';
 
 @Injectable()
 export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
@@ -21,6 +23,7 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
     private readonly educationalSpaceRepo: repo.EducationalSpaceRepo,
     private readonly userGroupRepo: repo.UserGroupRepo,
     private readonly educationalSpaceAccessScopeRepo: repo.EducationalSpaceAccessScopeRepo,
+    private readonly testingAttemptRepo: repo.TestingAttemptRepo,
     private readonly userGroupManagementAccessScopeRepo: repo.UserGroupManagementAccessScopeRepo,
     private readonly userToUserGroupRepo: repo.UserToUserGroupRepo,
     @InjectEntityManager() private readonly entityManager: EntityManager,
@@ -49,7 +52,6 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
     teachersGroup: model.UserGroup;
     studentsGroup: model.UserGroup;
   }> {
-    console.log(educationalSpaceDTO);
     if (!userCreator.canCreateEducationalSpaces)
       throw new BadRequestException(messages.user.cantCreateEducationalSpace);
 
@@ -137,10 +139,28 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
     id: number,
     user: UserAuthInfo,
   ): Promise<model.EducationalSpace> {
-    if (!user.userGroups.some((group) => group.educationalSpaceId === id))
+    const userGroupsFromThisSpace = user.userGroups.filter(
+      (group) => group.educationalSpaceId === id,
+    );
+
+    if (!userGroupsFromThisSpace.length)
       throw new BadRequestException(messages.educationalSpace.cantView);
 
-    const educationalSpace = await this.educationalSpaceRepo.getOneById(id);
+    const filterForLaunchedTestings =
+      await this.getFilterForLaunchedTestingsUserHaveAccessTo(
+        user.id,
+        id,
+        userGroupsFromThisSpace,
+      );
+
+    const filterForUserGroups = this.getFilterForUserGroupsUserShouldKnowAbout(
+      userGroupsFromThisSpace,
+    );
+
+    const educationalSpace = await this.educationalSpaceRepo.getOneById(id, {
+      filterForLaunchedTestings,
+      filterForUserGroups,
+    });
 
     return educationalSpace;
   }
@@ -182,6 +202,73 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
     user: UserAuthInfo,
   ): Promise<void> {
     console.log();
+  }
+
+  private async getFilterForLaunchedTestingsUserHaveAccessTo(
+    userId: number,
+    educationalSpaceId: number,
+    userGroupsFromThisSpace: UserAuthInfoTrimmedUserGroup[],
+  ): Promise<{ ids?: number[] }> {
+    let filterForTestings: { ids?: number[] } = {};
+
+    const canUserViewAllLaunchedTestings = doesUserHaveSpaceAccess(
+      userGroupsFromThisSpace,
+      EducationalSpaceAccessScopeType.VIEW_LAUNCHED_TESTINGS,
+    );
+
+    if (!canUserViewAllLaunchedTestings) {
+      const launchedTestingIdsWhereUserMadeAtLeastOneAttempt = (
+        await this.testingAttemptRepo.findManyBy(userId, educationalSpaceId)
+      ).map(({ launchedTesting: { id } }) => id);
+
+      const launchedTestingIdsWhereUserHaveAtLeastOneAccessScope =
+        userGroupsFromThisSpace
+          .flatMap(
+            ({ launchedTestingAccessScopes }) => launchedTestingAccessScopes,
+          )
+          .map(({ launchedTestingId }) => launchedTestingId);
+
+      filterForTestings = {
+        ids: [
+          ...new Set([
+            ...launchedTestingIdsWhereUserMadeAtLeastOneAttempt,
+            ...launchedTestingIdsWhereUserHaveAtLeastOneAccessScope,
+          ]),
+        ],
+      };
+    }
+    return filterForTestings;
+  }
+
+  private getFilterForUserGroupsUserShouldKnowAbout(
+    userGroupsFromThisSpace: UserAuthInfoTrimmedUserGroup[],
+  ): { ids?: number[] } {
+    let filterForGroups: { ids?: number[] } = {};
+
+    const canUserViewAllUserGroups = doesUserHaveSpaceAccess(
+      userGroupsFromThisSpace,
+      EducationalSpaceAccessScopeType.VIEW_USER_GROUPS,
+    );
+
+    if (!canUserViewAllUserGroups) {
+      const userGroupIdsOfUser = userGroupsFromThisSpace.map(({ id }) => id);
+
+      const userGroupIdsWhereUserCanUseManagementScopes =
+        userGroupsFromThisSpace
+          .flatMap(({ leaderInAccessScopes }) => leaderInAccessScopes)
+          .map(({ subordinateUserGroupId }) => subordinateUserGroupId);
+
+      filterForGroups = {
+        ids: [
+          ...new Set([
+            ...userGroupIdsOfUser,
+            ...userGroupIdsWhereUserCanUseManagementScopes,
+          ]),
+        ],
+      };
+    }
+
+    return filterForGroups;
   }
 
   onModuleDestroy(): void {

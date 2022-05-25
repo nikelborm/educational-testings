@@ -19,8 +19,40 @@ export class EducationalSpaceRepo {
     private readonly repo: Repository<EducationalSpace>,
   ) {}
 
-  async getOneById(id: number): Promise<EducationalSpace> {
-    const educationalSpace = await this.repo.findOne({ where: { id } });
+  async getOneById(
+    id: number,
+    filters: {
+      filterForLaunchedTestings: { ids?: number[] };
+      filterForUserGroups: { ids?: number[] };
+    },
+  ): Promise<EducationalSpace> {
+    let qb = this.repo.createQueryBuilder('educationalSpace');
+    if (filters.filterForUserGroups.ids?.length)
+      qb = qb.leftJoinAndSelect(
+        'educationalSpace.userGroups',
+        'userGroups',
+        `userGroups.id in (${filters.filterForUserGroups.ids})`,
+      );
+    else qb = qb.leftJoinAndSelect('educationalSpace.userGroups', 'userGroups');
+
+    if (filters.filterForLaunchedTestings.ids?.length)
+      qb = qb.leftJoinAndSelect(
+        'educationalSpace.launchedTestings',
+        'launchedTestings',
+        `launchedTestings.id in (${filters.filterForLaunchedTestings.ids})`,
+      );
+    else
+      qb = qb.leftJoinAndSelect(
+        'educationalSpace.launchedTestings',
+        'launchedTestings',
+      );
+
+    const educationalSpace = await qb
+      .where('educationalSpace.id = :educationalSpaceId', {
+        educationalSpaceId: id,
+      })
+      .getOne();
+
     if (!educationalSpace)
       throw new BadRequestException(
         messages.repo.common.cantGetNotFoundById(id, 'educationalSpace'),

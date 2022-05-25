@@ -18,7 +18,7 @@ export function EducationalSpaceView() {
       id: {educationalSpace?.id} <br />
       name: {educationalSpace?.name} <br />
       description: {educationalSpace?.description} <br />
-      Full: {JSON.stringify(educationalSpace)} <br />
+      Full: <pre>{JSON.stringify(educationalSpace, undefined, 4)}</pre> <br />
     </div>
   );
 }

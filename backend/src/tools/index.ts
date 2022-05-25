@@ -4,6 +4,7 @@ export * from './assertThereAreNoDuplicateUUIDs';
 export * from './countValid';
 export * from './decorators';
 export * from './difference';
+export * from './doesUserHaveSpaceAccess';
 export * from './enumWithUUIDsValidator';
 export * from './getRedundantAndMissingsValues';
 export * from './groupBy';

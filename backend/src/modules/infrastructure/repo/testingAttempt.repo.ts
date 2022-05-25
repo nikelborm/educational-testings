@@ -30,6 +30,38 @@ export class TestingAttemptRepo {
     return testingAttempt;
   }
 
+  async findManyBy(
+    userId: number,
+    educationalSpaceId: number,
+  ): Promise<
+    {
+      id: number;
+      launchedTesting: {
+        id: number;
+        educationalSpaceId: number;
+      };
+    }[]
+  > {
+    return await this.repo.find({
+      select: {
+        id: true,
+        launchedTesting: {
+          id: true,
+          educationalSpaceId: true,
+        },
+      },
+      relations: {
+        launchedTesting: true,
+      },
+      where: {
+        userId,
+        launchedTesting: {
+          educationalSpaceId,
+        },
+      },
+    });
+  }
+
   async updateOneWithRelations(
     updatedTestingAttempt: UpdateEntity<TestingAttempt, 'id'>,
   ): Promise<TestingAttempt> {
