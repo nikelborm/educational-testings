@@ -38,7 +38,6 @@ export function MyEducationalSpaces() {
           title: 'Description',
           dataIndex: 'description',
           key: 'description',
-          sortDirections: ['ascend', 'descend'] as SortOrder[],
           width: '40%',
         },
         {

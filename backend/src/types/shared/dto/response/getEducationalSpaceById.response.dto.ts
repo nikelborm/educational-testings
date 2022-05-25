@@ -1,23 +1,30 @@
-export class EducationalSpaceDTO {
+// response
+export class EducationalSpaceResponseDTO {
   id!: number;
   name!: string;
   description?: string;
-  createdByUserId!: number;
-  userGroups!: UserGroupInsideEducationalSpaceDTO[];
-  createdAt!: Date;
-  updatedAt!: Date;
+  userGroups!: UserGroupInsideEducationalSpaceResponseDTO[];
 }
 
-export class UserGroupInsideEducationalSpaceDTO {
+export class UserGroupInsideEducationalSpaceResponseDTO {
   id!: number;
   name!: string;
   description?: string;
-  educationalSpaceId!: number;
-  createdByUserId!: number;
-  createdAt!: Date;
-  updatedAt!: Date;
+  inviteLinkPayload!: string;
 }
-
 export class GetEducationalSpaceDTO {
-  educationalSpace!: EducationalSpaceDTO;
+  educationalSpace!: EducationalSpaceResponseDTO;
+}
+
+// db origin
+export class EducationalSpaceFromDBDTO {
+  id!: number;
+  name!: string;
+  description?: string;
+  userGroups!: UserGroupInsideEducationalSpaceFromDBDTO[];
+}
+export class UserGroupInsideEducationalSpaceFromDBDTO {
+  id!: number;
+  name!: string;
+  description?: string;
 }

@@ -11,6 +11,8 @@ import { messages } from 'src/config';
 import {
   CreateEducationalSpaceDTO,
   EducationalSpaceAccessScopeType,
+  EducationalSpaceResponseDTO,
+  MyEducationalSpacesDTO,
   UserAuthInfo,
   UserAuthInfoTrimmedUserGroup,
   UserGroupManagementAccessScopeType,
@@ -138,7 +140,7 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
   async getOneBy(
     id: number,
     user: UserAuthInfo,
-  ): Promise<model.EducationalSpace> {
+  ): Promise<EducationalSpaceResponseDTO> {
     const userGroupsFromThisSpace = user.userGroups.filter(
       (group) => group.educationalSpaceId === id,
     );
@@ -162,14 +164,18 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
       filterForUserGroups,
     });
 
-    return educationalSpace;
+    return {
+      ...educationalSpace,
+      userGroups: educationalSpace.userGroups.map((group) => ({
+        ...group,
+        inviteLinkPayload: '',
+      })),
+    };
   }
 
-  async getAllowedEducationalSpacesOf(userId: number): Promise<
-    (Pick<model.EducationalSpace, 'id' | 'name' | 'description'> & {
-      userGroups: Pick<model.UserGroup, 'id' | 'name'>[];
-    })[]
-  > {
+  async getAllowedEducationalSpacesOf(
+    userId: number,
+  ): Promise<MyEducationalSpacesDTO[]> {
     const userToUserGroups =
       await this.userToUserGroupRepo.findWithUserGroupWithSimpleEducationalSpaceBy(
         userId,
