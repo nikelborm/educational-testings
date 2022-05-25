@@ -1,26 +1,14 @@
 /* eslint-disable prettier/prettier */
 import { useMutation } from 'react-query';
-import { ITokenPair } from 'types';
+import { TokenPairDTO, CreateUserDTO } from '@backendTypes';
 import { customFetch, useTokenPairUpdater } from 'utils';
 
 export function useRegistrationMutation() {
   const { updateTokenPair } = useTokenPairUpdater();
   const { mutate, isLoading, isError, isSuccess } = useMutation(
-    ({
-      confirm,
-      ...user
-    }: {
-      email: string;
-      password: string;
-      firstName: string;
-      lastName: string;
-      patronymic: string;
-      gender: string;
-      canCreateEducationalSpaces: boolean;
-      confirm: string;
-    }) =>
+    ({ confirm, ...user }: CreateUserDTO & { confirm: string }) =>
       user.password === confirm
-        ? customFetch<ITokenPair>('auth/local/register', {
+        ? customFetch<TokenPairDTO>('auth/local/register', {
           method: 'POST',
           needsAccessToken: false,
           body: user,

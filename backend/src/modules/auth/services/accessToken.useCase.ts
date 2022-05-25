@@ -2,8 +2,12 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { messages } from 'src/config';
-import { UserAccessTokenPayload } from '../types';
-import { ConfigKeys, IAppConfigMap, UserAuthInfo } from 'src/types';
+import {
+  ConfigKeys,
+  IAppConfigMap,
+  UserAuthInfo,
+  UserAccessTokenPayload,
+} from 'src/types';
 import { InMemoryWhitelistedSessionStore } from './inMemoryWhitelistedKeyStore.service';
 
 @Injectable()
