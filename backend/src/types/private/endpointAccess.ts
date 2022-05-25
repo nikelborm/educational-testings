@@ -2,7 +2,7 @@ import {
   EducationalSpaceAccessScopeType,
   UserGroupManagementAccessScopeType,
   LaunchedTestingAccessScopeType,
-} from '.';
+} from '../shared';
 
 export enum EndpointAccess {
   PUBLIC = 'public',
