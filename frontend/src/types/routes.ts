@@ -31,7 +31,7 @@ export interface AuthedRouteEntity extends SimpleRouteEntity {
   menuTitle?: React.ReactNode;
   pageTitle?: React.ReactNode;
   description?: React.ReactNode;
-  Extras?: React.FC;
+  Extras?: React.FC<React.PropsWithChildren<any>>;
   menuIcon?: React.ReactElement;
   canUserOpenThisRoute(session: ISession): boolean;
 }

@@ -2,7 +2,7 @@ import type {
   EducationalSpaceAccessScopeType,
   LaunchedTestingAccessScopeType,
   UserGroupManagementAccessScopeType,
-} from 'src/types';
+} from './model';
 
 export interface UserAuthInfo {
   id: number;

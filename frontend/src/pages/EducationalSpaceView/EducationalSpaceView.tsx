@@ -5,8 +5,8 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 export function EducationalSpaceView() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const id = parseInt(searchParams.get('id') as string, 10);
 
+  const id = parseInt(searchParams.get('id') as string, 10);
   useEffect(() => {
     if (Number.isNaN(id)) navigate('/account/myEducationalSpaces');
   }, [id]);
@@ -18,6 +18,7 @@ export function EducationalSpaceView() {
       id: {educationalSpace?.id} <br />
       name: {educationalSpace?.name} <br />
       description: {educationalSpace?.description} <br />
+      Full: {JSON.stringify(educationalSpace)} <br />
     </div>
   );
 }

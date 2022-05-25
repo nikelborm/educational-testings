@@ -4,7 +4,6 @@ import {
   SmileOutlined,
   TagsOutlined,
 } from '@ant-design/icons';
-import { Button } from 'antd';
 import {
   Login,
   Registration,
@@ -31,6 +30,7 @@ import {
   SimpleRouteEntity,
   ISession,
 } from 'types';
+import { CreateEducationalSpaceButtonWithModal } from 'components';
 
 export const publicRoutes: RoutesMap<SimpleRouteEntity> = {
   [RoutesEnum.ROOT]: {
@@ -61,17 +61,9 @@ export const routesOnlyForAuthedUsers: RoutesMap<AuthedRouteEntity> = {
     Component: MyEducationalSpaces,
     isMenuPoint: true,
     menuIcon: <SmileOutlined />,
-    Extras: () => <Button type="primary">Create New Educational Space</Button>,
+    Extras: () => <CreateEducationalSpaceButtonWithModal />,
     menuTitle: 'My Educational Spaces',
     pageTitle: 'My Educational Spaces',
-    canUserOpenThisRoute: () => true,
-  },
-  [RoutesEnum.USER_SETTINGS]: {
-    Component: UserSettings,
-    isMenuPoint: true,
-    menuIcon: <SettingOutlined />,
-    menuTitle: 'User Settings',
-    pageTitle: 'User Settings',
     canUserOpenThisRoute: () => true,
   },
   [RoutesEnum.PUBLIC_TESTINGS]: {
@@ -88,6 +80,14 @@ export const routesOnlyForAuthedUsers: RoutesMap<AuthedRouteEntity> = {
     menuTitle: 'Existing Topics',
     pageTitle: 'Existing Topics',
     menuIcon: <TagsOutlined />,
+    canUserOpenThisRoute: () => true,
+  },
+  [RoutesEnum.USER_SETTINGS]: {
+    Component: UserSettings,
+    isMenuPoint: true,
+    menuIcon: <SettingOutlined />,
+    menuTitle: 'User Settings',
+    pageTitle: 'User Settings',
     canUserOpenThisRoute: () => true,
   },
   [RoutesEnum.EDUCATIONAL_SPACE_VIEW]: {

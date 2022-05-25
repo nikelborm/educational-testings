@@ -6,3 +6,4 @@ export * from './DeleteConfirmationPopover';
 export * from './LoginFormFields';
 export * from './RegistrationFormFields';
 export * from './renderAuthFallbackRoute';
+export * from './CreateEducationalSpaceButtonWithModal';
