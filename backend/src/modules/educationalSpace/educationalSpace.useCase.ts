@@ -9,15 +9,19 @@ import { EntityManager } from 'typeorm';
 import { model, repo } from '../infrastructure';
 import { messages } from 'src/config';
 import {
+  ConfigKeys,
   CreateEducationalSpaceDTO,
   EducationalSpaceAccessScopeType,
   EducationalSpaceResponseDTO,
+  IAppConfigMap,
   MyEducationalSpacesDTO,
   UserAuthInfo,
   UserAuthInfoTrimmedUserGroup,
   UserGroupManagementAccessScopeType,
 } from 'src/types';
 import { doesUserHaveSpaceAccess } from 'src/tools';
+import { createHash } from 'crypto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
@@ -28,6 +32,7 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
     private readonly testingAttemptRepo: repo.TestingAttemptRepo,
     private readonly userGroupManagementAccessScopeRepo: repo.UserGroupManagementAccessScopeRepo,
     private readonly userToUserGroupRepo: repo.UserToUserGroupRepo,
+    private readonly configService: ConfigService<IAppConfigMap, true>,
     @InjectEntityManager() private readonly entityManager: EntityManager,
   ) {}
 
@@ -148,28 +153,60 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
     if (!userGroupsFromThisSpace.length)
       throw new BadRequestException(messages.educationalSpace.cantView);
 
-    const filterForLaunchedTestings =
-      await this.getFilterForLaunchedTestingsUserHaveAccessTo(
+    const filterForLaunchedTestingIds =
+      await this.getLaunchedTestingIdssUserHaveAccessTo(
         user.id,
         id,
         userGroupsFromThisSpace,
       );
 
-    const filterForUserGroups = this.getFilterForUserGroupsUserShouldKnowAbout(
+    const filterForUserGroupIds = this.getUserGroupIdsUserShouldKnowAbout(
       userGroupsFromThisSpace,
     );
 
     const educationalSpace = await this.educationalSpaceRepo.getOneById(id, {
-      filterForLaunchedTestings,
-      filterForUserGroups,
+      filterForLaunchedTestingIds,
+      filterForUserGroupIds,
     });
+
+    const canUserInviteToAnyGroup = doesUserHaveSpaceAccess(
+      userGroupsFromThisSpace,
+      EducationalSpaceAccessScopeType.MODIFY_USER_GROUPS,
+    );
 
     return {
       ...educationalSpace,
-      userGroups: educationalSpace.userGroups.map((group) => ({
-        ...group,
-        inviteLinkPayload: '',
-      })),
+      userGroups: educationalSpace.userGroups.map((group) => {
+        const canUserInviteToThisGroup = user.userGroups.some((userGroup) =>
+          userGroup.leaderInAccessScopes.some(
+            (scope) =>
+              scope.subordinateUserGroupId === group.id &&
+              scope.type === UserGroupManagementAccessScopeType.INVITE_USERS,
+          ),
+        );
+
+        if (!canUserInviteToThisGroup && !canUserInviteToAnyGroup) return group;
+        const expirationDate = new Date(
+          Date.now() + 1000 * 60 * 60 * 24,
+        ).toISOString(); // + 1 day
+
+        return {
+          ...group,
+          inviteLinkPayload: {
+            expirationDate,
+            givenByUserId: user.id,
+            inviteToUserGroupId: group.id,
+            signature: createHash('sha256')
+              .update(
+                this.configService.get(ConfigKeys.INVITE_USERS_SIGN_KEY, {
+                  infer: true,
+                }),
+              )
+              .update(`${user.id}_${group.id}_${expirationDate}`)
+              .digest('hex'),
+          },
+        };
+      }),
     };
   }
 
@@ -210,71 +247,59 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
     console.log();
   }
 
-  private async getFilterForLaunchedTestingsUserHaveAccessTo(
+  private async getLaunchedTestingIdssUserHaveAccessTo(
     userId: number,
     educationalSpaceId: number,
     userGroupsFromThisSpace: UserAuthInfoTrimmedUserGroup[],
-  ): Promise<{ ids?: number[] }> {
-    let filterForTestings: { ids?: number[] } = {};
-
+  ): Promise<number[] | 'all'> {
     const canUserViewAllLaunchedTestings = doesUserHaveSpaceAccess(
       userGroupsFromThisSpace,
       EducationalSpaceAccessScopeType.VIEW_LAUNCHED_TESTINGS,
     );
 
-    if (!canUserViewAllLaunchedTestings) {
-      const launchedTestingIdsWhereUserMadeAtLeastOneAttempt = (
-        await this.testingAttemptRepo.findManyBy(userId, educationalSpaceId)
-      ).map(({ launchedTesting: { id } }) => id);
+    if (canUserViewAllLaunchedTestings) return 'all';
 
-      const launchedTestingIdsWhereUserHaveAtLeastOneAccessScope =
-        userGroupsFromThisSpace
-          .flatMap(
-            ({ launchedTestingAccessScopes }) => launchedTestingAccessScopes,
-          )
-          .map(({ launchedTestingId }) => launchedTestingId);
+    const launchedTestingIdsWhereUserMadeAtLeastOneAttempt = (
+      await this.testingAttemptRepo.findManyBy(userId, educationalSpaceId)
+    ).map(({ launchedTesting: { id } }) => id);
 
-      filterForTestings = {
-        ids: [
-          ...new Set([
-            ...launchedTestingIdsWhereUserMadeAtLeastOneAttempt,
-            ...launchedTestingIdsWhereUserHaveAtLeastOneAccessScope,
-          ]),
-        ],
-      };
-    }
-    return filterForTestings;
+    const launchedTestingIdsWhereUserHaveAtLeastOneAccessScope =
+      userGroupsFromThisSpace
+        .flatMap(
+          ({ launchedTestingAccessScopes }) => launchedTestingAccessScopes,
+        )
+        .map(({ launchedTestingId }) => launchedTestingId);
+
+    return [
+      ...new Set([
+        ...launchedTestingIdsWhereUserMadeAtLeastOneAttempt,
+        ...launchedTestingIdsWhereUserHaveAtLeastOneAccessScope,
+      ]),
+    ];
   }
 
-  private getFilterForUserGroupsUserShouldKnowAbout(
+  private getUserGroupIdsUserShouldKnowAbout(
     userGroupsFromThisSpace: UserAuthInfoTrimmedUserGroup[],
-  ): { ids?: number[] } {
-    let filterForGroups: { ids?: number[] } = {};
-
+  ): number[] | 'all' {
     const canUserViewAllUserGroups = doesUserHaveSpaceAccess(
       userGroupsFromThisSpace,
       EducationalSpaceAccessScopeType.VIEW_USER_GROUPS,
     );
 
-    if (!canUserViewAllUserGroups) {
-      const userGroupIdsOfUser = userGroupsFromThisSpace.map(({ id }) => id);
+    if (canUserViewAllUserGroups) return 'all';
 
-      const userGroupIdsWhereUserCanUseManagementScopes =
-        userGroupsFromThisSpace
-          .flatMap(({ leaderInAccessScopes }) => leaderInAccessScopes)
-          .map(({ subordinateUserGroupId }) => subordinateUserGroupId);
+    const userGroupIdsOfUser = userGroupsFromThisSpace.map(({ id }) => id);
 
-      filterForGroups = {
-        ids: [
-          ...new Set([
-            ...userGroupIdsOfUser,
-            ...userGroupIdsWhereUserCanUseManagementScopes,
-          ]),
-        ],
-      };
-    }
+    const userGroupIdsWhereUserCanUseManagementScopes = userGroupsFromThisSpace
+      .flatMap(({ leaderInAccessScopes }) => leaderInAccessScopes)
+      .map(({ subordinateUserGroupId }) => subordinateUserGroupId);
 
-    return filterForGroups;
+    return [
+      ...new Set([
+        ...userGroupIdsOfUser,
+        ...userGroupIdsWhereUserCanUseManagementScopes,
+      ]),
+    ];
   }
 
   onModuleDestroy(): void {

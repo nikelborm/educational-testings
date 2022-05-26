@@ -20,10 +20,7 @@
     "noImplicitAny": false,
     "pretty": true,
     "baseUrl": "./src",
-    "outDir": "./built",
-    "paths": {
-      "@backendTypes": ["../../backend/src/types/shared"],
-    }
+    "outDir": "./built"
   },
   "include": [
     "src/index.tsx",

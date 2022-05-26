@@ -17,8 +17,11 @@ export const messages = {
     missingAuthHeader: 'Missing Authorization header (with Token)',
     incorrectTokenType: 'Token type should be Bearer',
     missingToken: `Missing Token in Authorization header`,
+    sessionExpired: 'Your session has been expired',
     invalidAccessToken:
-      'Token in Authorization header from that moment is not a valid JWT token, try requesting a new one',
+      'Access token in Authorization header is not a valid JWT token',
+    yourSessionWasFinished:
+      'Your session was finished because of long inactivity.\nIf you used your account less than a week ago, your account can be hacked.\nPlease open your settings and click the "Logout on all devices" button',
     invalidRefreshToken:
       'Refresh Token tried to be used from that moment is not a valid JWT token, try requesting a new one',
   },
@@ -32,6 +35,9 @@ export const messages = {
   },
   accessScope: {
     cannotPromoteYourself: 'Cannot set additional role for yourself',
+  },
+  types: {
+    shouldBeDate: 'Validation failed. Date should be in ISO format',
   },
   repo: {
     user: {

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { SessionProvider } from 'utils';
+import { SessionProvider, updateTokenPair } from 'utils';
 
 import './assets/styles/index.css';
 import './types';
@@ -11,6 +11,13 @@ import { message } from 'antd';
 import App from './App';
 
 const onErrorHandler = (err: any) => {
+  console.log('onErrorHandler err: ', err);
+  if (
+    err?.message ===
+    'Your session was finished because of long inactivity.\nIf you used your account less than a week ago, your account can be hacked.\nPlease open your settings and click the "Logout on all devices" button'
+  )
+    updateTokenPair(null);
+
   void message.error(
     <>
       Error

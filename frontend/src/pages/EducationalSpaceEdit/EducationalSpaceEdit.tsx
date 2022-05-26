@@ -1,7 +1,7 @@
-import { useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 export function EducationalSpaceEdit() {
-  const asd = useParams();
-  console.log('EducationalSpaceEdit useParams: ', asd);
+  const asd = useSearchParams();
+  console.log('EducationalSpaceEdit useSearchParams: ', asd);
   return <div>EducationalSpaceEdit</div>;
 }

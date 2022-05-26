@@ -19,6 +19,7 @@ export enum RoutesEnum {
   /* 15 */ ATTEMPT_VIEW = 'attemptView',
   /* 16 */ LAUNCHED_TESTING_ANALYTICS = 'launchedTestingAnalytics',
   /* 17 */ EXISTING_TAGS = 'existingTags',
+  /* 18 */ USE_INVITE_LINK = 'useInviteLink',
 }
 
 export interface SimpleRouteEntity {

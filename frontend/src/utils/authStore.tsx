@@ -1,19 +1,15 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import decodeJWT from 'jwt-decode';
 import { ISession } from 'types';
 import {
   UserAccessTokenPayload,
   UserRefreshTokenPayload,
   TokenPairDTO,
-} from '@backendTypes';
+} from 'backendTypes';
 import { LOCAL_STORAGE_TOKEN_PAIR_KEY } from 'constant';
 // eslint-disable-next-line import/no-cycle
 import { customFetch } from './customFetch';
-
-const TokenPairUpdaterContext = React.createContext(
-  (() => {}) as React.Dispatch<React.SetStateAction<number>>,
-);
 
 class AuthStore {
   constructor() {
@@ -92,6 +88,21 @@ class AuthStore {
   }
 }
 
+const tokenPairUpdatingEventTarget = new EventTarget();
+
+const TOKEN_PAIR_UPDATED_EVENT = 'tokenPairUpdatedEvent';
+
+export function addTokenPairUpdatedListener(cb: () => void) {
+  tokenPairUpdatingEventTarget.addEventListener(TOKEN_PAIR_UPDATED_EVENT, cb);
+}
+
+export function removeTokenPairUpdatedListener(cb: () => void) {
+  tokenPairUpdatingEventTarget.removeEventListener(
+    TOKEN_PAIR_UPDATED_EVENT,
+    cb,
+  );
+}
+
 export const authStore = new AuthStore();
 
 const SessionContext = React.createContext(getLastSavedSession());
@@ -100,44 +111,55 @@ export function useSession() {
   return useContext(SessionContext);
 }
 
-export function useTokenPairUpdater() {
-  const rerenderSessionDependencies = useContext(TokenPairUpdaterContext);
+export function updateTokenPair(tokenPair: TokenPairDTO | null) {
+  const prevTokenPair = getLastSavedTokenPair();
 
+  const areTokenPairsEqual =
+    `${prevTokenPair?.accessToken}-${prevTokenPair?.refreshToken}` ===
+    `${tokenPair?.accessToken}-${tokenPair?.refreshToken}`;
+
+  if (!areTokenPairsEqual) {
+    if (tokenPair) {
+      authStore.startTokenPairRefreshing();
+    } else {
+      authStore.stopTokenPairRefreshing();
+    }
+    setTokenPair(tokenPair);
+  }
+}
+
+export function useTokenPairUpdater() {
   return {
     requestTokenPairRefreshing: authStore.requestTokenPairRefreshing,
-    updateTokenPair: (tokenPair: TokenPairDTO | null) => {
-      const prevTokenPair = getLastSavedTokenPair();
-
-      const areTokenPairsEqual =
-        `${prevTokenPair?.accessToken}-${prevTokenPair?.refreshToken}` ===
-        `${tokenPair?.accessToken}-${tokenPair?.refreshToken}`;
-
-      if (!areTokenPairsEqual) {
-        if (tokenPair) {
-          authStore.startTokenPairRefreshing();
-        } else {
-          authStore.stopTokenPairRefreshing();
-        }
-        setTokenPair(tokenPair);
-        rerenderSessionDependencies(Math.random());
-      }
-    },
+    updateTokenPair,
   };
 }
 
 export function SessionProvider({ children }) {
   const rerenderSessionDependencies = useState(1)[1];
 
+  useEffect(() => {
+    const handle = () => rerenderSessionDependencies(Math.random());
+
+    addTokenPairUpdatedListener(handle);
+
+    return function cleanup() {
+      removeTokenPairUpdatedListener(handle);
+    };
+  }, []);
+
   return (
-    <TokenPairUpdaterContext.Provider value={rerenderSessionDependencies}>
-      <SessionContext.Provider value={getLastSavedSession()}>
-        {children}
-      </SessionContext.Provider>
-    </TokenPairUpdaterContext.Provider>
+    <SessionContext.Provider value={getLastSavedSession()}>
+      {children}
+    </SessionContext.Provider>
   );
 }
 
 function setTokenPair(tokenPair: TokenPairDTO | null): void {
+  tokenPairUpdatingEventTarget.dispatchEvent(
+    new Event(TOKEN_PAIR_UPDATED_EVENT),
+  );
+
   if (!tokenPair) return localStorage.removeItem(LOCAL_STORAGE_TOKEN_PAIR_KEY);
 
   return localStorage.setItem(

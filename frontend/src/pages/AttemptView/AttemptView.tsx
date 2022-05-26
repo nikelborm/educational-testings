@@ -1,7 +1,7 @@
-import { useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 export function AttemptView() {
-  const asd = useParams();
-  console.log('AttemptView useParams: ', asd);
+  const asd = useSearchParams();
+  console.log('AttemptView useSearchParams: ', asd);
   return <div>AttemptView</div>;
 }

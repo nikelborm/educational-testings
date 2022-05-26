@@ -1,3 +1,5 @@
+import { UseInviteLinkDTO } from '../request/useInviteLink.dto';
+
 // response
 export class EducationalSpaceResponseDTO {
   id!: number;
@@ -10,8 +12,9 @@ export class UserGroupInsideEducationalSpaceResponseDTO {
   id!: number;
   name!: string;
   description?: string;
-  inviteLinkPayload!: string;
+  inviteLinkPayload?: UseInviteLinkDTO;
 }
+
 export class GetEducationalSpaceDTO {
   educationalSpace!: EducationalSpaceResponseDTO;
 }

@@ -23,8 +23,8 @@ export class EducationalSpaceRepo {
   async getOneById(
     id: number,
     filters: {
-      filterForLaunchedTestings: { ids?: number[] };
-      filterForUserGroups: { ids?: number[] };
+      filterForLaunchedTestingIds: number[] | 'all';
+      filterForUserGroupIds: number[] | 'all';
     },
   ): Promise<EducationalSpaceFromDBDTO> {
     const educationalSpace = await this.repo
@@ -32,16 +32,20 @@ export class EducationalSpaceRepo {
       .leftJoin(
         'educationalSpace.userGroups',
         'userGroups',
-        filters.filterForUserGroups.ids?.length
-          ? `userGroups.id in (${filters.filterForUserGroups.ids})`
-          : undefined,
+        filters.filterForUserGroupIds === 'all'
+          ? undefined
+          : filters.filterForUserGroupIds.length
+          ? `userGroups.id in (${filters.filterForUserGroupIds})`
+          : 'FALSE',
       )
       .leftJoin(
         'educationalSpace.launchedTestings',
         'launchedTestings',
-        filters.filterForLaunchedTestings.ids?.length
-          ? `launchedTestings.id in (${filters.filterForLaunchedTestings.ids})`
-          : undefined,
+        filters.filterForLaunchedTestingIds === 'all'
+          ? undefined
+          : filters.filterForLaunchedTestingIds.length
+          ? `launchedTestings.id in (${filters.filterForLaunchedTestingIds})`
+          : 'FALSE',
       )
       .select([
         'educationalSpace.id',
@@ -50,6 +54,7 @@ export class EducationalSpaceRepo {
         'userGroups.id',
         'userGroups.name',
         'userGroups.description',
+        'launchedTestings.id',
       ])
       .where('educationalSpace.id = :educationalSpaceId', {
         educationalSpaceId: id,

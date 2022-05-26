@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import type {
   CreateEducationalSpaceDTO,
   EmptyResponseDTO,
-} from '@backendTypes';
+} from 'backendTypes';
 import { customFetch, invalidatePassthrough } from 'utils';
 
 export function useCreateEducationalSpaceMutation(onSuccess: () => void) {

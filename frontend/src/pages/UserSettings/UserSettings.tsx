@@ -1,7 +1,7 @@
-import { useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 export function UserSettings() {
-  const asd = useParams();
-  console.log('UserSettings useParams: ', asd);
+  const asd = useSearchParams();
+  console.log('UserSettings useSearchParams: ', asd);
   return <div>UserSettings</div>;
 }

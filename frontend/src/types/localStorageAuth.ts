@@ -1,4 +1,4 @@
-import { UserAccessTokenPayload, UserRefreshTokenPayload } from '@backendTypes';
+import { UserAccessTokenPayload, UserRefreshTokenPayload } from 'backendTypes';
 
 export type ISession =
   | { isAuthed: false }
