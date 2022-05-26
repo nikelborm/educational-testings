@@ -1,7 +1,7 @@
-import { useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 export function UserGroupView() {
-  const asd = useParams();
-  console.log('UserGroupView useParams: ', asd);
+  const asd = useSearchParams();
+  console.log('UserGroupView useSearchParams: ', asd);
   return <div>UserGroupView</div>;
 }

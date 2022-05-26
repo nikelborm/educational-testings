@@ -7,7 +7,12 @@ import {
   GetEducationalSpaceDTO,
   GetMyEducationalSpacesResponseDTO,
 } from 'src/types';
-import { ApiController, AuthorizedOnly, ValidatedBody } from 'src/tools';
+import {
+  ApiController,
+  AuthorizedOnly,
+  ParseDatePipe,
+  ValidatedBody,
+} from 'src/tools';
 
 @ApiController('educationalSpace')
 export class EducationalSpaceController {
@@ -33,6 +38,7 @@ export class EducationalSpaceController {
   async useInviteLink(
     @Query('givenByUserId', ParseIntPipe) givenByUserId: number,
     @Query('inviteToUserGroupId', ParseIntPipe) inviteToUserGroupId: number,
+    @Query('expirationDate', ParseDatePipe) expirationDate: number,
     @Query('signature', ParseIntPipe) signature: string,
     @Req() { user }: AuthedRequest,
   ): Promise<EmptyResponseDTO> {

@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useMutation } from 'react-query';
-import { TokenPairDTO, CreateUserDTO } from '@backendTypes';
+import { TokenPairDTO, CreateUserDTO } from 'backendTypes';
 import { customFetch, useTokenPairUpdater } from 'utils';
 
 export function useRegistrationMutation() {

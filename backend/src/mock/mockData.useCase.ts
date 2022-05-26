@@ -14,28 +14,43 @@ export class MockDataUseCase {
   async fillDBScript(): Promise<void> {
     console.log('fillDBScript called');
     try {
-      const [owner, student] = (await this.userUseCase.createManyUsers([
-        {
-          email: 'owner@mail.ru',
-          firstName: 'admin firstName',
-          lastName: 'admin lastName',
-          gender: 'woman',
-          password: 'password',
-          patronymic: 'admin patronymic',
-          canCreateEducationalSpaces: true,
-        },
-        {
-          email: 'student@mail.ru',
-          firstName: 'student firstName',
-          lastName: 'student lastName',
-          gender: 'man',
-          password: 'password',
-          patronymic: 'student patronymic',
-          canCreateEducationalSpaces: false,
-        },
-      ])) as [ClearedInsertedUserDTO, ClearedInsertedUserDTO];
+      const [owner, student, teacher] = (await this.userUseCase.createManyUsers(
+        [
+          {
+            email: 'owner@mail.ru',
+            firstName: 'admin firstName',
+            lastName: 'admin lastName',
+            gender: 'woman',
+            password: 'password',
+            patronymic: 'admin patronymic',
+            canCreateEducationalSpaces: true,
+          },
+          {
+            email: 'student@mail.ru',
+            firstName: 'student firstName',
+            lastName: 'student lastName',
+            gender: 'man',
+            password: 'password',
+            patronymic: 'student patronymic',
+            canCreateEducationalSpaces: false,
+          },
+          {
+            email: 'teacher@mail.ru',
+            firstName: 'teacher firstName',
+            lastName: 'teacher lastName',
+            gender: 'queer',
+            password: 'password',
+            patronymic: 'teacher patronymic',
+            canCreateEducationalSpaces: false,
+          },
+        ],
+      )) as [
+        ClearedInsertedUserDTO,
+        ClearedInsertedUserDTO,
+        ClearedInsertedUserDTO,
+      ];
 
-      const { studentsGroup } =
+      const { studentsGroup, teachersGroup } =
         await this.educationalSpaceUseCase.createEducationalSpace(
           {
             name: 'Первое образовательное пространство',
@@ -43,13 +58,17 @@ export class MockDataUseCase {
           },
           owner,
         );
+      await this.userToUserGroupRepo.createOnePlain({
+        userId: teacher.id,
+        userGroupId: teachersGroup.id,
+      });
 
       await this.userToUserGroupRepo.createOnePlain({
         userId: student.id,
         userGroupId: studentsGroup.id,
       });
 
-      const { studentsGroup: secondSpaceUserGroup } =
+      const { studentsGroup: studentsGroup2, teachersGroup: teachersGroup2 } =
         await this.educationalSpaceUseCase.createEducationalSpace(
           {
             name: 'Второе образовательное пространство',
@@ -60,7 +79,12 @@ export class MockDataUseCase {
 
       await this.userToUserGroupRepo.createOnePlain({
         userId: student.id,
-        userGroupId: secondSpaceUserGroup.id,
+        userGroupId: studentsGroup2.id,
+      });
+
+      await this.userToUserGroupRepo.createOnePlain({
+        userId: teacher.id,
+        userGroupId: teachersGroup2.id,
       });
     } catch (error) {
       console.log('fillDBScript finished with error', error);

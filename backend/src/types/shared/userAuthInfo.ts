@@ -1,8 +1,6 @@
-import type {
-  EducationalSpaceAccessScopeType,
-  LaunchedTestingAccessScopeType,
-  UserGroupManagementAccessScopeType,
-} from './model';
+import type { EducationalSpaceAccessScopeType } from './model/educationalSpaceAccessScopeType';
+import type { LaunchedTestingAccessScopeType } from './model/launchedTestingAccessScopeType';
+import type { UserGroupManagementAccessScopeType } from './model/userGroupManagementAccessScopeType';
 
 export interface UserAuthInfoTrimmedUserGroup {
   id: number;

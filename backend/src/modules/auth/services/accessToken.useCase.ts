@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { messages } from 'src/config';
+import { TokenExpiredError } from 'jsonwebtoken';
 import {
   ConfigKeys,
   IAppConfigMap,
@@ -58,6 +59,8 @@ export class AccessTokenUseCase {
         ignoreExpiration: false,
       });
     } catch (error) {
+      if (error instanceof TokenExpiredError)
+        throw new UnauthorizedException(messages.auth.sessionExpired);
       throw new UnauthorizedException(messages.auth.invalidAccessToken);
     }
 
@@ -68,7 +71,7 @@ export class AccessTokenUseCase {
     if (
       !(await this.whitelistedSessionStore.wasWhitelisted(user.id, sessionUUID))
     )
-      throw new UnauthorizedException(messages.auth.invalidAccessToken);
+      throw new UnauthorizedException(messages.auth.yourSessionWasFinished);
 
     return user.id;
   }

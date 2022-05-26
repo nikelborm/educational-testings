@@ -22,6 +22,7 @@ import {
   PassingTestingStage,
   AttemptView,
   LaunchedTestingAnalytics,
+  UseInviteLinkServicePage,
 } from 'pages';
 import {
   RoutesEnum,
@@ -110,6 +111,10 @@ export const routesOnlyForAuthedUsers: RoutesMap<AuthedRouteEntity> = {
   },
   [RoutesEnum.AVAILABLE_TESTINGS]: {
     Component: AvailableTestings,
+    canUserOpenThisRoute: () => true,
+  },
+  [RoutesEnum.USE_INVITE_LINK]: {
+    Component: UseInviteLinkServicePage,
     canUserOpenThisRoute: () => true,
   },
   [RoutesEnum.LAUNCHED_TESTING_VIEW]: {

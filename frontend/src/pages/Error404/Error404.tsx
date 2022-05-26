@@ -1,7 +1,7 @@
-import { useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 export function Error404() {
-  const asd = useParams();
-  console.log('Error404 useParams: ', asd);
+  const asd = useSearchParams();
+  console.log('Error404 useSearchParams: ', asd);
   return <div>Error404</div>;
 }

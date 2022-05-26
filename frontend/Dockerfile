@@ -6,9 +6,6 @@ COPY ./frontend/config config/
 COPY ./frontend/public public/
 COPY ./frontend/scripts scripts/
 
-RUN mkdir -p /backend/src/types/shared
-COPY ./backend/src/types/shared/ /backend/src/types/shared/
-RUN ls ../; cd /backend/src/types/shared/; yarn --network-timeout 600000
 
 
 
@@ -29,6 +26,8 @@ FROM prepare as build
 
 RUN yarn --production --network-timeout 600000 && yarn cache clean
 COPY ./frontend/src src/
+RUN rm src/backendTypes
+COPY ./backend/src/types/shared/ src/backendTypes
 RUN node scripts/build.js
 
 

@@ -1,7 +1,7 @@
-import { useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 export function LaunchedTestingAnalytics() {
-  const asd = useParams();
-  console.log('LaunchedTestingAnalytics useParams: ', asd);
+  const asd = useSearchParams();
+  console.log('LaunchedTestingAnalytics useSearchParams: ', asd);
   return <div>LaunchedTestingAnalytics</div>;
 }

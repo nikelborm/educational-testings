@@ -13,4 +13,5 @@ export enum ConfigKeys {
   MOCK_SCRIPT_NAME = 'mockScriptName',
   SERVER_PORT = 'serverPort',
   WEB_SOCKET_SERVER_PORT = 'webSocketServerPort',
+  INVITE_USERS_SIGN_KEY = 'inviteUsersSignKey',
 }

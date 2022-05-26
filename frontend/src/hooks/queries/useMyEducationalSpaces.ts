@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 import { customFetch } from 'utils';
-import { GetMyEducationalSpacesResponseDTO } from '@backendTypes';
+import { GetMyEducationalSpacesResponseDTO } from 'backendTypes';
 
 export function useMyEducationalSpaces() {
   const { isLoading, isError, isSuccess, data } = useQuery(
