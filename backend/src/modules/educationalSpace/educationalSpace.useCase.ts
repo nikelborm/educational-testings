@@ -19,8 +19,8 @@ import {
   UserAuthInfoTrimmedUserGroup,
   UserGroupManagementAccessScopeType,
 } from 'src/types';
-import { doesUserHaveSpaceAccess } from 'src/tools';
-import { createHash } from 'crypto';
+import { canUserInviteToGroup, doesUserHaveSpaceAccess } from 'src/tools';
+import { createHash, timingSafeEqual } from 'crypto';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -32,6 +32,7 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
     private readonly testingAttemptRepo: repo.TestingAttemptRepo,
     private readonly userGroupManagementAccessScopeRepo: repo.UserGroupManagementAccessScopeRepo,
     private readonly userToUserGroupRepo: repo.UserToUserGroupRepo,
+    private readonly userRepo: repo.UserRepo,
     private readonly configService: ConfigService<IAppConfigMap, true>,
     @InjectEntityManager() private readonly entityManager: EntityManager,
   ) {}
@@ -169,7 +170,7 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
       filterForUserGroupIds,
     });
 
-    const canUserInviteToAnyGroup = doesUserHaveSpaceAccess(
+    const canUserInviteToAnyGroupInSpace = doesUserHaveSpaceAccess(
       userGroupsFromThisSpace,
       EducationalSpaceAccessScopeType.MODIFY_USER_GROUPS,
     );
@@ -177,15 +178,10 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
     return {
       ...educationalSpace,
       userGroups: educationalSpace.userGroups.map((group) => {
-        const canUserInviteToThisGroup = user.userGroups.some((userGroup) =>
-          userGroup.leaderInAccessScopes.some(
-            (scope) =>
-              scope.subordinateUserGroupId === group.id &&
-              scope.type === UserGroupManagementAccessScopeType.INVITE_USERS,
-          ),
-        );
+        const canUserInviteToThisGroup = canUserInviteToGroup(user, group.id);
 
-        if (!canUserInviteToThisGroup && !canUserInviteToAnyGroup) return group;
+        if (!canUserInviteToThisGroup && !canUserInviteToAnyGroupInSpace)
+          return group;
         const expirationDate = new Date(
           Date.now() + 1000 * 60 * 60 * 24,
         ).toISOString(); // + 1 day
@@ -241,10 +237,104 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
     givenByUserId: number,
     inviteToUserGroupId: number,
     signature: string,
-
-    user: UserAuthInfo,
+    expirationDateString: string,
+    userToBeInvited: UserAuthInfo,
   ): Promise<void> {
-    console.log();
+    this.assertInviteLinkWasntModified(
+      givenByUserId,
+      inviteToUserGroupId,
+      signature,
+      expirationDateString,
+    );
+
+    this.assertUserWasntAlreadyInvited(inviteToUserGroupId, userToBeInvited);
+
+    this.assertLinkWasntExpired(expirationDateString);
+
+    await this.assertInviterCanInviteToThisGroup(
+      givenByUserId,
+      inviteToUserGroupId,
+    );
+
+    await this.userToUserGroupRepo.createOnePlain({
+      userId: userToBeInvited.id,
+      userGroupId: inviteToUserGroupId,
+    });
+  }
+
+  private async assertInviterCanInviteToThisGroup(
+    inviterId: number,
+    inviteToUserGroupId: number,
+  ): Promise<void> {
+    const inviter = await this.userRepo.getOneByIdWithAccessScopes(inviterId);
+
+    const { educationalSpaceId } = await this.userGroupRepo.getOneById(
+      inviteToUserGroupId,
+    );
+
+    const invitersUserGroupsFromThisSpace = inviter.userGroups.filter(
+      (group) => group.educationalSpaceId === educationalSpaceId,
+    );
+    const canUserInviteToAnyGroupInSpace = doesUserHaveSpaceAccess(
+      invitersUserGroupsFromThisSpace,
+      EducationalSpaceAccessScopeType.MODIFY_USER_GROUPS,
+    );
+
+    const canUserInviteToThisGroup = canUserInviteToGroup(
+      inviter,
+      inviteToUserGroupId,
+    );
+    if (!canUserInviteToThisGroup && !canUserInviteToAnyGroupInSpace)
+      throw new BadRequestException(
+        messages.educationalSpace.inviterLostAccessToInvitePeople,
+      );
+  }
+
+  private assertUserWasntAlreadyInvited(
+    inviteToUserGroupId: number,
+    userToBeInvited: UserAuthInfo,
+  ): void {
+    if (
+      userToBeInvited.userGroups.some(
+        (group) => group.id === inviteToUserGroupId,
+      )
+    )
+      throw new BadRequestException(messages.user.alreadyInvited);
+  }
+
+  private assertLinkWasntExpired(expirationDateString: string): void {
+    const expirationDate = Date.parse(expirationDateString);
+
+    if (Date.now() > expirationDate)
+      throw new BadRequestException(
+        messages.educationalSpace.inviteLinkExpired,
+      );
+  }
+
+  private assertInviteLinkWasntModified(
+    givenByUserId: number,
+    inviteToUserGroupId: number,
+    signature: string,
+    expirationDateString: string,
+  ): void {
+    const wasInvitationChanged = !timingSafeEqual(
+      Buffer.from(signature, 'hex'),
+      createHash('sha256')
+        .update(
+          this.configService.get(ConfigKeys.INVITE_USERS_SIGN_KEY, {
+            infer: true,
+          }),
+        )
+        .update(
+          `${givenByUserId}_${inviteToUserGroupId}_${expirationDateString}`,
+        )
+        .digest(),
+    );
+
+    if (wasInvitationChanged)
+      throw new BadRequestException(
+        messages.educationalSpace.incorrectInviteSignature,
+      );
   }
 
   private async getLaunchedTestingIdssUserHaveAccessTo(

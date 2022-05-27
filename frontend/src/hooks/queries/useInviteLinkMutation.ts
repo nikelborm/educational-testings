@@ -1,14 +1,9 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { customFetch, invalidatePassthrough, validate } from 'utils';
-// eslint-disable-next-line import/no-duplicates
-import { EmptyResponseDTO } from 'backendTypes';
-// eslint-disable-next-line import/no-duplicates
-import { UseInviteLinkDTO } from 'backendTypes';
+import { UseInviteLinkDTO, EmptyResponseDTO } from 'backendTypes';
+import { message } from 'antd';
 
-export function useInviteLinkMutation(
-  onError: () => void,
-  onSuccess?: () => void,
-) {
+export function useInviteLinkMutation(onError: (err: any) => void) {
   const queryClient = useQueryClient();
   const { mutate, isLoading, isError, isSuccess } = useMutation(
     (inviteLinkPayload: UseInviteLinkDTO) =>
@@ -18,7 +13,10 @@ export function useInviteLinkMutation(
             method: 'POST',
             body: inviteLinkPayload,
           }).then(invalidatePassthrough(queryClient, 'useMyEducationalSpaces')),
-    { onSuccess, onError },
+    {
+      onSuccess: () => void message.success('You sucessfully joined the group'),
+      onError,
+    },
   );
   return { sendJoinToGroupQuery: mutate, isLoading, isError, isSuccess };
 }

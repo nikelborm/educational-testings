@@ -2,12 +2,14 @@ import { useInviteLinkMutation } from 'hooks';
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { RoutesEnum } from 'types';
+import { displayErrorNotification } from 'utils';
 
 export function UseInviteLinkServicePage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const { sendJoinToGroupQuery } = useInviteLinkMutation(() => {
+  const { sendJoinToGroupQuery } = useInviteLinkMutation((err) => {
+    displayErrorNotification(err);
     navigate(`/account/${RoutesEnum.MY_EDUCATIONAL_SPACES}`);
   });
 

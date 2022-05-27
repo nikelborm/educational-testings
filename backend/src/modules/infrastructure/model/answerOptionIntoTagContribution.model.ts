@@ -41,6 +41,7 @@ export class AnswerOptionIntoTagContribution {
   tagId!: number;
 
   @Column({
+    type: 'real',
     name: 'weight',
     nullable: false,
   })

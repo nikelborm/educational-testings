@@ -29,12 +29,29 @@ export const messages = {
     exists: 'User with this email already exists',
     cantCreateEducationalSpace:
       'You cannot create educational space for now. You need to activate checkbox in your settings to change your account type',
+    alreadyInvited: 'You are already a member of a group you tried to join',
+    didntCreateAbstractTesting:
+      'You are not an author of this abstract testing, for this reason you cannot add it to educational space catalog',
   },
   educationalSpace: {
     cantView: `${messagesRepeating.notEnoughAccess} view this educational space. \nThis Account was not found in any group of this educational space. \nTry to ask space owners for invite link`,
+    incorrectInviteSignature: 'Your invite link has incorrect signature',
+    inviteLinkExpired: 'Your invite link has been expired',
+    inviterLostAccessToInvitePeople:
+      'User which created this invite link doesnt have access to invite people to this group',
   },
   accessScope: {
     cannotPromoteYourself: 'Cannot set additional role for yourself',
+  },
+  abstractTesting: {
+    alreadyAddedToSpace:
+      'This abstract testing was already added to educational space',
+  },
+  launchedTestings: {
+    cantLaunchWithoutAccess:
+      'You are not a member of any group with access to testings launch',
+    wasntAddedToCatalog:
+      "Abstract testing cannot be launched in this educational space because it is private and wasnt added to catalog of the space by testing's creator",
   },
   types: {
     shouldBeDate: 'Validation failed. Date should be in ISO format',

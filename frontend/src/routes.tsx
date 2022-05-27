@@ -31,7 +31,10 @@ import {
   SimpleRouteEntity,
   ISession,
 } from 'types';
-import { CreateEducationalSpaceButtonWithModal } from 'components';
+import {
+  CreateEducationalSpaceButtonWithModal,
+  LaunchTestingButtonWithModal,
+} from 'components';
 
 export const publicRoutes: RoutesMap<SimpleRouteEntity> = {
   [RoutesEnum.ROOT]: {
@@ -95,6 +98,7 @@ export const routesOnlyForAuthedUsers: RoutesMap<AuthedRouteEntity> = {
     Component: EducationalSpaceView,
     pageTitle: 'Educational Space',
     description: '(view)',
+    Extras: () => <LaunchTestingButtonWithModal />,
     canUserOpenThisRoute: () => true,
   },
   [RoutesEnum.EDUCATIONAL_SPACE_EDIT]: {
