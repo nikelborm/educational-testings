@@ -43,9 +43,9 @@ export class AbstractAnswerOption {
 
   @Column({
     name: 'answer',
-    nullable: true,
+    nullable: false,
   })
-  answer?: string; // answer for free field
+  answer!: string;
 
   @Column({
     name: 'description',

@@ -29,6 +29,12 @@ export class TestingAnalyticsModule {
   name!: string;
 
   @Column({
+    name: 'description',
+    nullable: true,
+  })
+  description?: string;
+
+  @Column({
     name: 'support',
     type: 'enum',
     enum: TestingAnalyticsModuleSupport,

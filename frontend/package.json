@@ -21,6 +21,7 @@
     "bfj": "^7.0.2",
     "class-transformer": "0.5.1",
     "class-validator": "^0.13.2",
+    "reflect-metadata": "^0.1.13",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
     "css-loader": "^6.5.1",
     "css-minimizer-webpack-plugin": "^3.2.0",
@@ -106,7 +107,8 @@
     "build": "node scripts/build.js",
     "start_with_mem_limit": "node --max_old_space_size=4096 scripts/start.js",
     "build_with_mem_limit": "node --max_old_space_size=4096 scripts/build.js",
-    "pgip": "docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}'"
+    "pgip": "docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}'",
+    "mount": "sudo mount --bind ./backend/src/types/shared ./frontend/src/backendTypes"
   },
   "engineStrict": true,
   "engines": {

@@ -1,13 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { SessionProvider, updateTokenPair } from 'utils';
+import {
+  displayErrorNotification,
+  SessionProvider,
+  updateTokenPair,
+} from 'utils';
 
 import './assets/styles/index.css';
 import './types';
+import 'reflect-metadata';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { message } from 'antd';
 import App from './App';
 
 const onErrorHandler = (err: any) => {
@@ -18,19 +22,7 @@ const onErrorHandler = (err: any) => {
   )
     updateTokenPair(null);
 
-  void message.error(
-    <>
-      Error
-      <div style={{ textAlign: 'left' }}>
-        {err?.message?.split('\n').map((e) => (
-          <>
-            {e}
-            <br />
-          </>
-        ))}
-      </div>
-    </>,
-  );
+  displayErrorNotification(err);
 };
 
 const queryClient = new QueryClient({

@@ -44,7 +44,6 @@ export class UserUseCase {
         await this.userRepo.createOneWithRelations(this.createUserModel(user)),
       );
     } catch (error: any) {
-      console.log('error: ', error);
       if(isQueryFailedError(error))
         if (error.code === PG_UNIQUE_CONSTRAINT_VIOLATION)
           throw new BadRequestException(messages.user.exists);

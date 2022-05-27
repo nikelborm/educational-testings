@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { messages } from 'src/config';
 import {
   CreatedEntity,
+  createManyWithRelations,
   createOneWithRelations,
   NewEntity,
   UpdateEntity,
@@ -39,6 +40,12 @@ export class TagRepo {
     newTag: NewEntity<Tag, 'id'>,
   ): Promise<CreatedEntity<Tag, 'id'>> {
     return await createOneWithRelations(this.repo, newTag);
+  }
+
+  async createManyWithRelations(
+    newTags: NewEntity<Tag, 'id'>[],
+  ): Promise<CreatedEntity<Tag, 'id'>[]> {
+    return await createManyWithRelations(this.repo, newTags);
   }
 
   async deleteMany(tagIds: number[]): Promise<void> {

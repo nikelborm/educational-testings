@@ -1,8 +1,9 @@
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { customFetch } from 'utils';
 import { GetMyEducationalSpacesResponseDTO } from 'backendTypes';
 
 export function useMyEducationalSpaces() {
+  const queryClient = useQueryClient();
   const { isLoading, isError, isSuccess, data } = useQuery(
     'useMyEducationalSpaces',
     () =>

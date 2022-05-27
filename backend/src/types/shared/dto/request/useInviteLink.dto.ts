@@ -1,4 +1,4 @@
-import { IsDateString, IsPositive } from 'class-validator';
+import { IsDateString, IsPositive, IsString, Length } from 'class-validator';
 
 export class UseInviteLinkDTO {
   @IsPositive()
@@ -10,6 +10,7 @@ export class UseInviteLinkDTO {
   @IsDateString()
   expirationDate!: string;
 
-  @IsPositive()
+  @IsString()
+  @Length(64, 64)
   signature!: string;
 }
