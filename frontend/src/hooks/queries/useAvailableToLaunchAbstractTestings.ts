@@ -23,5 +23,6 @@ export function useAvailableToLaunchAbstractTestings(
     isSuccess,
     refetch,
     abstractTestings: data?.availableForLaunchTestings,
+    userGroups: data?.availableForLaunchInGroups,
   };
 }

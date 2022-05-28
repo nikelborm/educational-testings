@@ -109,17 +109,16 @@ export class MockDataUseCase {
       });
 
       const { privateTesting } = await this.createMockAbstractTestings(
-        teacher.id,
+        owner.id,
       );
 
-      // await this.abstractTestingUseCase.addTestingToEducationalSpaceCatalog(
-      //   {
-      //     abstractTestingId: privateTesting.id,
-      //     educationalSpaceId: educationalSpace.id,
-      //   },
-      //   await this.userRepo.getOneByIdWithAccessScopes(teacher.id),
-      // );
-      // addTestingToEducationalSpaceCatalog;
+      await this.abstractTestingUseCase.addTestingToEducationalSpaceCatalog(
+        {
+          abstractTestingId: privateTesting.id,
+          educationalSpaceId: educationalSpace.id,
+        },
+        await this.userRepo.getOneByIdWithAccessScopes(owner.id),
+      );
     } catch (error) {
       console.log('fillDBScript finished with error', error);
     }
@@ -212,7 +211,7 @@ export class MockDataUseCase {
   ): Promise<model.AbstractTesting> {
     const abstractTesting =
       await this.abstractTestingRepo.createOneWithRelations({
-        name: 'Тестирование на определение интересов',
+        name: `Тестирование на определение интересов ${Math.random()}`,
         isPublic,
         createdByUserId,
         description:

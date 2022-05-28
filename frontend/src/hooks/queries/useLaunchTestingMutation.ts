@@ -14,15 +14,14 @@ export function useLaunchTestingMutation(
 ) {
   const queryClient = useQueryClient();
   const { mutate, isLoading, isError, isSuccess } = useMutation(
-    (launchTestingDTO: LaunchTestingDTO) =>
-      validate(launchTestingDTO, LaunchTestingDTO).length
-        ? Promise.reject(new Error('Validation error'))
-        : customFetch<EmptyResponseDTO>('abstractTesting/launch', {
-            method: 'POST',
-            body: launchTestingDTO,
-          }).then(
-            invalidatePassthrough(queryClient, 'useEducationalSpaceById'),
-          ),
+    (launchTestingDTO: LaunchTestingDTO) => {
+      const errors = validate(launchTestingDTO, LaunchTestingDTO);
+      console.log(errors);
+      return customFetch<EmptyResponseDTO>('abstractTesting/launch', {
+        method: 'POST',
+        body: launchTestingDTO,
+      }).then(invalidatePassthrough(queryClient, 'useEducationalSpaceById'));
+    },
     {
       onSuccess: () => {
         void message.success('You sucessfully launched the testing');

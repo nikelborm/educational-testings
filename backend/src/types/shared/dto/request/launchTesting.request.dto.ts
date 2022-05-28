@@ -10,6 +10,14 @@ import {
 } from 'class-validator';
 import { LaunchedTestingAccessScopeType } from '../../model';
 
+export class LaunchTestingAccessScopeDTO {
+  @IsPositive()
+  userGroupId!: number;
+
+  @IsEnum(LaunchedTestingAccessScopeType)
+  type!: LaunchedTestingAccessScopeType;
+}
+
 export class LaunchTestingDTO {
   @IsPositive()
   abstractTestingId!: number;
@@ -31,15 +39,7 @@ export class LaunchTestingDTO {
 
   @IsDefined()
   @IsArray()
-  @ValidateNested({ each: true })
   @Type(() => LaunchTestingAccessScopeDTO)
+  @ValidateNested({ each: true })
   accessScopes!: LaunchTestingAccessScopeDTO[];
-}
-
-export class LaunchTestingAccessScopeDTO {
-  @IsPositive()
-  userGroupId!: number;
-
-  @IsEnum(LaunchedTestingAccessScopeType)
-  type!: LaunchedTestingAccessScopeType;
 }

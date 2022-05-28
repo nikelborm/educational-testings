@@ -1,7 +1,8 @@
 import { useSearchParams } from 'react-router-dom';
 
 export function LaunchedTestingView() {
-  const asd = useSearchParams();
-  console.log('LaunchedTestingView useSearchParams: ', asd);
-  return <div>LaunchedTestingView</div>;
+  const [searchParams] = useSearchParams();
+  const id = parseInt(searchParams.get('id') as string, 10);
+  console.log('LaunchedTestingView useSearchParams: ', searchParams);
+  return <div />;
 }

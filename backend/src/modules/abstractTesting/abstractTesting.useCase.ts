@@ -30,7 +30,7 @@ export class AbstractTestingUseCase {
       canUserLaunchFor: 'somebody',
     });
 
-    let availableForLaunchInGroups: model.UserGroup[] = [];
+    let availableForLaunchInGroups: Pick<model.UserGroup, 'id' | 'name'>[] = [];
 
     const canUserLaunchTestingsForAllGroups = doesUserHaveSpaceAccess(
       user.userGroups.filter(
@@ -91,6 +91,22 @@ export class AbstractTestingUseCase {
     if (wasTestingAlreadyAdded)
       throw new BadRequestException(
         messages.abstractTesting.alreadyAddedToSpace,
+      );
+
+    const canUserAddOwnTestingsToThisSpace = user.userGroups.some(
+      (group) =>
+        group.educationalSpaceId ===
+          educationalSpaceTestingCatalogEntry.educationalSpaceId &&
+        group.educationalSpaceAccessScopes.some(
+          ({ type }) =>
+            type ===
+            EducationalSpaceAccessScopeType.ADD_OWN_ABSTRACT_TESTINGS_INTO_EDUCATIONAL_SPACE_CATALOG,
+        ),
+    );
+
+    if (!canUserAddOwnTestingsToThisSpace)
+      throw new BadRequestException(
+        messages.abstractTesting.cantBeAddedBecauseNoRights,
       );
 
     await this.availableForLaunchTestingRepo.createOnePlain(

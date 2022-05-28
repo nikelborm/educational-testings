@@ -1,4 +1,4 @@
-import { Button, Form, Modal, Select } from 'antd';
+import { Button, Checkbox, Form, Modal, Select, Table } from 'antd';
 import {
   useAvailableToLaunchAbstractTestings,
   useLaunchTestingMutation,
@@ -6,7 +6,12 @@ import {
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useSession } from 'utils';
-import { EducationalSpaceAccessScopeType } from 'backendTypes';
+import {
+  EducationalSpaceAccessScopeType,
+  LaunchedTestingAccessScopeType,
+  LaunchTestingAccessScopeDTO,
+  UserGroupManagementAccessScopeType,
+} from 'backendTypes';
 
 export function LaunchTestingButtonWithModal() {
   const [searchParams] = useSearchParams();
@@ -18,17 +23,29 @@ export function LaunchTestingButtonWithModal() {
   const canUserLaunchTestings =
     session.isAuthed &&
     session.accessToken.payload.user.userGroups.some(
-      ({ educationalSpaceAccessScopes, educationalSpaceId: id }) =>
+      ({
+        educationalSpaceAccessScopes,
+        leaderInAccessScopes,
+        educationalSpaceId: id,
+      }) =>
         id === educationalSpaceId &&
-        educationalSpaceAccessScopes.some(
+        (educationalSpaceAccessScopes.some(
           (scope) =>
             scope.type ===
             EducationalSpaceAccessScopeType.MODIFY_LAUNCHED_TESTINGS,
-        ),
+        ) ||
+          leaderInAccessScopes.some(
+            (scope) =>
+              scope.type === UserGroupManagementAccessScopeType.LAUNCH_TESTING,
+          )),
     );
 
-  const { refetch, abstractTestings } =
-    useAvailableToLaunchAbstractTestings(educationalSpaceId);
+  const {
+    refetch,
+    abstractTestings,
+    userGroups,
+    isLoading: doesAvailableToLaunchLoading,
+  } = useAvailableToLaunchAbstractTestings(educationalSpaceId);
 
   useEffect(() => {
     if (visible) void refetch();
@@ -41,19 +58,23 @@ export function LaunchTestingButtonWithModal() {
   const [form] = Form.useForm();
 
   const handleOk = () => {
-    console.log(
-      'form.getFieldValue("abstractTestingId"): ',
-      form.getFieldValue('abstractTestingId'),
+    const accessScopes: LaunchTestingAccessScopeDTO[] = [];
+
+    const types = Object.values(LaunchedTestingAccessScopeType);
+
+    userGroups?.forEach(({ id }) =>
+      types.forEach((type) => {
+        const value = form.getFieldValue(`${id}_${type}`);
+        if (value) accessScopes.push({ type, userGroupId: id });
+      }),
     );
-    console.log(
-      'form.getFieldValue("abstractTestingId"): ',
-      form.getFieldValue('abstractTestingId'),
-    );
-    // sendLaunchTestingQuery({
-    //   educationalSpaceId,
-    //   accessScopes: [],
-    //   abstractTestingId: form.getFieldValue('abstractTestingId'),
-    // });
+    const payload = {
+      educationalSpaceId,
+      accessScopes,
+      abstractTestingId: form.getFieldValue('abstractTestingId'),
+    };
+    console.log(payload);
+    sendLaunchTestingQuery(payload);
   };
 
   if (canUserLaunchTestings)
@@ -67,6 +88,7 @@ export function LaunchTestingButtonWithModal() {
           visible={visible}
           okText="Launch"
           onOk={handleOk}
+          width="900px"
           confirmLoading={isLoading}
           onCancel={() => setVisible(false)}
         >
@@ -81,7 +103,10 @@ export function LaunchTestingButtonWithModal() {
               label="Abstract testing to launch"
               rules={[{ required: true }]}
             >
-              <Select style={{ width: '100%' }} loading>
+              <Select
+                style={{ width: '100%' }}
+                loading={doesAvailableToLaunchLoading}
+              >
                 {abstractTestings?.map(({ id, name, description }) => (
                   <Select.Option key={id} value={id} title={description}>
                     {name}
@@ -89,6 +114,52 @@ export function LaunchTestingButtonWithModal() {
                 ))}
               </Select>
             </Form.Item>
+            Access of user groups in this testing:
+            <Table
+              tableLayout="fixed"
+              dataSource={userGroups?.map((space) => ({
+                ...space,
+                key: space.id,
+              }))}
+              pagination={false}
+              style={{ marginTop: '24px' }}
+              columns={[
+                {
+                  title: 'Name',
+                  dataIndex: 'name',
+                  key: 'name',
+                  width: '60%',
+                },
+                {
+                  title: 'Can make attempts',
+                  key: LaunchedTestingAccessScopeType.MAKE_TESTING_ATTEMPTS,
+                  width: '20%',
+                  render: (_, data) => (
+                    <Form.Item
+                      name={`${data.id}_${LaunchedTestingAccessScopeType.MAKE_TESTING_ATTEMPTS}`}
+                      valuePropName="checked"
+                      initialValue={false}
+                    >
+                      <Checkbox>Yes</Checkbox>
+                    </Form.Item>
+                  ),
+                },
+                {
+                  title: 'Can view analytics',
+                  key: LaunchedTestingAccessScopeType.VIEW_ANALYTICS,
+                  width: '20%',
+                  render: (_, data) => (
+                    <Form.Item
+                      name={`${data.id}_${LaunchedTestingAccessScopeType.VIEW_ANALYTICS}`}
+                      valuePropName="checked"
+                      initialValue={false}
+                    >
+                      <Checkbox>Yes</Checkbox>
+                    </Form.Item>
+                  ),
+                },
+              ]}
+            />
           </Form>
         </Modal>
       </>

@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 
 export function PassingTestingStage() {
-  const asd = useSearchParams();
-  console.log('PassingTestingStage useSearchParams: ', asd);
+  const [searchParams] = useSearchParams();
+  console.log('PassingTestingStage useSearchParams: ', searchParams);
   return <div>PassingTestingStage</div>;
 }
