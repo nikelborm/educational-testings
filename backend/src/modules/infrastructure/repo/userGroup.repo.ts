@@ -9,7 +9,7 @@ import {
   UpdateEntity,
   updateOneWithRelations,
 } from 'src/tools';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { UserGroup } from '../model';
 
 @Injectable()
@@ -28,6 +28,17 @@ export class UserGroupRepo {
         messages.repo.common.cantGetNotFoundById(id, 'userGroup'),
       );
     return userGroup;
+  }
+
+  async getManyByEducationalSpace(
+    educationalSpaceId: number,
+  ): Promise<UserGroup[]> {
+    return await this.repo.findBy({ educationalSpaceId });
+  }
+
+  async getManyByIds(ids: number[]): Promise<UserGroup[]> {
+    if (!ids.length) return [];
+    return await this.repo.findBy({ id: In(ids) });
   }
 
   async updateOneWithRelations(

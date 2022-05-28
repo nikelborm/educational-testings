@@ -1,30 +1,66 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { messages } from 'src/config';
-import { assertUserCanLaunchTestings } from 'src/tools';
+import {
+  assertUserCanLaunchTestings,
+  doesUserHaveSpaceAccess,
+} from 'src/tools';
 import {
   AddTestingToEducationalSpaceCatalogDTO,
   AvailableForLaunchTestingDTO,
+  EducationalSpaceAccessScopeType,
+  GetAvailableForLaunchTestingsDTO,
   UserAuthInfo,
+  UserGroupManagementAccessScopeType,
 } from 'src/types';
-import { repo } from '../infrastructure';
+import { model, repo } from '../infrastructure';
 
 @Injectable()
 export class AbstractTestingUseCase {
   constructor(
     private readonly abstractTestingRepo: repo.AbstractTestingRepo,
+    private readonly userGroupRepo: repo.UserGroupRepo,
     private readonly availableForLaunchTestingRepo: repo.AvailableForLaunchTestingRepo,
   ) {}
 
   async getAvailableToLaunchIn(
     educationalSpaceId: number,
     user: UserAuthInfo,
-  ): Promise<AvailableForLaunchTestingDTO[]> {
-    assertUserCanLaunchTestings(user, educationalSpaceId);
+  ): Promise<GetAvailableForLaunchTestingsDTO> {
+    assertUserCanLaunchTestings(user, educationalSpaceId, {
+      canUserLaunchFor: 'somebody',
+    });
+
+    let availableForLaunchInGroups: model.UserGroup[] = [];
+
+    const canUserLaunchTestingsForAllGroups = doesUserHaveSpaceAccess(
+      user.userGroups.filter(
+        ({ educationalSpaceId: id }) => id === educationalSpaceId,
+      ),
+      EducationalSpaceAccessScopeType.MODIFY_LAUNCHED_TESTINGS,
+    );
+
+    if (canUserLaunchTestingsForAllGroups) {
+      availableForLaunchInGroups =
+        await this.userGroupRepo.getManyByEducationalSpace(educationalSpaceId);
+    } else {
+      const availableForLaunchInGroupIds = user.userGroups
+        .flatMap(({ leaderInAccessScopes }) => leaderInAccessScopes)
+        .filter(
+          ({ type }) =>
+            type === UserGroupManagementAccessScopeType.LAUNCH_TESTING,
+        )
+        .map(({ subordinateUserGroupId }) => subordinateUserGroupId);
+      availableForLaunchInGroups = await this.userGroupRepo.getManyByIds(
+        availableForLaunchInGroupIds,
+      );
+    }
+
     const availableForLaunchTestings =
       await this.abstractTestingRepo.getManyAvailableForLaunch(
         educationalSpaceId,
       );
-    return availableForLaunchTestings;
+
+    return { availableForLaunchTestings, availableForLaunchInGroups };
   }
 
   async addTestingToEducationalSpaceCatalog(

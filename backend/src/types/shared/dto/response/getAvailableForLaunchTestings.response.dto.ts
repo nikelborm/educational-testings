@@ -1,5 +1,11 @@
 export class GetAvailableForLaunchTestingsDTO {
-  abstractTestings!: AvailableForLaunchTestingDTO[];
+  availableForLaunchTestings!: AvailableForLaunchTestingDTO[];
+  availableForLaunchInGroups!: AvailableForLaunchInGroupDTO[];
+}
+
+export class AvailableForLaunchInGroupDTO {
+  id!: number;
+  name!: string;
 }
 
 export class AvailableForLaunchTestingDTO {

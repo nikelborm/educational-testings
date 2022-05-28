@@ -36,7 +36,7 @@ export BOOTSTRAP_MODE='mockAndEndpoints'
 export DATABASE_PORT='5432'
 export DATABASE_USERNAME='pgdockeruser'
 export DATABASE_PASSWORD='pgdockerpass'
-export DATABASE_NAME='pgdockeruserdatabase'
+export DATABASE_NAME='pgdockerdatabase'
 # JSON of (true | false | 'all' | ('query' | 'schema' | 'error' | 'warn' | 'info' | 'log' | 'migration')[])
 export DATABASE_TYPEORM_LOGGING_MODE='"all"'
 

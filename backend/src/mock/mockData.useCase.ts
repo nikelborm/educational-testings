@@ -112,13 +112,13 @@ export class MockDataUseCase {
         teacher.id,
       );
 
-      await this.abstractTestingUseCase.addTestingToEducationalSpaceCatalog(
-        {
-          abstractTestingId: privateTesting.id,
-          educationalSpaceId: educationalSpace.id,
-        },
-        await this.userRepo.getOneByIdWithAccessScopes(teacher.id),
-      );
+      // await this.abstractTestingUseCase.addTestingToEducationalSpaceCatalog(
+      //   {
+      //     abstractTestingId: privateTesting.id,
+      //     educationalSpaceId: educationalSpace.id,
+      //   },
+      //   await this.userRepo.getOneByIdWithAccessScopes(teacher.id),
+      // );
       // addTestingToEducationalSpaceCatalog;
     } catch (error) {
       console.log('fillDBScript finished with error', error);

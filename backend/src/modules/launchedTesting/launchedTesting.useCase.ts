@@ -25,7 +25,10 @@ export class LaunchedTestingUseCase {
     }: LaunchTestingDTO,
     user: UserAuthInfo,
   ): Promise<CreatedEntity<model.LaunchedTesting, 'id'>> {
-    assertUserCanLaunchTestings(user, educationalSpaceId);
+    assertUserCanLaunchTestings(user, educationalSpaceId, {
+      canUserLaunchFor: 'specificGroups',
+      scopesToCheck: accessScopes,
+    });
 
     const abstractTesting =
       await this.abstractTestingRepo.getOneByIdForLaunching(abstractTestingId);

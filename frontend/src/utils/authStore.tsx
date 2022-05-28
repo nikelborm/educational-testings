@@ -76,6 +76,11 @@ class AuthStore {
           return newTokenPair;
         })
         .catch((err) => {
+          if (
+            err?.message ===
+            'Your session was finished because of long inactivity.\nIf you used your account less than a week ago, your account can be hacked.\nPlease open your settings and click the "Logout on all devices" button'
+          )
+            updateTokenPair(null);
           // eslint-disable-next-line no-console
           console.log('Token pair refreshing was not succesfull', err);
           return null;

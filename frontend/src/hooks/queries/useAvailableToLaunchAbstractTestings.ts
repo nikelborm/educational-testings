@@ -22,6 +22,6 @@ export function useAvailableToLaunchAbstractTestings(
     isError,
     isSuccess,
     refetch,
-    abstractTestings: data?.abstractTestings,
+    abstractTestings: data?.availableForLaunchTestings,
   };
 }

@@ -1,4 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { TokenExpiredError } from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 import {
   ConfigKeys,
@@ -38,6 +39,8 @@ export class RefreshTokenUseCase {
         ignoreExpiration: false,
       });
     } catch (error) {
+      if (error instanceof TokenExpiredError)
+        throw new UnauthorizedException(messages.auth.yourSessionWasFinished);
       throw new UnauthorizedException(messages.auth.invalidRefreshToken);
     }
 
@@ -51,7 +54,7 @@ export class RefreshTokenUseCase {
         tokenPayload.sessionUUID,
       ))
     )
-      throw new UnauthorizedException(messages.auth.invalidRefreshToken);
+      throw new UnauthorizedException(messages.auth.yourSessionWasFinished);
 
     return tokenPayload;
   }

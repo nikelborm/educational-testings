@@ -41,9 +41,6 @@
     {
       "label": "ormgen database",
       "type": "shell",
-      "dependsOn": [
-        "Run dev detached"
-      ],
       "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml exec backend-dev sh ./scripts/ormgen.sh",
       "problemMatcher": [],
       "promptOnClose": true
