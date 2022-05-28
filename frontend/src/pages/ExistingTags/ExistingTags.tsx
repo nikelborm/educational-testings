@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 
 export function ExistingTags() {
-  const asd = useSearchParams();
-  console.log('ExistingTags useSearchParams: ', asd);
+  const [searchParams] = useSearchParams();
+  console.log('ExistingTags useSearchParams: ', searchParams);
   return <div>ExistingTags</div>;
 }

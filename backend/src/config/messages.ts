@@ -45,6 +45,8 @@ export const messages = {
     cannotPromoteYourself: 'Cannot set additional role for yourself',
   },
   abstractTesting: {
+    cantBeAddedBecauseNoRights:
+      'You can not add your testings to this educational space because you dont have rights to do it',
     alreadyAddedToSpace:
       'This abstract testing was already added to educational space',
   },

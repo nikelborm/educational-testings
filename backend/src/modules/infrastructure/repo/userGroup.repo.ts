@@ -32,11 +32,14 @@ export class UserGroupRepo {
 
   async getManyByEducationalSpace(
     educationalSpaceId: number,
-  ): Promise<UserGroup[]> {
-    return await this.repo.findBy({ educationalSpaceId });
+  ): Promise<Pick<UserGroup, 'id' | 'name'>[]> {
+    return await this.repo.find({
+      where: { educationalSpaceId },
+      select: { id: true, name: true },
+    });
   }
 
-  async getManyByIds(ids: number[]): Promise<UserGroup[]> {
+  async getManyByIds(ids: number[]): Promise<Pick<UserGroup, 'id' | 'name'>[]> {
     if (!ids.length) return [];
     return await this.repo.findBy({ id: In(ids) });
   }

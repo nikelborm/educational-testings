@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 
 export function UserGroupEdit() {
-  const asd = useSearchParams();
-  console.log('UserGroupEdit useSearchParams: ', asd);
+  const [searchParams] = useSearchParams();
+  console.log('UserGroupEdit useSearchParams: ', searchParams);
   return <div>UserGroupEdit</div>;
 }

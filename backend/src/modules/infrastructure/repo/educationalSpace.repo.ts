@@ -47,6 +47,7 @@ export class EducationalSpaceRepo {
           ? `launchedTestings.id in (${filters.filterForLaunchedTestingIds})`
           : 'FALSE',
       )
+      .leftJoin('launchedTestings.abstractTesting', 'abstractTesting')
       .select([
         'educationalSpace.id',
         'educationalSpace.name',
@@ -55,6 +56,13 @@ export class EducationalSpaceRepo {
         'userGroups.name',
         'userGroups.description',
         'launchedTestings.id',
+        'launchedTestings.openingDate',
+        'launchedTestings.closingDate',
+        'launchedTestings.maximumAttemptDurationInMinutes',
+        'abstractTesting.id',
+        'abstractTesting.name',
+        'abstractTesting.description',
+        'abstractTesting.goal',
       ])
       .where('educationalSpace.id = :educationalSpaceId', {
         educationalSpaceId: id,

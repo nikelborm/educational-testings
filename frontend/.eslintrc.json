@@ -37,6 +37,7 @@
     ],
     "@typescript-eslint/lines-between-class-members": "warn",
     "max-classes-per-file": "warn",
+    "no-restricted-syntax": "off",
     "camelcase": "warn",
     "no-sequences": "off",
     "no-void": "off",

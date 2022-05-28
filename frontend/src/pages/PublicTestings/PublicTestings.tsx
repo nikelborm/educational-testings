@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 
 export function PublicTestings() {
-  const asd = useSearchParams();
-  console.log('PublicTestings useSearchParams: ', asd);
+  const [searchParams] = useSearchParams();
+  console.log('PublicTestings useSearchParams: ', searchParams);
   return <div>PublicTestings</div>;
 }
