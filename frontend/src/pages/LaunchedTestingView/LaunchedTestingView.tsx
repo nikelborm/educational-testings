@@ -1,8 +1,7 @@
-import { useSearchParams } from 'react-router-dom';
+import { useIdSearchParam } from 'hooks';
+import { RoutesEnum } from 'types';
 
 export function LaunchedTestingView() {
-  const [searchParams] = useSearchParams();
-  const id = parseInt(searchParams.get('id') as string, 10);
-  console.log('LaunchedTestingView useSearchParams: ', searchParams);
+  const launchedTestingId = useIdSearchParam(RoutesEnum.MY_EDUCATIONAL_SPACES);
   return <div />;
 }

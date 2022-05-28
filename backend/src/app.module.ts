@@ -12,6 +12,7 @@ import {
   AuthModule,
   LaunchedTestingModule,
   AbstractTestingModule,
+  TagModule,
 } from './modules';
 
 @Module({
@@ -25,6 +26,7 @@ import {
     InfrastructureModule,
     EducationalSpaceModule,
     LaunchedTestingModule,
+    TagModule,
     AbstractTestingModule,
     AuthModule,
     UserModule,

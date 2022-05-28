@@ -12,6 +12,7 @@ export * from './PassingTestingStage';
 export * from './PublicTestings';
 export * from './Registration';
 export * from './Root';
+export * from './TagView';
 export * from './UseInviteLinkServicePage';
 export * from './UserGroupEdit';
 export * from './UserGroupView';

@@ -23,6 +23,7 @@ import {
   AttemptView,
   LaunchedTestingAnalytics,
   UseInviteLinkServicePage,
+  TagView,
 } from 'pages';
 import {
   RoutesEnum,
@@ -103,6 +104,11 @@ export const routesOnlyForAuthedUsers: RoutesMap<AuthedRouteEntity> = {
   },
   [RoutesEnum.EDUCATIONAL_SPACE_EDIT]: {
     Component: EducationalSpaceEdit,
+    canUserOpenThisRoute: () => true,
+  },
+  [RoutesEnum.TAG_VIEW]: {
+    Component: TagView,
+    pageTitle: 'Topic',
     canUserOpenThisRoute: () => true,
   },
   [RoutesEnum.USER_GROUP_VIEW]: {

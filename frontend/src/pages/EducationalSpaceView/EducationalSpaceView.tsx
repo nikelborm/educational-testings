@@ -2,23 +2,17 @@ import { CopyOutlined } from '@ant-design/icons';
 import { Button, message, Table, Typography } from 'antd';
 import { SortOrder } from 'antd/lib/table/interface';
 import { SERVER_ADRESS } from 'constant';
-import { useEducationalSpaceBy } from 'hooks';
-import { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useEducationalSpaceBy, useIdSearchParam } from 'hooks';
+import { useNavigate } from 'react-router-dom';
 import { RoutesEnum } from 'types';
 import { copyTextToClipboard } from 'utils';
 
 export function EducationalSpaceView() {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const id = parseInt(searchParams.get('id') as string, 10);
-  useEffect(() => {
-    if (Number.isNaN(id))
-      navigate(`/account/${RoutesEnum.MY_EDUCATIONAL_SPACES}`);
-  }, [id]);
+  const educationalSpaceId = useIdSearchParam(RoutesEnum.MY_EDUCATIONAL_SPACES);
 
-  const { educationalSpace } = useEducationalSpaceBy(id);
+  const { educationalSpace } = useEducationalSpaceBy(educationalSpaceId);
 
   return (
     <div>

@@ -4,6 +4,7 @@ import {
   AuthedRequest,
   EmptyResponseDTO,
   GetAvailableForLaunchTestingsDTO,
+  GetPublicAbstractTestings,
   LaunchTestingDTO,
 } from 'src/types';
 import { ApiController, AuthorizedOnly, ValidatedBody } from 'src/tools';
@@ -16,7 +17,7 @@ export class AbstractTestingController {
     private readonly launchedTestingUseCase: LaunchedTestingUseCase,
   ) {}
 
-  @Get('availableToLaunchIn')
+  @Get('getAvailableToLaunchIn')
   @AuthorizedOnly()
   async getAvailableToLaunchInEducationalSpace(
     @Query('educationalSpaceId', ParseIntPipe)
@@ -27,6 +28,13 @@ export class AbstractTestingController {
       educationalSpaceId,
       user,
     );
+  }
+
+  @Get('getPublic')
+  async getPublicAbstractTestings(): Promise<GetPublicAbstractTestings> {
+    const abstractTestings =
+      await this.abstractTestingUseCase.getPublicAbstractTestings();
+    return { abstractTestings };
   }
 
   @Post('launch')

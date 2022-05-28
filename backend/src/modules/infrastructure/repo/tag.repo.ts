@@ -9,6 +9,7 @@ import {
   UpdateEntity,
   updateOneWithRelations,
 } from 'src/tools';
+import { SingleTagDTO } from 'src/types';
 import { Repository } from 'typeorm';
 import { Tag } from '../model';
 
@@ -19,9 +20,24 @@ export class TagRepo {
     private readonly repo: Repository<Tag>,
   ) {}
 
-  async getOneById(id: number): Promise<Tag> {
+  async getAll(): Promise<SingleTagDTO[]> {
+    return await this.repo.find({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+      },
+    });
+  }
+
+  async getOneById(id: number): Promise<SingleTagDTO> {
     const tag = await this.repo.findOne({
       where: { id },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+      },
     });
     if (!tag)
       throw new BadRequestException(
