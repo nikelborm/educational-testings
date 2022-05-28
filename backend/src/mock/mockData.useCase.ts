@@ -215,7 +215,7 @@ export class MockDataUseCase {
         isPublic,
         createdByUserId,
         description:
-          'Большое нескучное тестирование которое поможет студентом определиться с выборомо электива',
+          'Большое нескучное тестирование которое поможет студентом определиться с выбором электива',
         goal: 'Донести до студента что ему нравится и владельцам пространств понять что нравится их студентам',
         testingAnalyticsModuleToAbstractTestingRelations: [
           { testingAnalyticsModuleId: ownerAnalyticsModule.id },

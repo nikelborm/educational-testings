@@ -9,7 +9,7 @@ import {
   UpdateEntity,
   updateOneWithRelations,
 } from 'src/tools';
-import { AvailableForLaunchTestingDTO } from 'src/types';
+import { AvailableForLaunchTestingDTO, PublicAbstractTesting } from 'src/types';
 import { Repository } from 'typeorm';
 import { AbstractTesting } from '../model';
 
@@ -19,6 +19,21 @@ export class AbstractTestingRepo {
     @InjectRepository(AbstractTesting)
     private readonly repo: Repository<AbstractTesting>,
   ) {}
+
+  async getManyPublic(): Promise<PublicAbstractTesting[]> {
+    return await this.repo.find({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        goal: true,
+      },
+      where: {
+        isPublic: true,
+        isAvailableToLaunch: true,
+      },
+    });
+  }
 
   async getOneById(id: number): Promise<AbstractTesting> {
     const abstractTesting = await this.repo.findOne({ where: { id } });

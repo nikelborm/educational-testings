@@ -9,7 +9,7 @@ export function useAvailableToLaunchAbstractTestings(
     ['useAvailableToLaunchAbstractTestings', educationalSpaceId],
     () =>
       customFetch<GetAvailableForLaunchTestingsDTO>(
-        'abstractTesting/availableToLaunchIn',
+        'abstractTesting/getAvailableToLaunchIn',
         {
           params: { educationalSpaceId },
           method: 'GET',

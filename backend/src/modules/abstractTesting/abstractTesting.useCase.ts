@@ -6,9 +6,9 @@ import {
 } from 'src/tools';
 import {
   AddTestingToEducationalSpaceCatalogDTO,
-  AvailableForLaunchTestingDTO,
   EducationalSpaceAccessScopeType,
   GetAvailableForLaunchTestingsDTO,
+  PublicAbstractTesting,
   UserAuthInfo,
   UserGroupManagementAccessScopeType,
 } from 'src/types';
@@ -21,6 +21,10 @@ export class AbstractTestingUseCase {
     private readonly userGroupRepo: repo.UserGroupRepo,
     private readonly availableForLaunchTestingRepo: repo.AvailableForLaunchTestingRepo,
   ) {}
+
+  async getPublicAbstractTestings(): Promise<PublicAbstractTesting[]> {
+    return await this.abstractTestingRepo.getManyPublic();
+  }
 
   async getAvailableToLaunchIn(
     educationalSpaceId: number,

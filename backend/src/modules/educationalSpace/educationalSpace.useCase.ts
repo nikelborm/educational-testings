@@ -155,7 +155,7 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
       throw new BadRequestException(messages.educationalSpace.cantView);
 
     const filterForLaunchedTestingIds =
-      await this.getLaunchedTestingIdssUserHaveAccessTo(
+      await this.getLaunchedTestingIdsUserHaveAccessTo(
         user.id,
         id,
         userGroupsFromThisSpace,
@@ -337,7 +337,7 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
       );
   }
 
-  private async getLaunchedTestingIdssUserHaveAccessTo(
+  private async getLaunchedTestingIdsUserHaveAccessTo(
     userId: number,
     educationalSpaceId: number,
     userGroupsFromThisSpace: UserAuthInfoTrimmedUserGroup[],

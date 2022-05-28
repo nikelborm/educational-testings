@@ -1,10 +1,10 @@
 import { Button, Checkbox, Form, Modal, Select, Table } from 'antd';
 import {
   useAvailableToLaunchAbstractTestings,
+  useIdSearchParam,
   useLaunchTestingMutation,
 } from 'hooks';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { useSession } from 'utils';
 import {
   EducationalSpaceAccessScopeType,
@@ -12,13 +12,13 @@ import {
   LaunchTestingAccessScopeDTO,
   UserGroupManagementAccessScopeType,
 } from 'backendTypes';
+import { RoutesEnum } from 'types';
 
 export function LaunchTestingButtonWithModal() {
-  const [searchParams] = useSearchParams();
   const [visible, setVisible] = useState(false);
   const session = useSession();
 
-  const educationalSpaceId = parseInt(searchParams.get('id') as string, 10);
+  const educationalSpaceId = useIdSearchParam(RoutesEnum.MY_EDUCATIONAL_SPACES);
 
   const canUserLaunchTestings =
     session.isAuthed &&
