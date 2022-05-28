@@ -60,7 +60,7 @@ export class AccessTokenUseCase {
       });
     } catch (error) {
       if (error instanceof TokenExpiredError)
-        throw new UnauthorizedException(messages.auth.sessionExpired);
+        throw new UnauthorizedException(messages.auth.accessTokenExpired);
       throw new UnauthorizedException(messages.auth.invalidAccessToken);
     }
 

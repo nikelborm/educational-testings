@@ -17,7 +17,7 @@ export function useLaunchTestingMutation(
     (launchTestingDTO: LaunchTestingDTO) =>
       validate(launchTestingDTO, LaunchTestingDTO).length
         ? Promise.reject(new Error('Validation error'))
-        : customFetch<EmptyResponseDTO>('educationalSpace/useInvite', {
+        : customFetch<EmptyResponseDTO>('abstractTesting/launch', {
             method: 'POST',
             body: launchTestingDTO,
           }).then(

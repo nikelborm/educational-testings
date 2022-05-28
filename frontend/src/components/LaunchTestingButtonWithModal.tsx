@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal } from 'antd';
+import { Button, Form, Modal, Select } from 'antd';
 import {
   useAvailableToLaunchAbstractTestings,
   useLaunchTestingMutation,
@@ -41,11 +41,19 @@ export function LaunchTestingButtonWithModal() {
   const [form] = Form.useForm();
 
   const handleOk = () => {
-    sendLaunchTestingQuery({
-      educationalSpaceId,
-      accessScopes: [],
-      abstractTestingId: form.getFieldValue('description'),
-    });
+    console.log(
+      'form.getFieldValue("abstractTestingId"): ',
+      form.getFieldValue('abstractTestingId'),
+    );
+    console.log(
+      'form.getFieldValue("abstractTestingId"): ',
+      form.getFieldValue('abstractTestingId'),
+    );
+    // sendLaunchTestingQuery({
+    //   educationalSpaceId,
+    //   accessScopes: [],
+    //   abstractTestingId: form.getFieldValue('abstractTestingId'),
+    // });
   };
 
   if (canUserLaunchTestings)
@@ -69,18 +77,17 @@ export function LaunchTestingButtonWithModal() {
             initialValues={{ remember: false }}
           >
             <Form.Item
-              name="name"
-              label="Name"
-              rules={[{ type: 'string', min: 2, required: true }]}
+              name="abstractTestingId"
+              label="Abstract testing to launch"
+              rules={[{ required: true }]}
             >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="description"
-              label="Description"
-              rules={[{ type: 'string', min: 2, required: false }]}
-            >
-              <Input />
+              <Select style={{ width: '100%' }} loading>
+                {abstractTestings?.map(({ id, name, description }) => (
+                  <Select.Option key={id} value={id} title={description}>
+                    {name}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
           </Form>
         </Modal>
