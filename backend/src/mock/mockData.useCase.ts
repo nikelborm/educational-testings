@@ -11,10 +11,10 @@ import {
   AbstractAnswerDataType,
   AbstractQuestionChoiceType,
   ClearedInsertedUserDTO,
+  ImplementedAnalyticsModules,
   LaunchedTestingAccessScopeType,
   TestingAnalyticsModuleSupport,
 } from 'src/types';
-import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class MockDataUseCase {
@@ -24,6 +24,7 @@ export class MockDataUseCase {
     private readonly educationalSpaceUseCase: EducationalSpaceUseCase,
     private readonly abstractTestingRepo: repo.AbstractTestingRepo,
     private readonly testingAnalyticsModuleRepo: repo.TestingAnalyticsModuleRepo,
+    private readonly testingAnalyticsModuleToAbstractTestingRepo: repo.TestingAnalyticsModuleToAbstractTestingRepo,
     private readonly abstractTestingStageRepo: repo.AbstractTestingStageRepo,
     private readonly abstractQuestionRepo: repo.AbstractQuestionRepo,
     private readonly abstractAnswerOptionRepo: repo.AbstractAnswerOptionRepo,
@@ -165,17 +166,17 @@ export class MockDataUseCase {
       (await this.testingAnalyticsModuleRepo.createManyWithRelations([
         {
           name: 'Подключаемый модуль аналитики №1',
-          uuid: uuid(),
+          uuid: ImplementedAnalyticsModules.TAG_CLOUD_FOR_ALL_LAUNCHED_TESTING,
           description:
-            'Подключаемый модуль аналитики, который будет отрабатывать на стороне владельца пространства №1',
+            'Модуль аналитики, дающий возможность посмотреть облако тегов с самыми популярными темами, сформированное на основе всех ответов пользователей в запущенном тестировании',
           support:
             TestingAnalyticsModuleSupport.ANALYTICS_OF_ALL_ATTEMPTS_OF_LAUNCHED_TESTING,
         },
         {
           name: 'Подключаемый модуль аналитики №2',
-          uuid: uuid(),
+          uuid: ImplementedAnalyticsModules.TAG_CLOUD_FOR_TESTING_ATTEMPT,
           description:
-            'Подключаемый модуль аналитики, который будет отрабатывать на стороне студента №1',
+            'Модуль аналитики, дающий возможность посмотреть облако тегов с самыми популярными темами, сформированное на основе ответов с одной пользовательской попытки',
           support: TestingAnalyticsModuleSupport.ANALYTICS_OF_USER_ATTEMPT,
         },
       ])) as [model.TestingAnalyticsModule, model.TestingAnalyticsModule];
@@ -256,6 +257,19 @@ export class MockDataUseCase {
         ],
         isReadyToUse: true,
       });
+
+    await this.testingAnalyticsModuleToAbstractTestingRepo.createManyWithRelations(
+      [
+        {
+          abstractTestingId: abstractTesting.id,
+          testingAnalyticsModuleId: ownerAnalyticsModule.id,
+        },
+        {
+          abstractTestingId: abstractTesting.id,
+          testingAnalyticsModuleId: studentAnalyticsModule.id,
+        },
+      ],
+    );
 
     const [waterStage, fireStage, dirtStage, airStage] =
       (await this.abstractTestingStageRepo.createManyWithRelations([

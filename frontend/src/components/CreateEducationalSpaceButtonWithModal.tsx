@@ -27,12 +27,13 @@ export function CreateEducationalSpaceButtonWithModal() {
     return (
       <>
         <Button type="primary" onClick={() => setVisible(true)}>
-          Create Educational Space
+          Создать образовательное пространство
         </Button>
         <Modal
-          title="Create Educational Space"
+          title="Создание образовательного пространства"
           visible={visible}
-          okText="Create"
+          okText="Создать"
+          cancelText="Отменить"
           onOk={handleOk}
           confirmLoading={isLoading}
           onCancel={() => setVisible(false)}
@@ -45,14 +46,14 @@ export function CreateEducationalSpaceButtonWithModal() {
           >
             <Form.Item
               name="name"
-              label="Name"
+              label="Название"
               rules={[{ type: 'string', min: 2, required: true }]}
             >
               <Input />
             </Form.Item>
             <Form.Item
               name="description"
-              label="Description"
+              label="Описание"
               rules={[{ type: 'string', min: 2, required: false }]}
             >
               <Input />

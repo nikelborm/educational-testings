@@ -26,7 +26,7 @@ export class AbstractTestingUseCase {
   async getAbstractTestingWithQuestions(
     abstractTestingId: number,
   ): Promise<AbstractTestingForPassingDTO> {
-    return await this.abstractTestingRepo.getOneWithQuestionsById(
+    return await this.abstractTestingRepo.getOneByIdForPassing(
       abstractTestingId,
     );
   }

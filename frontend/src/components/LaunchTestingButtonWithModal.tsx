@@ -16,6 +16,10 @@ import { RoutesEnum } from 'types';
 
 export function LaunchTestingButtonWithModal() {
   const [visible, setVisible] = useState(false);
+  const [selectedAbstractTestingId, setSelectedAbstractTestingId] = useState<
+    number | undefined
+  >();
+
   const session = useSession();
 
   const educationalSpaceId = useIdSearchParam(RoutesEnum.MY_EDUCATIONAL_SPACES);
@@ -89,12 +93,13 @@ export function LaunchTestingButtonWithModal() {
     return (
       <>
         <Button type="primary" onClick={() => setVisible(true)}>
-          Launch Testing
+          Запустить тестирование
         </Button>
         <Modal
-          title="Launch Testing"
+          title="Запуск тестирования"
           visible={visible}
-          okText="Launch"
+          okText="Запустить"
+          cancelText="Отменить"
           onOk={handleOk}
           width="900px"
           confirmLoading={isLoading}
@@ -108,7 +113,7 @@ export function LaunchTestingButtonWithModal() {
           >
             <Form.Item
               name="abstractTestingId"
-              label="Abstract testing to launch"
+              label="Абстрактное тестирование для запуска"
               rules={[
                 {
                   required: true,
@@ -117,6 +122,9 @@ export function LaunchTestingButtonWithModal() {
               ]}
             >
               <Select
+                onSelect={(abstractTestingId: number) => {
+                  setSelectedAbstractTestingId(abstractTestingId);
+                }}
                 style={{ width: '100%' }}
                 loading={doesAvailableToLaunchLoading}
               >
@@ -127,24 +135,56 @@ export function LaunchTestingButtonWithModal() {
                 ))}
               </Select>
             </Form.Item>
-            Access of user groups in this testing:
+            {selectedAbstractTestingId !== void 0 && (
+              <>
+                <p style={{ marginTop: 40 }}>
+                  Подключённые к тестированию модули аналитики
+                </p>
+                <Table
+                  size="small"
+                  dataSource={abstractTestings
+                    ?.find(({ id }) => id === selectedAbstractTestingId)
+                    ?.analyticsModules?.map((module) => ({
+                      ...module,
+                      key: module.id,
+                    }))}
+                  pagination={false}
+                  columns={[
+                    {
+                      title: 'Название',
+                      dataIndex: 'name',
+                      key: 'name',
+                      width: '40%',
+                    },
+                    {
+                      title: 'Описание',
+                      key: 'description',
+                      dataIndex: 'description',
+                      width: '60%',
+                    },
+                  ]}
+                />
+              </>
+            )}
+            <p style={{ marginTop: 40 }}>
+              Доступ групп пользователей в этом тестировании:
+            </p>
             <Table
-              tableLayout="fixed"
+              size="small"
               dataSource={userGroups?.map((space) => ({
                 ...space,
                 key: space.id,
               }))}
               pagination={false}
-              style={{ marginTop: '24px' }}
               columns={[
                 {
-                  title: 'Name',
+                  title: 'Название',
                   dataIndex: 'name',
                   key: 'name',
                   width: '60%',
                 },
                 {
-                  title: 'Can make attempts',
+                  title: 'Может проходить',
                   key: LaunchedTestingAccessScopeType.MAKE_TESTING_ATTEMPTS,
                   width: '20%',
                   render: (_, data) => (
@@ -153,12 +193,12 @@ export function LaunchTestingButtonWithModal() {
                       valuePropName="checked"
                       initialValue={false}
                     >
-                      <Checkbox>Yes</Checkbox>
+                      <Checkbox>Да</Checkbox>
                     </Form.Item>
                   ),
                 },
                 {
-                  title: 'Can view analytics',
+                  title: 'Может смотреть общую аналитику',
                   key: LaunchedTestingAccessScopeType.VIEW_ANALYTICS,
                   width: '20%',
                   render: (_, data) => (
@@ -167,7 +207,7 @@ export function LaunchTestingButtonWithModal() {
                       valuePropName="checked"
                       initialValue={false}
                     >
-                      <Checkbox>Yes</Checkbox>
+                      <Checkbox>Да</Checkbox>
                     </Form.Item>
                   ),
                 },
