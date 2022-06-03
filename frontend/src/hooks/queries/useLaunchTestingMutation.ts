@@ -3,6 +3,7 @@ import {
   customFetch,
   displayErrorNotification,
   invalidatePassthrough,
+  useTokenPairUpdater,
   validate,
 } from 'utils';
 import { LaunchTestingDTO, EmptyResponseDTO } from 'backendTypes';
@@ -13,14 +14,18 @@ export function useLaunchTestingMutation(
   onError?: (err: any) => void,
 ) {
   const queryClient = useQueryClient();
+  const { requestTokenPairRefreshing } = useTokenPairUpdater();
   const { mutate, isLoading, isError, isSuccess } = useMutation(
     (launchTestingDTO: LaunchTestingDTO) => {
+      console.log('launchTestingDTO: ', launchTestingDTO);
       const errors = validate(launchTestingDTO, LaunchTestingDTO);
       console.log(errors);
-      return customFetch<EmptyResponseDTO>('abstractTesting/launch', {
+      return customFetch<EmptyResponseDTO>('launchedTesting/create', {
         method: 'POST',
         body: launchTestingDTO,
-      }).then(invalidatePassthrough(queryClient, 'useEducationalSpaceById'));
+      })
+        .then(invalidatePassthrough(queryClient, 'useEducationalSpaceById'))
+        .then(requestTokenPairRefreshing);
     },
     {
       onSuccess: () => {

@@ -1,3 +1,4 @@
+export * from './useAbstractTestingForDemoPassing';
 export * from './useAllTags';
 export * from './useAvailableToLaunchAbstractTestings';
 export * from './useCreateEducationalSpaceMutation';

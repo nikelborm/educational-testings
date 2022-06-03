@@ -95,6 +95,10 @@ services:
       - type: bind
         source: ./backend/src
         target: /app/src
+        consistency: cached
+      - type: bind
+        source: ./backend/dist
+        target: /app/dist
         consistency: delegated
     networks:
       nginx-back-net:

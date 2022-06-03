@@ -30,9 +30,59 @@ export class AbstractTestingRepo {
       },
       where: {
         isPublic: true,
-        isAvailableToLaunch: true,
+        isReadyToUse: true,
       },
     });
+  }
+
+  async getOneWithQuestionsById(id: number): Promise<AbstractTesting> {
+    const abstractTesting = await this.repo.findOne({
+      where: { id },
+      relations: {
+        analyticsModules: true,
+        stages: {
+          questions: {
+            abstractAnswerOptions: {
+              contributions: {
+                tag: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    if (!abstractTesting)
+      throw new BadRequestException(
+        messages.repo.common.cantGetNotFoundById(id, 'abstractTesting'),
+      );
+    return abstractTesting;
+  }
+
+  async getOneWithAvailableEducationalSpacesById(id: number): Promise<{
+    id: number;
+    isReadyToUse: boolean;
+    isPublic: boolean;
+    availableForLaunchInEducationalSpaces: { id: number }[];
+  }> {
+    const abstractTesting = await this.repo.findOne({
+      where: { id },
+      select: {
+        id: true,
+        isReadyToUse: true,
+        isPublic: true,
+        availableForLaunchInEducationalSpaces: {
+          id: true,
+        },
+      },
+      relations: {
+        availableForLaunchInEducationalSpaces: true,
+      },
+    });
+    if (!abstractTesting)
+      throw new BadRequestException(
+        messages.repo.common.cantGetNotFoundById(id, 'abstractTesting'),
+      );
+    return abstractTesting;
   }
 
   async getOneById(id: number): Promise<AbstractTesting> {
@@ -84,19 +134,17 @@ export class AbstractTestingRepo {
         'availableForLaunchInEducationalSpaces',
       )
       .where(
-        'availableForLaunchInEducationalSpaces.id = :educationalSpaceId AND abstractTesting.isAvailableToLaunch',
+        'availableForLaunchInEducationalSpaces.id = :educationalSpaceId AND abstractTesting.isReadyToUse',
         { educationalSpaceId },
       )
-      .orWhere(
-        'abstractTesting.isPublic AND abstractTesting.isAvailableToLaunch',
-      )
+      .orWhere('abstractTesting.isPublic AND abstractTesting.isReadyToUse')
       .getMany();
   }
 
   async getOneByIdForLaunching(id: number): Promise<{
     id: number;
     isPublic: boolean;
-    isAvailableToLaunch: boolean;
+    isReadyToUse: boolean;
     availableForLaunchInEducationalSpaces: {
       id: number;
     }[];
@@ -123,7 +171,7 @@ export class AbstractTestingRepo {
       select: {
         id: true,
         isPublic: true,
-        isAvailableToLaunch: true,
+        isReadyToUse: true,
         availableForLaunchInEducationalSpaces: {
           id: true,
         },

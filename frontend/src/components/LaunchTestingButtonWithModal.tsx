@@ -1,4 +1,4 @@
-import { Button, Checkbox, Form, Modal, Select, Table } from 'antd';
+import { Button, Checkbox, Form, message, Modal, Select, Table } from 'antd';
 import {
   useAvailableToLaunchAbstractTestings,
   useIdSearchParam,
@@ -57,25 +57,33 @@ export function LaunchTestingButtonWithModal() {
 
   const [form] = Form.useForm();
 
-  const handleOk = () => {
-    const accessScopes: LaunchTestingAccessScopeDTO[] = [];
+  const handleOk = () =>
+    void (async () => {
+      await form.validateFields();
+      const accessScopes: LaunchTestingAccessScopeDTO[] = [];
 
-    const types = Object.values(LaunchedTestingAccessScopeType);
+      const types = Object.values(LaunchedTestingAccessScopeType);
 
-    userGroups?.forEach(({ id }) =>
-      types.forEach((type) => {
-        const value = form.getFieldValue(`${id}_${type}`);
-        if (value) accessScopes.push({ type, userGroupId: id });
-      }),
-    );
-    const payload = {
-      educationalSpaceId,
-      accessScopes,
-      abstractTestingId: form.getFieldValue('abstractTestingId'),
-    };
-    console.log(payload);
-    sendLaunchTestingQuery(payload);
-  };
+      userGroups?.forEach(({ id }) =>
+        types.forEach((type) => {
+          const value = form.getFieldValue(`${id}_${type}`);
+          if (value) accessScopes.push({ type, userGroupId: id });
+        }),
+      );
+
+      if (!accessScopes.length) {
+        await message.error(
+          'Вы должны указать как минимум одну галочку в таблице прав',
+        );
+        return;
+      }
+
+      sendLaunchTestingQuery({
+        educationalSpaceId,
+        accessScopes,
+        abstractTestingId: form.getFieldValue('abstractTestingId'),
+      });
+    })();
 
   if (canUserLaunchTestings)
     return (
@@ -101,7 +109,12 @@ export function LaunchTestingButtonWithModal() {
             <Form.Item
               name="abstractTestingId"
               label="Abstract testing to launch"
-              rules={[{ required: true }]}
+              rules={[
+                {
+                  required: true,
+                  message: 'Вы обязаны выбрать абстрактное тестирование',
+                },
+              ]}
             >
               <Select
                 style={{ width: '100%' }}

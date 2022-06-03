@@ -17,7 +17,12 @@ export function ExistingTags() {
       ))}
       <Col span={8}>
         <Card bodyStyle={{ textAlign: 'center' }}>
-          <Button type="primary" size="large" icon={<FolderAddOutlined />}>
+          <Button
+            disabled
+            type="primary"
+            size="large"
+            icon={<FolderAddOutlined />}
+          >
             Предложить тематику
           </Button>
         </Card>

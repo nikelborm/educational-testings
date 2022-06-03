@@ -24,6 +24,7 @@ import {
   LaunchedTestingAnalytics,
   UseInviteLinkServicePage,
   TagView,
+  AbstractTestingDemoPassing,
 } from 'pages';
 import {
   RoutesEnum,
@@ -109,6 +110,11 @@ export const routesOnlyForAuthedUsers: RoutesMap<AuthedRouteEntity> = {
   [RoutesEnum.TAG_VIEW]: {
     Component: TagView,
     pageTitle: 'Topic',
+    canUserOpenThisRoute: () => true,
+  },
+  [RoutesEnum.ABSTRACT_TESTING_DEMO_PASSING]: {
+    Component: AbstractTestingDemoPassing,
+    pageTitle: 'Abstract testing demo passing',
     canUserOpenThisRoute: () => true,
   },
   [RoutesEnum.USER_GROUP_VIEW]: {

@@ -6,13 +6,14 @@ import { AccessLogMiddleware } from './tools';
 import * as MockServices from './mock';
 
 import {
-  InfrastructureModule,
-  UserModule,
-  EducationalSpaceModule,
-  AuthModule,
-  LaunchedTestingModule,
   AbstractTestingModule,
+  AuthModule,
+  EducationalSpaceModule,
+  InfrastructureModule,
+  LaunchedTestingModule,
   TagModule,
+  TestingAttemptModule,
+  UserModule,
 } from './modules';
 
 @Module({
@@ -23,12 +24,13 @@ import {
       load: [appConfig, dbConfig],
     }),
 
-    InfrastructureModule,
-    EducationalSpaceModule,
-    LaunchedTestingModule,
-    TagModule,
     AbstractTestingModule,
     AuthModule,
+    EducationalSpaceModule,
+    InfrastructureModule,
+    LaunchedTestingModule,
+    TagModule,
+    TestingAttemptModule,
     UserModule,
   ],
   providers: [...Object.values(MockServices)],

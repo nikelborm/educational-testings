@@ -34,6 +34,11 @@ export const messages = {
     didntCreateAbstractTesting:
       'You are not an author of this abstract testing, for this reason you cannot add it to educational space catalog',
   },
+  userGroup: {
+    notAllFound: 'Not all of user groups with given ids were found',
+    notFromSingleEducationalSpace:
+      'Not all user groups with given ids are inside the same educational space',
+  },
   educationalSpace: {
     cantView: `${messagesRepeating.notEnoughAccess} view this educational space. \nThis Account was not found in any group of this educational space. \nTry to ask space owners for invite link`,
     incorrectInviteSignature: 'Your invite link has incorrect signature',
@@ -49,6 +54,8 @@ export const messages = {
       'You can not add your testings to this educational space because you dont have rights to do it',
     alreadyAddedToSpace:
       'This abstract testing was already added to educational space',
+    cantViewWithoutAccess:
+      'All of your groups have no access to view this abstract testing',
   },
   launchedTestings: {
     cantLaunchWithoutAccess:

@@ -1,21 +1,32 @@
-import { Get, ParseIntPipe, Post, Query, Req } from '@nestjs/common';
+import { Get, ParseIntPipe, Query, Req } from '@nestjs/common';
 import { AbstractTestingUseCase } from './abstractTesting.useCase';
 import {
+  AbstractTestingForPassingResponseDTO,
   AuthedRequest,
-  EmptyResponseDTO,
   GetAvailableForLaunchTestingsDTO,
   GetPublicAbstractTestings,
-  LaunchTestingDTO,
 } from 'src/types';
-import { ApiController, AuthorizedOnly, ValidatedBody } from 'src/tools';
-import { LaunchedTestingUseCase } from '../launchedTesting';
+import { ApiController, AuthorizedOnly } from 'src/tools';
 
 @ApiController('abstractTesting')
 export class AbstractTestingController {
   constructor(
     private readonly abstractTestingUseCase: AbstractTestingUseCase,
-    private readonly launchedTestingUseCase: LaunchedTestingUseCase,
   ) {}
+
+  @Get('getAbstractTestingForPassingById')
+  @AuthorizedOnly()
+  async getAbstractTestingForPassingById(
+    @Query('id', ParseIntPipe) id: number,
+    @Req() { user }: AuthedRequest,
+  ): Promise<AbstractTestingForPassingResponseDTO> {
+    const abstractTesting =
+      await this.abstractTestingUseCase.getAbstractTestingForPublicDemoPassingById(
+        id,
+        user,
+      );
+    return { abstractTesting };
+  }
 
   @Get('getAvailableToLaunchIn')
   @AuthorizedOnly()
@@ -35,15 +46,5 @@ export class AbstractTestingController {
     const abstractTestings =
       await this.abstractTestingUseCase.getPublicAbstractTestings();
     return { abstractTestings };
-  }
-
-  @Post('launch')
-  @AuthorizedOnly()
-  async launchAbstractTesting(
-    @ValidatedBody launchTestingDTO: LaunchTestingDTO,
-    @Req() { user }: AuthedRequest,
-  ): Promise<EmptyResponseDTO> {
-    await this.launchedTestingUseCase.launchTesting(launchTestingDTO, user);
-    return {};
   }
 }

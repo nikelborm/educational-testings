@@ -1,3 +1,4 @@
+export * from './abstractTestingForPassing.response.dto';
 export * from './createManyUsers.response.dto';
 export * from './createOneUser.response.dto';
 export * from './empty.response.dto';

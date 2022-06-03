@@ -5,6 +5,7 @@ import {
   doesUserHaveSpaceAccess,
 } from 'src/tools';
 import {
+  AbstractTestingForPassingDTO,
   AddTestingToEducationalSpaceCatalogDTO,
   EducationalSpaceAccessScopeType,
   GetAvailableForLaunchTestingsDTO,
@@ -21,6 +22,26 @@ export class AbstractTestingUseCase {
     private readonly userGroupRepo: repo.UserGroupRepo,
     private readonly availableForLaunchTestingRepo: repo.AvailableForLaunchTestingRepo,
   ) {}
+
+  async getAbstractTestingWithQuestions(
+    abstractTestingId: number,
+  ): Promise<AbstractTestingForPassingDTO> {
+    return await this.abstractTestingRepo.getOneWithQuestionsById(
+      abstractTestingId,
+    );
+  }
+
+  async getAbstractTestingForPublicDemoPassingById(
+    abstractTestingId: number,
+    user: UserAuthInfo,
+  ): Promise<AbstractTestingForPassingDTO> {
+    await this.assertUserHaveAccessToViewAbstractTesting(
+      abstractTestingId,
+      user,
+    );
+
+    return await this.getAbstractTestingWithQuestions(abstractTestingId);
+  }
 
   async getPublicAbstractTestings(): Promise<PublicAbstractTesting[]> {
     return await this.abstractTestingRepo.getManyPublic();
@@ -54,9 +75,9 @@ export class AbstractTestingUseCase {
             type === UserGroupManagementAccessScopeType.LAUNCH_TESTING,
         )
         .map(({ subordinateUserGroupId }) => subordinateUserGroupId);
-      availableForLaunchInGroups = await this.userGroupRepo.getManyByIds(
-        availableForLaunchInGroupIds,
-      );
+      availableForLaunchInGroups = (
+        await this.userGroupRepo.getManyByIds(availableForLaunchInGroupIds)
+      ).map(({ id, name }) => ({ id, name }));
     }
 
     const availableForLaunchTestings =
@@ -116,5 +137,31 @@ export class AbstractTestingUseCase {
     await this.availableForLaunchTestingRepo.createOnePlain(
       educationalSpaceTestingCatalogEntry,
     );
+  }
+
+  private async assertUserHaveAccessToViewAbstractTesting(
+    abstractTestingId: number,
+    user: UserAuthInfo,
+  ): Promise<void> {
+    const abstractTesting =
+      await this.abstractTestingRepo.getOneWithAvailableEducationalSpacesById(
+        abstractTestingId,
+      );
+
+    const doesUserHaveAccessToViewAbstractTesting =
+      abstractTesting.isReadyToUse &&
+      (abstractTesting.isPublic ||
+        abstractTesting.availableForLaunchInEducationalSpaces.some(
+          (allowedEducationalSpace) =>
+            user.userGroups.some(
+              (group) =>
+                group.educationalSpaceId === allowedEducationalSpace.id,
+            ),
+        ));
+
+    if (!doesUserHaveAccessToViewAbstractTesting)
+      throw new BadRequestException(
+        messages.abstractTesting.cantViewWithoutAccess,
+      );
   }
 }

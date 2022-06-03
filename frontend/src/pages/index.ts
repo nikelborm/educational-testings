@@ -1,3 +1,4 @@
+export * from './AbstractTestingDemoPassing';
 export * from './AttemptView';
 export * from './AvailableTestings';
 export * from './EducationalSpaceEdit';

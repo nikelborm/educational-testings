@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   AbstractTestingUseCase,
   EducationalSpaceUseCase,
+  LaunchedTestingUseCase,
   model,
   repo,
   UserUseCase,
@@ -10,6 +11,7 @@ import {
   AbstractAnswerDataType,
   AbstractQuestionChoiceType,
   ClearedInsertedUserDTO,
+  LaunchedTestingAccessScopeType,
   TestingAnalyticsModuleSupport,
 } from 'src/types';
 import { v4 as uuid } from 'uuid';
@@ -27,6 +29,7 @@ export class MockDataUseCase {
     private readonly abstractAnswerOptionRepo: repo.AbstractAnswerOptionRepo,
     private readonly userRepo: repo.UserRepo,
     private readonly abstractTestingUseCase: AbstractTestingUseCase,
+    private readonly launchedTestingUseCase: LaunchedTestingUseCase,
     private readonly tagRepo: repo.TagRepo,
     private readonly answerContributionRepo: repo.AnswerOptionIntoTagContributionRepo,
   ) {}
@@ -71,14 +74,18 @@ export class MockDataUseCase {
         ClearedInsertedUserDTO,
       ];
 
-      const { studentsGroup, teachersGroup, educationalSpace } =
-        await this.educationalSpaceUseCase.createEducationalSpace(
-          {
-            name: 'Первое образовательное пространство',
-            description: 'Описание первого образовательного пространства',
-          },
-          owner,
-        );
+      const {
+        studentsGroup,
+        teachersGroup,
+        spaceOwnersGroup,
+        educationalSpace,
+      } = await this.educationalSpaceUseCase.createEducationalSpace(
+        {
+          name: 'Первое образовательное пространство',
+          description: 'Описание первого образовательного пространства',
+        },
+        owner,
+      );
       await this.userToUserGroupRepo.createOnePlain({
         userId: teacher.id,
         userGroupId: teachersGroup.id,
@@ -112,12 +119,38 @@ export class MockDataUseCase {
         owner.id,
       );
 
+      const ownerUserAuthInfo = await this.userRepo.getOneByIdWithAccessScopes(
+        owner.id,
+      );
+
       await this.abstractTestingUseCase.addTestingToEducationalSpaceCatalog(
         {
           abstractTestingId: privateTesting.id,
           educationalSpaceId: educationalSpace.id,
         },
-        await this.userRepo.getOneByIdWithAccessScopes(owner.id),
+        ownerUserAuthInfo,
+      );
+
+      await this.launchedTestingUseCase.launchTesting(
+        {
+          abstractTestingId: privateTesting.id,
+          educationalSpaceId: educationalSpace.id,
+          accessScopes: [
+            {
+              userGroupId: teachersGroup.id,
+              type: LaunchedTestingAccessScopeType.VIEW_ANALYTICS,
+            },
+            {
+              userGroupId: spaceOwnersGroup.id,
+              type: LaunchedTestingAccessScopeType.VIEW_ANALYTICS,
+            },
+            {
+              userGroupId: studentsGroup.id,
+              type: LaunchedTestingAccessScopeType.MAKE_TESTING_ATTEMPTS,
+            },
+          ],
+        },
+        ownerUserAuthInfo,
       );
     } catch (error) {
       console.log('fillDBScript finished with error', error);
@@ -147,7 +180,7 @@ export class MockDataUseCase {
         },
       ])) as [model.TestingAnalyticsModule, model.TestingAnalyticsModule];
 
-    const [waterTag, fireTag, dirtTag, airTag] =
+    const [fireTag, waterTag, dirtTag, airTag] =
       (await this.tagRepo.createManyWithRelations([
         {
           name: 'Огонь',
@@ -221,7 +254,7 @@ export class MockDataUseCase {
           { testingAnalyticsModuleId: ownerAnalyticsModule.id },
           { testingAnalyticsModuleId: studentAnalyticsModule.id },
         ],
-        isAvailableToLaunch: true,
+        isReadyToUse: true,
       });
 
     const [waterStage, fireStage, dirtStage, airStage] =

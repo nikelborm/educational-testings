@@ -39,9 +39,18 @@ export class UserGroupRepo {
     });
   }
 
-  async getManyByIds(ids: number[]): Promise<Pick<UserGroup, 'id' | 'name'>[]> {
+  async getManyByIds(
+    ids: number[],
+  ): Promise<Pick<UserGroup, 'id' | 'name' | 'educationalSpaceId'>[]> {
     if (!ids.length) return [];
-    return await this.repo.findBy({ id: In(ids) });
+    return await this.repo.find({
+      where: { id: In(ids) },
+      select: {
+        id: true,
+        name: true,
+        educationalSpaceId: true,
+      },
+    });
   }
 
   async updateOneWithRelations(
