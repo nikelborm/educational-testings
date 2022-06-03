@@ -7,6 +7,7 @@ import {
 import {
   AbstractTestingForPassingDTO,
   AddTestingToEducationalSpaceCatalogDTO,
+  Depromise,
   EducationalSpaceAccessScopeType,
   GetAvailableForLaunchTestingsDTO,
   PublicAbstractTesting,
@@ -58,9 +59,8 @@ export class AbstractTestingUseCase {
     let availableForLaunchInGroups: Pick<model.UserGroup, 'id' | 'name'>[] = [];
 
     const canUserLaunchTestingsForAllGroups = doesUserHaveSpaceAccess(
-      user.userGroups.filter(
-        ({ educationalSpaceId: id }) => id === educationalSpaceId,
-      ),
+      user,
+      educationalSpaceId,
       EducationalSpaceAccessScopeType.MODIFY_LAUNCHED_TESTINGS,
     );
 
@@ -69,12 +69,14 @@ export class AbstractTestingUseCase {
         await this.userGroupRepo.getManyByEducationalSpace(educationalSpaceId);
     } else {
       const availableForLaunchInGroupIds = user.userGroups
+        .filter((group) => group.educationalSpaceId === educationalSpaceId)
         .flatMap(({ leaderInAccessScopes }) => leaderInAccessScopes)
         .filter(
           ({ type }) =>
             type === UserGroupManagementAccessScopeType.LAUNCH_TESTING,
         )
         .map(({ subordinateUserGroupId }) => subordinateUserGroupId);
+
       availableForLaunchInGroups = (
         await this.userGroupRepo.getManyByIds(availableForLaunchInGroupIds)
       ).map(({ id, name }) => ({ id, name }));
@@ -96,14 +98,49 @@ export class AbstractTestingUseCase {
       user.id,
     );
 
-    const didUserCreateThisTesting = abstractTestings.find(
-      ({ id }) => educationalSpaceTestingCatalogEntry.abstractTestingId === id,
+    this.assertUserCreateTesting(
+      abstractTestings,
+      educationalSpaceTestingCatalogEntry.abstractTestingId,
     );
 
-    if (!didUserCreateThisTesting)
-      throw new BadRequestException(messages.user.didntCreateAbstractTesting);
+    this.assertTestingWasntAlreadyAdded(
+      abstractTestings,
+      educationalSpaceTestingCatalogEntry,
+    );
 
-    const wasTestingAlreadyAdded = abstractTestings.some(
+    this.asserUserCanAddOwnTestingsToSpace(
+      user,
+      educationalSpaceTestingCatalogEntry.educationalSpaceId,
+    );
+
+    await this.availableForLaunchTestingRepo.createOnePlain(
+      educationalSpaceTestingCatalogEntry,
+    );
+  }
+
+  private asserUserCanAddOwnTestingsToSpace(
+    user: UserAuthInfo,
+    educationalSpaceId: number,
+  ): void {
+    const canUserAddOwnTestingsToThisSpace = doesUserHaveSpaceAccess(
+      user,
+      educationalSpaceId,
+      EducationalSpaceAccessScopeType.ADD_OWN_ABSTRACT_TESTINGS_INTO_EDUCATIONAL_SPACE_CATALOG,
+    );
+
+    if (!canUserAddOwnTestingsToThisSpace)
+      throw new BadRequestException(
+        messages.abstractTesting.cantBeAddedBecauseNoRights,
+      );
+  }
+
+  private assertTestingWasntAlreadyAdded(
+    abstractTestingsCreatedByUser: Depromise<
+      ReturnType<repo.AbstractTestingRepo['getManyCreatedBy']>
+    >,
+    educationalSpaceTestingCatalogEntry: AddTestingToEducationalSpaceCatalogDTO,
+  ): void {
+    const wasTestingAlreadyAdded = abstractTestingsCreatedByUser.some(
       ({ availableForLaunchInEducationalSpaces, id }) =>
         educationalSpaceTestingCatalogEntry.abstractTestingId === id &&
         availableForLaunchInEducationalSpaces.some(
@@ -117,26 +154,20 @@ export class AbstractTestingUseCase {
       throw new BadRequestException(
         messages.abstractTesting.alreadyAddedToSpace,
       );
+  }
 
-    const canUserAddOwnTestingsToThisSpace = user.userGroups.some(
-      (group) =>
-        group.educationalSpaceId ===
-          educationalSpaceTestingCatalogEntry.educationalSpaceId &&
-        group.educationalSpaceAccessScopes.some(
-          ({ type }) =>
-            type ===
-            EducationalSpaceAccessScopeType.ADD_OWN_ABSTRACT_TESTINGS_INTO_EDUCATIONAL_SPACE_CATALOG,
-        ),
+  private assertUserCreateTesting(
+    abstractTestingsCreatedByUser: Depromise<
+      ReturnType<repo.AbstractTestingRepo['getManyCreatedBy']>
+    >,
+    abstractTestingId: number,
+  ): void {
+    const didUserCreateThisTesting = abstractTestingsCreatedByUser.some(
+      ({ id }) => abstractTestingId === id,
     );
 
-    if (!canUserAddOwnTestingsToThisSpace)
-      throw new BadRequestException(
-        messages.abstractTesting.cantBeAddedBecauseNoRights,
-      );
-
-    await this.availableForLaunchTestingRepo.createOnePlain(
-      educationalSpaceTestingCatalogEntry,
-    );
+    if (!didUserCreateThisTesting)
+      throw new BadRequestException(messages.user.didntCreateAbstractTesting);
   }
 
   private async assertUserHaveAccessToViewAbstractTesting(

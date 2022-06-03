@@ -16,7 +16,6 @@ import {
   IAppConfigMap,
   MyEducationalSpacesDTO,
   UserAuthInfo,
-  UserAuthInfoTrimmedUserGroup,
   UserGroupManagementAccessScopeType,
 } from 'src/types';
 import { canUserInviteToGroup, doesUserHaveSpaceAccess } from 'src/tools';
@@ -155,15 +154,9 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
       throw new BadRequestException(messages.educationalSpace.cantView);
 
     const filterForLaunchedTestingIds =
-      await this.getLaunchedTestingIdsUserHaveAccessTo(
-        user.id,
-        id,
-        userGroupsFromThisSpace,
-      );
+      await this.getLaunchedTestingIdsUserHaveAccessTo(user, id);
 
-    const filterForUserGroupIds = this.getUserGroupIdsUserShouldKnowAbout(
-      userGroupsFromThisSpace,
-    );
+    const filterForUserGroupIds = this.getUserGroupIdsUserShouldKnow(user, id);
 
     const educationalSpace = await this.educationalSpaceRepo.getOneById(id, {
       filterForLaunchedTestingIds,
@@ -171,7 +164,8 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
     });
 
     const canUserInviteToAnyGroupInSpace = doesUserHaveSpaceAccess(
-      userGroupsFromThisSpace,
+      user,
+      id,
       EducationalSpaceAccessScopeType.MODIFY_USER_GROUPS,
     );
 
@@ -272,11 +266,9 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
       inviteToUserGroupId,
     );
 
-    const invitersUserGroupsFromThisSpace = inviter.userGroups.filter(
-      (group) => group.educationalSpaceId === educationalSpaceId,
-    );
     const canUserInviteToAnyGroupInSpace = doesUserHaveSpaceAccess(
-      invitersUserGroupsFromThisSpace,
+      inviter,
+      educationalSpaceId,
       EducationalSpaceAccessScopeType.MODIFY_USER_GROUPS,
     );
 
@@ -284,6 +276,7 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
       inviter,
       inviteToUserGroupId,
     );
+
     if (!canUserInviteToThisGroup && !canUserInviteToAnyGroupInSpace)
       throw new BadRequestException(
         messages.educationalSpace.inviterLostAccessToInvitePeople,
@@ -338,19 +331,23 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
   }
 
   private async getLaunchedTestingIdsUserHaveAccessTo(
-    userId: number,
+    user: UserAuthInfo,
     educationalSpaceId: number,
-    userGroupsFromThisSpace: UserAuthInfoTrimmedUserGroup[],
   ): Promise<number[] | 'all'> {
     const canUserViewAllLaunchedTestings = doesUserHaveSpaceAccess(
-      userGroupsFromThisSpace,
+      user,
+      educationalSpaceId,
       EducationalSpaceAccessScopeType.VIEW_LAUNCHED_TESTINGS,
     );
 
     if (canUserViewAllLaunchedTestings) return 'all';
 
+    const userGroupsFromThisSpace = user.userGroups.filter(
+      (group) => group.educationalSpaceId === educationalSpaceId,
+    );
+
     const launchedTestingIdsWhereUserMadeAtLeastOneAttempt = (
-      await this.testingAttemptRepo.findManyBy(userId, educationalSpaceId)
+      await this.testingAttemptRepo.findManyBy(user.id, educationalSpaceId)
     ).map(({ launchedTesting: { id } }) => id);
 
     const launchedTestingIdsWhereUserHaveAtLeastOneAccessScope =
@@ -368,15 +365,21 @@ export class EducationalSpaceUseCase implements OnModuleDestroy, OnModuleInit {
     ];
   }
 
-  private getUserGroupIdsUserShouldKnowAbout(
-    userGroupsFromThisSpace: UserAuthInfoTrimmedUserGroup[],
+  private getUserGroupIdsUserShouldKnow(
+    user: UserAuthInfo,
+    educationalSpaceId: number,
   ): number[] | 'all' {
     const canUserViewAllUserGroups = doesUserHaveSpaceAccess(
-      userGroupsFromThisSpace,
+      user,
+      educationalSpaceId,
       EducationalSpaceAccessScopeType.VIEW_USER_GROUPS,
     );
 
     if (canUserViewAllUserGroups) return 'all';
+
+    const userGroupsFromThisSpace = user.userGroups.filter(
+      (group) => group.educationalSpaceId === educationalSpaceId,
+    );
 
     const userGroupIdsOfUser = userGroupsFromThisSpace.map(({ id }) => id);
 

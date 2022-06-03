@@ -4,7 +4,7 @@ import { Get, ParseIntPipe, Post, Query, Req } from '@nestjs/common';
 import {
   AuthedRequest,
   EmptyResponseDTO,
-  GetLaunchedTestingForPassingResponseDTO,
+  GetLaunchedTestingResponseDTO,
   LaunchTestingDTO,
 } from 'src/types';
 
@@ -14,17 +14,14 @@ export class LaunchedTestingController {
     private readonly launchedTestingUseCase: LaunchedTestingUseCase,
   ) {}
 
-  @Get('getLaunchedTestingForPassingById')
+  @Get('getLaunchedTestingById')
   @AuthorizedOnly()
-  async getLaunchedTestingForPassingById(
+  async getLaunchedTestingById(
     @Query('id', ParseIntPipe) id: number,
     @Req() { user }: AuthedRequest,
-  ): Promise<GetLaunchedTestingForPassingResponseDTO> {
+  ): Promise<GetLaunchedTestingResponseDTO> {
     const launchedTesting =
-      await this.launchedTestingUseCase.getLaunchedTestingByIdForPassing(
-        id,
-        user,
-      );
+      await this.launchedTestingUseCase.getLaunchedTestingById(id, user);
     return { launchedTesting };
   }
 

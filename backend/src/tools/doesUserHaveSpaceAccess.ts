@@ -1,15 +1,15 @@
-import {
-  EducationalSpaceAccessScopeType,
-  UserAuthInfoTrimmedUserGroup,
-} from 'src/types';
+import { EducationalSpaceAccessScopeType, UserAuthInfo } from 'src/types';
 
 export function doesUserHaveSpaceAccess(
-  userGroupsFromSingleSpace: UserAuthInfoTrimmedUserGroup[],
-  SpaceLevelAccessScopeType: EducationalSpaceAccessScopeType,
+  user: UserAuthInfo,
+  educationalSpaceId: number,
+  spaceLevelAccessScopeType: EducationalSpaceAccessScopeType,
 ): boolean {
-  return userGroupsFromSingleSpace.some((group) =>
-    group.educationalSpaceAccessScopes.some(
-      (scope) => scope.type === SpaceLevelAccessScopeType,
-    ),
+  return user.userGroups.some(
+    (group) =>
+      group.educationalSpaceId === educationalSpaceId &&
+      group.educationalSpaceAccessScopes.some(
+        (scope) => scope.type === spaceLevelAccessScopeType,
+      ),
   );
 }

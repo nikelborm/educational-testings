@@ -1,10 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { messages } from 'src/config';
-import { assertUserCanLaunchTestings, CreatedEntity } from 'src/tools';
+import {
+  assertUserCanLaunchTestings,
+  CreatedEntity,
+  doesUserHaveTestingAccess,
+} from 'src/tools';
 import {
   Depromise,
   LaunchedTestingAccessScopeType,
-  LaunchedTestingForPassingDTO,
+  LaunchedTestingDTO,
   LaunchTestingDTO,
   UserAuthInfo,
 } from 'src/types';
@@ -24,16 +28,22 @@ export class LaunchedTestingUseCase {
     private readonly abstractTestingUseCase: AbstractTestingUseCase,
   ) {}
 
-  async getLaunchedTestingByIdForPassing(
-    launchedTestingId: number,
+  async getLaunchedTestingById(
+    id: number,
     user: UserAuthInfo,
-  ): Promise<LaunchedTestingForPassingDTO> {
-    this.assertUserHaveAccessToPassLaunchedTesting(launchedTestingId, user);
+  ): Promise<LaunchedTestingDTO> {
+    const doesUserHaveAccessToPassLaunchedTesting =
+      doesUserHaveTestingAccess(
+        user,
+        id,
+        LaunchedTestingAccessScopeType.MAKE_TESTING_ATTEMPTS,
+      );
+
+    if (!doesUserHaveAccessToPassLaunchedTesting)
+      return await this.launchedTestingRepo.getOneById(id);
 
     const launchedTesting =
-      await this.launchedTestingRepo.getOneByIdWithNestedInstances(
-        launchedTestingId,
-      );
+      await this.launchedTestingRepo.getOneByIdWithNestedInstances(id);
 
     const abstractTesting =
       await this.abstractTestingUseCase.getAbstractTestingWithQuestions(
@@ -63,7 +73,7 @@ export class LaunchedTestingUseCase {
     });
 
     await this.assertAllUserGroupsExistAndFromSpecifiedEducationalSpace(
-      accessScopes.map(({ userGroupId }) => userGroupId),
+      [...new Set(accessScopes.map(({ userGroupId }) => userGroupId))],
       educationalSpaceId,
     );
 
@@ -128,37 +138,6 @@ export class LaunchedTestingUseCase {
     if (spaceIds.size !== 1 || !spaceIds.has(educationalSpaceId))
       throw new BadRequestException(
         messages.userGroup.notFromSingleEducationalSpace,
-      );
-  }
-
-  private assertUserHaveAccessToPassLaunchedTesting(
-    launchedTestingIdToSearch: number,
-    user: UserAuthInfo,
-  ): void {
-    this.assertUserHaveAccessScopeWithTypeInLaunchedTesting(
-      launchedTestingIdToSearch,
-      user,
-      LaunchedTestingAccessScopeType.MAKE_TESTING_ATTEMPTS,
-    );
-  }
-
-  private assertUserHaveAccessScopeWithTypeInLaunchedTesting(
-    launchedTestingIdToSearch: number,
-    user: UserAuthInfo,
-    typeOfWishedScope: LaunchedTestingAccessScopeType,
-  ): void {
-    const doesUserHaveAccessToPassLaunchedTesting = user.userGroups.some(
-      (group) =>
-        group.launchedTestingAccessScopes.some(
-          ({ launchedTestingId, type }) =>
-            launchedTestingId === launchedTestingIdToSearch &&
-            type === typeOfWishedScope,
-        ),
-    );
-
-    if (!doesUserHaveAccessToPassLaunchedTesting)
-      throw new BadRequestException(
-        messages.launchedTestings.wasntAddedToCatalog,
       );
   }
 

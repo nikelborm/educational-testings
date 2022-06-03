@@ -6,6 +6,7 @@ export * from './canUserInviteToGroup';
 export * from './countValid';
 export * from './decorators';
 export * from './difference';
+export * from './doesUserHaveTestingAccess';
 export * from './doesUserHaveSpaceAccess';
 export * from './enumWithUUIDsValidator';
 export * from './getRedundantAndMissingsValues';
