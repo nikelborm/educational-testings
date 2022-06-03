@@ -9,7 +9,9 @@ export function PublicTestings() {
     <Row gutter={[16, 16]}>
       {abstractTestings?.map(({ description, id, name, goal }) => (
         <Col span={8} key={id}>
-          <Link to={`/account/${RoutesEnum.LAUNCHED_TESTING_VIEW}?id=${id}`}>
+          <Link
+            to={`/account/${RoutesEnum.ABSTRACT_TESTING_DEMO_PASSING}?id=${id}`}
+          >
             <Card title={name}>
               <p style={{ fontWeight: 'bold' }}>Цель:</p>
               <p>{goal}</p>

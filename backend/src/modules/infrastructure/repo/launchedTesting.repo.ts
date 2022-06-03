@@ -19,6 +19,21 @@ export class LaunchedTestingRepo {
     private readonly repo: Repository<LaunchedTesting>,
   ) {}
 
+  async getOneByIdWithNestedInstances(id: number): Promise<LaunchedTesting> {
+    const launchedTesting = await this.repo.findOne({
+      where: { id },
+      relations: {
+        questionInstances: true,
+        answerOptionInstances: true,
+      },
+    });
+    if (!launchedTesting)
+      throw new BadRequestException(
+        messages.repo.common.cantGetNotFoundById(id, 'launchedTesting'),
+      );
+    return launchedTesting;
+  }
+
   async getOneById(id: number): Promise<LaunchedTesting> {
     const launchedTesting = await this.repo.findOne({
       where: { id },

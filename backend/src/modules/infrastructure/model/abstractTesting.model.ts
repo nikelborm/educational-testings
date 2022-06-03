@@ -56,11 +56,11 @@ export class AbstractTesting {
   createdByUserId!: number;
 
   @Column({
-    name: 'is_available_to_launch',
+    name: 'is_ready_to_use',
     nullable: false,
     default: false,
   })
-  isAvailableToLaunch!: boolean;
+  isReadyToUse!: boolean;
 
   @Column({
     name: 'is_public',

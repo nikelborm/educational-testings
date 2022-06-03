@@ -135,7 +135,8 @@ export function updateTokenPair(tokenPair: TokenPairDTO | null) {
 
 export function useTokenPairUpdater() {
   return {
-    requestTokenPairRefreshing: authStore.requestTokenPairRefreshing,
+    requestTokenPairRefreshing:
+      authStore.requestTokenPairRefreshing.bind(authStore),
     updateTokenPair,
   };
 }

@@ -1,6 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
 import { messages } from 'src/config';
-import { model } from 'src/modules';
 import {
   EducationalSpaceAccessScopeType,
   LaunchTestingAccessScopeDTO,

@@ -39,7 +39,7 @@ export class Init1653388721512 implements MigrationInterface {
         "description" character varying,
         "goal" character varying NOT NULL,
         "created_by_user_id" integer NOT NULL,
-        "is_available_to_launch" boolean NOT NULL DEFAULT false,
+        "is_ready_to_use" boolean NOT NULL DEFAULT false,
         "is_public" boolean NOT NULL DEFAULT false,
         "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
         "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),

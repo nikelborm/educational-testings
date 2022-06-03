@@ -7,12 +7,14 @@ export enum RoutesEnum {
   /*  3 */ USER_SETTINGS = 'userSettings',
   /*  4 */ MY_EDUCATIONAL_SPACES = 'myEducationalSpaces',
   /*  5 */ EDUCATIONAL_SPACE_VIEW = 'educationalSpaceView',
+
   /*  6 */ EDUCATIONAL_SPACE_EDIT = 'educationalSpaceEdit',
   /*  7 */ USER_GROUP_VIEW = 'userGroupView',
   /*  8 */ USER_GROUP_EDIT = 'userGroupEdit',
   /*  9 */ AVAILABLE_TESTINGS = 'availableTestings',
   /* 10 */ LAUNCHED_TESTING_VIEW = 'launchedTestingView',
   /* 11 */ PASSING_TESTING_STAGE = 'passingTestingStage',
+
   /* 12 */ ERROR_404 = '404',
   /* 13 */ ROOT = '/', // landing
   /* 14 */ PUBLIC_TESTINGS = 'publicTestings',
@@ -21,6 +23,8 @@ export enum RoutesEnum {
   /* 17 */ EXISTING_TAGS = 'existingTags',
   /* 18 */ USE_INVITE_LINK = 'useInviteLink',
   /* 19 */ TAG_VIEW = 'tagView',
+
+  /* __ */ ABSTRACT_TESTING_DEMO_PASSING = 'abstractTestingDemoPassing',
 }
 
 export interface SimpleRouteEntity {
