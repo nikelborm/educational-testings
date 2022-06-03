@@ -1,7 +1,7 @@
 import { Get, ParseIntPipe, Query, Req } from '@nestjs/common';
 import { AbstractTestingUseCase } from './abstractTesting.useCase';
 import {
-  AbstractTestingForPassingResponseDTO,
+  GetAbstractTestingForPassingResponseDTO,
   AuthedRequest,
   GetAvailableForLaunchTestingsDTO,
   GetPublicAbstractTestings,
@@ -19,7 +19,7 @@ export class AbstractTestingController {
   async getAbstractTestingForPassingById(
     @Query('id', ParseIntPipe) id: number,
     @Req() { user }: AuthedRequest,
-  ): Promise<AbstractTestingForPassingResponseDTO> {
+  ): Promise<GetAbstractTestingForPassingResponseDTO> {
     const abstractTesting =
       await this.abstractTestingUseCase.getAbstractTestingForPublicDemoPassingById(
         id,
