@@ -1,10 +1,10 @@
 import { AbstractTestingForPassingDTO } from './abstractTestingForPassing.response.dto';
 
-export class GetLaunchedTestingForPassingResponseDTO {
-  launchedTesting!: LaunchedTestingForPassingDTO;
+export class GetLaunchedTestingResponseDTO {
+  launchedTesting!: LaunchedTestingDTO;
 }
 
-export class LaunchedTestingForPassingDTO {
+export class LaunchedTestingDTO {
   id!: number;
   openingDate?: Date;
   closingDate?: Date;

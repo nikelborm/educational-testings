@@ -1,14 +1,14 @@
 import { useQuery } from 'react-query';
 import { customFetch } from 'utils';
-import { GetAbstractTestingForPassingResponseDTO } from 'backendTypes';
+import { GetLaunchedTestingResponseDTO } from 'backendTypes';
 
-export function useAbstractTestingForDemoPassing(id: number) {
+export function useLaunchedTestingById(id: number) {
   const { isLoading, isError, isSuccess, data } = useQuery(
-    ['useAbstractTestingForDemoPassing', id],
+    ['useLaunchedTestingById', id],
     () =>
       // TODO оказывается реакт квери поставляет уже сама аборт сигнал так что его только вшить надо в customFetch
-      customFetch<GetAbstractTestingForPassingResponseDTO>(
-        'abstractTesting/getAbstractTestingForPassingById',
+      customFetch<GetLaunchedTestingResponseDTO>(
+        'launchedTesting/getLaunchedTestingById',
         {
           params: { id },
           method: 'GET',
@@ -19,6 +19,6 @@ export function useAbstractTestingForDemoPassing(id: number) {
     isLoading,
     isError,
     isSuccess,
-    abstractTesting: data?.abstractTesting,
+    launchedTesting: data?.launchedTesting,
   };
 }

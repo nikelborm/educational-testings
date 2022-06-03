@@ -6,6 +6,7 @@ import {
   UserAuthInfo,
   UserGroupManagementAccessScopeType,
 } from 'src/types';
+import { doesUserHaveGroupAccess } from './doesUserHaveGroupAccess';
 import { doesUserHaveSpaceAccess } from './doesUserHaveSpaceAccess';
 
 export const assertUserCanLaunchTestings = (
@@ -21,27 +22,20 @@ export const assertUserCanLaunchTestings = (
       },
 ): void => {
   const canUserLaunchTestings = doesUserHaveSpaceAccess(
-    user.userGroups.filter(
-      ({ educationalSpaceId: id }) => id === educationalSpaceId,
-    ),
+    user,
+    educationalSpaceId,
     EducationalSpaceAccessScopeType.MODIFY_LAUNCHED_TESTINGS,
   );
 
   let shouldThrowError: () => boolean;
 
   if (mode.canUserLaunchFor === 'specificGroups') {
-    const possibleAccessScopesRelatedToTestingsLaunch = user.userGroups
-      .flatMap(({ leaderInAccessScopes }) => leaderInAccessScopes)
-      .filter(
-        ({ type }) =>
-          type === UserGroupManagementAccessScopeType.LAUNCH_TESTING,
-      );
-
     const doesUserCanLaunchTestingsInEachGroup = mode.scopesToCheck?.length
       ? mode.scopesToCheck.every(({ userGroupId }) =>
-          possibleAccessScopesRelatedToTestingsLaunch.some(
-            ({ subordinateUserGroupId }) =>
-              userGroupId === subordinateUserGroupId,
+          doesUserHaveGroupAccess(
+            user,
+            userGroupId,
+            UserGroupManagementAccessScopeType.LAUNCH_TESTING,
           ),
         )
       : false;
