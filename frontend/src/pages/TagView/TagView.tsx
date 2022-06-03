@@ -9,11 +9,11 @@ export function TagView() {
   return (
     <>
       <Typography.Title level={4} style={{ fontWeight: 'bold' }}>
-        Name
+        Название
       </Typography.Title>
       <p>{tag?.name}</p>
       <Typography.Title level={4} style={{ fontWeight: 'bold' }}>
-        Description
+        Описание
       </Typography.Title>
       <p>{tag?.description}</p>
     </>

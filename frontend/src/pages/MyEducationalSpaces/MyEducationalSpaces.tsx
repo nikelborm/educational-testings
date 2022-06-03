@@ -27,7 +27,7 @@ export function MyEducationalSpaces() {
       })}
       columns={[
         {
-          title: 'Name',
+          title: 'Название',
           dataIndex: 'name',
           key: 'name',
           sorter: (a, b) => a.name.localeCompare(b.name),
@@ -35,13 +35,13 @@ export function MyEducationalSpaces() {
           width: '30%',
         },
         {
-          title: 'Description',
+          title: 'Описание',
           dataIndex: 'description',
           key: 'description',
           width: '40%',
         },
         {
-          title: 'Your groups',
+          title: 'Группы, в которых вы состоите',
           dataIndex: 'userGroups',
           key: 'userGroups',
           width: '30%',

@@ -1,3 +1,5 @@
+import { TestingAnalyticsModuleSupport } from '../../model';
+
 export class GetAvailableForLaunchTestingsDTO {
   availableForLaunchTestings!: AvailableForLaunchTestingDTO[];
   availableForLaunchInGroups!: AvailableForLaunchInGroupDTO[];
@@ -13,4 +15,13 @@ export class AvailableForLaunchTestingDTO {
   name!: string;
   description?: string;
   goal!: string;
+  analyticsModules!: AnalyticsModuleOfAvailableForLaunchTestingDTO[];
+}
+
+export class AnalyticsModuleOfAvailableForLaunchTestingDTO {
+  id!: number;
+  uuid!: string;
+  name!: string;
+  description?: string;
+  support!: TestingAnalyticsModuleSupport;
 }

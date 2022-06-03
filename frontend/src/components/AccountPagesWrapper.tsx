@@ -52,7 +52,7 @@ export function AccountPagesWrapper({
               disabled: true,
             },
             {
-              label: 'Logout',
+              label: 'Выход из аккаунта',
               key: 'logout',
               icon: <LogoutOutlined />,
               onClick: () => updateTokenPair(null),

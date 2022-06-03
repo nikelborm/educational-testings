@@ -35,7 +35,7 @@ export class AbstractTestingRepo {
     });
   }
 
-  async getOneWithQuestionsById(id: number): Promise<AbstractTesting> {
+  async getOneByIdForPassing(id: number): Promise<AbstractTesting> {
     const abstractTesting = await this.repo.findOne({
       where: { id },
       relations: {
@@ -128,11 +128,17 @@ export class AbstractTestingRepo {
         'abstractTesting.name',
         'abstractTesting.description',
         'abstractTesting.goal',
+        'analyticsModules.id',
+        'analyticsModules.uuid',
+        'analyticsModules.description',
+        'analyticsModules.name',
+        'analyticsModules.support',
       ])
       .leftJoin(
         'abstractTesting.availableForLaunchInEducationalSpaces',
         'availableForLaunchInEducationalSpaces',
       )
+      .leftJoin('abstractTesting.analyticsModules', 'analyticsModules')
       .where(
         'availableForLaunchInEducationalSpaces.id = :educationalSpaceId AND abstractTesting.isReadyToUse',
         { educationalSpaceId },
