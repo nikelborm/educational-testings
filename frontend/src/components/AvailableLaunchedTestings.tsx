@@ -5,8 +5,12 @@ import {
   LaunchedTestingInsideEducationalSpaceFromDBDTO,
 } from 'backendTypes';
 import { useNavigate } from 'react-router-dom';
-import { RoutesEnum } from 'types';
-import { renderTags, useSession } from 'utils';
+import { ISession, RoutesEnum } from 'types';
+import {
+  doesUserHaveAccessInLaunchedTesting,
+  renderTags,
+  useSession,
+} from 'utils';
 
 export function AvailableLaunchedTestings({
   launchedTestings,
@@ -60,58 +64,54 @@ export function AvailableLaunchedTestings({
           {
             title: 'Ваши права в тестировании',
             dataIndex: 'rights',
-            render: (_, data) =>
-              renderTags([
-                ...(session.isAuthed &&
-                session.accessToken.payload.user.userGroups.some((group) =>
-                  group.launchedTestingAccessScopes.some(
-                    (scope) =>
-                      scope.launchedTestingId === data.id &&
-                      scope.type ===
-                        LaunchedTestingAccessScopeType.MAKE_TESTING_ATTEMPTS,
-                  ),
-                )
-                  ? ['Проходить тестирование']
-                  : []),
-                ...(session.isAuthed &&
-                session.accessToken.payload.user.userGroups.some((group) =>
-                  group.launchedTestingAccessScopes.some(
-                    (scope) =>
-                      scope.launchedTestingId === data.id &&
-                      scope.type ===
-                        LaunchedTestingAccessScopeType.VIEW_ANALYTICS,
-                  ),
-                )
-                  ? ['Смотреть аналитику по всем прошедшим']
-                  : []),
-                ...(session.isAuthed &&
-                session.accessToken.payload.user.userGroups.some((group) =>
-                  group.launchedTestingAccessScopes.some(
-                    (scope) =>
-                      scope.launchedTestingId === data.id &&
-                      scope.type ===
-                        LaunchedTestingAccessScopeType.VIEW_USERS_FINISHED_TESTING,
-                  ),
-                )
-                  ? ['Смотреть список тех, кто прошёл тестирование']
-                  : []),
-                ...(session.isAuthed &&
-                session.accessToken.payload.user.userGroups.some(
-                  (group) =>
-                    group.educationalSpaceId === educationalSpaceId &&
-                    group.educationalSpaceAccessScopes.some(
-                      (scope) =>
-                        scope.type ===
-                        EducationalSpaceAccessScopeType.VIEW_LAUNCHED_TESTINGS,
-                    ),
-                )
-                  ? ['Видеть все запущенные тестирования']
-                  : []),
-              ]),
             key: 'rights',
+            render: (_, data) =>
+              renderUserRightsInLaunchedTesting(
+                session,
+                data.id,
+                educationalSpaceId,
+              ),
           },
         ]}
       />
     </>
   );
+}
+
+function renderUserRightsInLaunchedTesting(
+  session: ISession,
+  launchedTestingId: number,
+  educationalSpaceId: number,
+) {
+  const tags: string[] = [];
+  const doesUserHaveAccessFor = doesUserHaveAccessInLaunchedTesting(
+    session,
+    launchedTestingId,
+  );
+  if (
+    doesUserHaveAccessFor(LaunchedTestingAccessScopeType.MAKE_TESTING_ATTEMPTS)
+  )
+    tags.push('Проходить тестирование');
+  if (doesUserHaveAccessFor(LaunchedTestingAccessScopeType.VIEW_ANALYTICS))
+    tags.push('Смотреть аналитику по всем прошедшим');
+  if (
+    doesUserHaveAccessFor(
+      LaunchedTestingAccessScopeType.VIEW_USERS_FINISHED_TESTING,
+    )
+  )
+    tags.push('Смотреть список тех, кто прошёл тестирование');
+  if (
+    session.isAuthed &&
+    session.accessToken.payload.user.userGroups.some(
+      (group) =>
+        group.educationalSpaceId === educationalSpaceId &&
+        group.educationalSpaceAccessScopes.some(
+          (scope) =>
+            scope.type ===
+            EducationalSpaceAccessScopeType.VIEW_LAUNCHED_TESTINGS,
+        ),
+    )
+  )
+    tags.push('Видеть все запущенные тестирования');
+  return renderTags(tags);
 }

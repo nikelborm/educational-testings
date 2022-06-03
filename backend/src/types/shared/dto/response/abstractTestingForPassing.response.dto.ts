@@ -4,7 +4,7 @@ import {
   TestingAnalyticsModuleSupport,
 } from '../../model';
 
-export class AbstractTestingForPassingResponseDTO {
+export class GetAbstractTestingForPassingResponseDTO {
   abstractTesting!: AbstractTestingForPassingDTO;
 }
 

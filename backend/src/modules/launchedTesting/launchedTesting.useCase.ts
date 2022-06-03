@@ -4,6 +4,7 @@ import { assertUserCanLaunchTestings, CreatedEntity } from 'src/tools';
 import {
   Depromise,
   LaunchedTestingAccessScopeType,
+  LaunchedTestingForPassingDTO,
   LaunchTestingDTO,
   UserAuthInfo,
 } from 'src/types';
@@ -26,7 +27,7 @@ export class LaunchedTestingUseCase {
   async getLaunchedTestingByIdForPassing(
     launchedTestingId: number,
     user: UserAuthInfo,
-  ): Promise<DeepPartial<model.LaunchedTesting>> {
+  ): Promise<LaunchedTestingForPassingDTO> {
     this.assertUserHaveAccessToPassLaunchedTesting(launchedTestingId, user);
 
     const launchedTesting =

@@ -1,13 +1,32 @@
 import { LaunchedTestingUseCase } from './launchedTesting.useCase';
 import { ApiController, AuthorizedOnly, ValidatedBody } from 'src/tools';
-import { Post, Req } from '@nestjs/common';
-import { AuthedRequest, EmptyResponseDTO, LaunchTestingDTO } from 'src/types';
+import { Get, ParseIntPipe, Post, Query, Req } from '@nestjs/common';
+import {
+  AuthedRequest,
+  EmptyResponseDTO,
+  GetLaunchedTestingForPassingResponseDTO,
+  LaunchTestingDTO,
+} from 'src/types';
 
 @ApiController('launchedTesting')
 export class LaunchedTestingController {
   constructor(
     private readonly launchedTestingUseCase: LaunchedTestingUseCase,
   ) {}
+
+  @Get('getLaunchedTestingForPassingById')
+  @AuthorizedOnly()
+  async getLaunchedTestingForPassingById(
+    @Query('id', ParseIntPipe) id: number,
+    @Req() { user }: AuthedRequest,
+  ): Promise<GetLaunchedTestingForPassingResponseDTO> {
+    const launchedTesting =
+      await this.launchedTestingUseCase.getLaunchedTestingByIdForPassing(
+        id,
+        user,
+      );
+    return { launchedTesting };
+  }
 
   @Post('create')
   @AuthorizedOnly()
