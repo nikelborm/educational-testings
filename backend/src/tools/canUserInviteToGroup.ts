@@ -1,13 +1,12 @@
 import { UserAuthInfo, UserGroupManagementAccessScopeType } from 'src/types';
+import { doesUserHaveGroupAccess } from './doesUserHaveGroupAccess';
 
 export const canUserInviteToGroup = (
   inviter: UserAuthInfo,
   groupIdToBeInvitedTo: number,
 ): boolean =>
-  inviter.userGroups.some((userGroup) =>
-    userGroup.leaderInAccessScopes.some(
-      (scope) =>
-        scope.subordinateUserGroupId === groupIdToBeInvitedTo &&
-        scope.type === UserGroupManagementAccessScopeType.INVITE_USERS,
-    ),
+  doesUserHaveGroupAccess(
+    inviter,
+    groupIdToBeInvitedTo,
+    UserGroupManagementAccessScopeType.INVITE_USERS,
   );

@@ -6,6 +6,9 @@
     {
       "label": "Build docker node container",
       "type": "shell",
+      "dependsOn": [
+        "Use docker builder"
+      ],
       "command": "cat ./node.Dockerfile; docker buildx build --push --platform=linux/amd64,linux/arm64/v8 -t nikelborm/node - < node.Dockerfile",
       "problemMatcher": [],
       "promptOnClose": true
@@ -13,20 +16,19 @@
     {
       "label": "Run dev",
       "type": "shell",
+      "dependsOn": [
+        "Use docker builder"
+      ],
       "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml up --build --remove-orphans --force-recreate",
-      "problemMatcher": [],
-      "promptOnClose": true
-    },
-    {
-      "label": "Run dev detached",
-      "type": "shell",
-      "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml up --build -d --remove-orphans --force-recreate",
       "problemMatcher": [],
       "promptOnClose": true
     },
     {
       "label": "Run prod",
       "type": "shell",
+      "dependsOn": [
+        "Use docker builder"
+      ],
       "command": ". env/template; docker-compose -f ./docker-compose.yaml up --build --remove-orphans -d; echo; echo $(docker inspect -f \"{{(index .NetworkSettings.Networks \\`${COMPOSE_PROJECT_NAME}_nginx-back-net\\`).IPAddress}}\" ${COMPOSE_PROJECT_NAME}_nginx-prod_1):${INNER_NGINX_HTTP_PORT}",
       "problemMatcher": [],
       "promptOnClose": true
@@ -34,6 +36,9 @@
     {
       "label": "Build multiplatform production",
       "type": "shell",
+      "dependsOn": [
+        "Use docker builder"
+      ],
       "command": ". env/template; docker buildx bake -f docker-compose.yml --set *.platform=linux/amd64,linux/arm64/v8 --pull --push",
       "problemMatcher": [],
       "promptOnClose": true
@@ -41,7 +46,10 @@
     {
       "label": "ormgen database",
       "type": "shell",
-      "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml exec backend-dev sh ./scripts/ormgen.sh",
+      "dependsOn": [
+        "Run dev"
+      ],
+      "command": ". env/template; docker-compose exec backend-prod sh ./scripts/ormgen.sh",
       "problemMatcher": [],
       "promptOnClose": true
     },
@@ -49,35 +57,37 @@
       "label": "migrate database",
       "type": "shell",
       "dependsOn": [
-        "Run dev detached"
+        "Run dev"
       ],
-      "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml exec backend-dev sh ./scripts/migrate.sh",
+      "command": ". env/template; docker-compose exec backend-prod sh ./scripts/migrate.sh",
       "problemMatcher": [],
       "promptOnClose": true
     },
     {
       "label": "drop database",
       "type": "shell",
-      "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml exec backend-dev sh ./scripts/drop.sh",
-      "problemMatcher": [],
-      "promptOnClose": true
-    },
-    {
-      "label": "mock",
-      "type": "shell",
-      "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml exec backend-dev rm wasMockScriptCalledOnStartup",
       "dependsOn": [
-        "recreate database"
+        "Run dev"
       ],
+      "command": ". env/template; docker-compose exec backend-prod sh ./scripts/drop.sh",
       "problemMatcher": [],
       "promptOnClose": true
     },
     {
       "label": "recreate database",
       "type": "shell",
-      "command": ". env/template; docker-compose -f ./docker-compose.dev.yaml exec backend-dev sh ./scripts/recreate.sh",
+      "dependsOn": [
+        "Run dev"
+      ],
+      "command": ". env/template; docker-compose exec backend-prod sh ./scripts/recreate.sh",
       "problemMatcher": [],
       "promptOnClose": true
+    },
+    {
+      "label": "Create new docker builder",
+      "type": "shell",
+      "command": "docker buildx create --name mybuilder --platform=linux/arm64,linux/amd64",
+      "promptOnClose": false
     },
     {
       "label": "Upgrade backend dependencies",
@@ -114,9 +124,8 @@
     {
       "label": "Use docker builder",
       "type": "shell",
-      "command": "docker run --privileged --rm tonistiigi/binfmt --install all;docker buildx create --name mybuilder --platform=linux/arm64/v8,linux/amd64;docker buildx use mybuilder",
-      "promptOnClose": false,
-      "problemMatcher": []
+      "command": "docker run --privileged --rm tonistiigi/binfmt --install all;docker buildx use mybuilder",
+      "promptOnClose": false
     },
     {
       "label": "clear docker",

@@ -6,11 +6,7 @@ import {
 } from 'backendTypes';
 import { useNavigate } from 'react-router-dom';
 import { ISession, RoutesEnum } from 'types';
-import {
-  doesUserHaveAccessInLaunchedTesting,
-  renderTags,
-  useSession,
-} from 'utils';
+import { doesUserHaveTestingAccess, renderTags, useSession } from 'utils';
 
 export function AvailableLaunchedTestings({
   launchedTestings,
@@ -84,22 +80,29 @@ function renderUserRightsInLaunchedTesting(
   educationalSpaceId: number,
 ) {
   const tags: string[] = [];
-  const doesUserHaveAccessFor = doesUserHaveAccessInLaunchedTesting(
-    session,
-    launchedTestingId,
-  );
+  const doesUserHaveAccessFor = (type: LaunchedTestingAccessScopeType) =>
+    session.isAuthed &&
+    doesUserHaveTestingAccess(
+      session.accessToken.payload.user,
+      launchedTestingId,
+      type,
+    );
+
   if (
     doesUserHaveAccessFor(LaunchedTestingAccessScopeType.MAKE_TESTING_ATTEMPTS)
   )
     tags.push('Проходить тестирование');
+
   if (doesUserHaveAccessFor(LaunchedTestingAccessScopeType.VIEW_ANALYTICS))
     tags.push('Смотреть аналитику по всем прошедшим');
+
   if (
     doesUserHaveAccessFor(
       LaunchedTestingAccessScopeType.VIEW_USERS_FINISHED_TESTING,
     )
   )
     tags.push('Смотреть список тех, кто прошёл тестирование');
+
   if (
     session.isAuthed &&
     session.accessToken.payload.user.userGroups.some(

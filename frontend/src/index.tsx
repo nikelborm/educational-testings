@@ -9,7 +9,6 @@ import {
 
 import './assets/styles/index.css';
 import './types';
-import 'reflect-metadata';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import App from './App';
