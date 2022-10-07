@@ -1,3 +1,4 @@
+import { TestingAttemptStatus } from '../../model';
 import { AbstractTestingForPassingDTO } from './abstractTestingForPassing.response.dto';
 
 export class GetLaunchedTestingResponseDTO {
@@ -17,5 +18,22 @@ export class LaunchedTestingDTO {
     id: number;
     abstractAnswerOptionId: number;
   }[];
-  abstractTesting!: AbstractTestingForPassingDTO;
+  abstractTesting?: {
+    id: number;
+    name: string;
+    description?: string;
+    goal: string;
+    isReadyToUse: boolean;
+    isPublic: boolean;
+  };
+  testingAttempts?: {
+    id: number;
+    status: TestingAttemptStatus;
+    givenAnswers: {
+      id: number;
+      freeFieldAnswer?: string;
+      answerOptionInstance: {}
+    }[];
+  }[];
+  abstractTestingForPassingAndAnalytics?: AbstractTestingForPassingDTO;
 }

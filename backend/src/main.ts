@@ -5,7 +5,6 @@ import { ConfigService } from '@nestjs/config';
 import { WsAdapter } from '@nestjs/platform-ws';
 import { logConfig } from './tools';
 import { ConfigKeys, IAppConfigMap } from './types';
-import 'reflect-metadata';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { MockDataUseCase } from './mock';

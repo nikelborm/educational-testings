@@ -120,6 +120,7 @@ services:
 
   postgres-admin:
     image: dpage/pgadmin4:latest
+    restart: always
     depends_on:
       - postgres-dev
     environment:

@@ -135,7 +135,7 @@ export const routesOnlyForAuthedUsers: RoutesMap<AuthedRouteEntity> = {
   },
   [RoutesEnum.LAUNCHED_TESTING_VIEW]: {
     Component: LaunchedTestingView,
-    pageTitle: 'Launched testing view',
+    pageTitle: 'Запущенное тестирование',
     canUserOpenThisRoute: () => true,
   },
   [RoutesEnum.PASSING_TESTING_STAGE]: {

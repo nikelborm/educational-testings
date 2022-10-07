@@ -34,9 +34,40 @@ export class LaunchedTestingRepo {
     return launchedTesting;
   }
 
-  async getOneById(id: number): Promise<LaunchedTesting> {
+  async getOneByIdWithNestedInstancesAndAttempts(
+    id: number,
+  ): Promise<LaunchedTesting> {
     const launchedTesting = await this.repo.findOne({
       where: { id },
+      relations: {
+        testingAttempts: {
+          givenAnswers: {
+            answerOptionInstance: {
+              abstractAnswerOption: {
+                contributions: {
+                  tag: true,
+                },
+              },
+            },
+          },
+        },
+        questionInstances: true,
+        answerOptionInstances: true,
+      },
+    });
+    if (!launchedTesting)
+      throw new BadRequestException(
+        messages.repo.common.cantGetNotFoundById(id, 'launchedTesting'),
+      );
+    return launchedTesting;
+  }
+
+  async getOneByIdWithAbstractTesting(id: number): Promise<LaunchedTesting> {
+    const launchedTesting = await this.repo.findOne({
+      where: { id },
+      relations: {
+        abstractTesting: true,
+      },
     });
     if (!launchedTesting)
       throw new BadRequestException(

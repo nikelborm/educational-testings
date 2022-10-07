@@ -12,7 +12,6 @@ import {
   LaunchTestingDTO,
   UserAuthInfo,
 } from 'src/types';
-import { DeepPartial } from 'typeorm';
 import { AbstractTestingUseCase } from '../abstractTesting';
 import { model, repo } from '../infrastructure';
 
@@ -32,27 +31,33 @@ export class LaunchedTestingUseCase {
     id: number,
     user: UserAuthInfo,
   ): Promise<LaunchedTestingDTO> {
-    const doesUserHaveAccessToPassLaunchedTesting =
-      doesUserHaveTestingAccess(
-        user,
-        id,
-        LaunchedTestingAccessScopeType.MAKE_TESTING_ATTEMPTS,
-      );
+    const doesUserHaveRightsToViewAnalytics = doesUserHaveTestingAccess(
+      user,
+      id,
+      LaunchedTestingAccessScopeType.VIEW_ANALYTICS,
+    );
+    const doesUserHaveRightsToMakeAttempts = doesUserHaveTestingAccess(
+      user,
+      id,
+      LaunchedTestingAccessScopeType.MAKE_TESTING_ATTEMPTS,
+    );
 
-    if (!doesUserHaveAccessToPassLaunchedTesting)
-      return await this.launchedTestingRepo.getOneById(id);
+    if (!doesUserHaveRightsToMakeAttempts && !doesUserHaveRightsToViewAnalytics)
+      return await this.launchedTestingRepo.getOneByIdWithAbstractTesting(id);
 
-    const launchedTesting =
-      await this.launchedTestingRepo.getOneByIdWithNestedInstances(id);
-
-    const abstractTesting =
-      await this.abstractTestingUseCase.getAbstractTestingWithQuestions(
-        launchedTesting.abstractTestingId,
-      );
+    const launchedTesting = doesUserHaveRightsToViewAnalytics
+      ? await this.launchedTestingRepo.getOneByIdWithNestedInstancesAndAttempts(
+          id,
+        )
+      : await this.launchedTestingRepo.getOneByIdWithNestedInstances(id);
 
     return {
       ...launchedTesting,
-      abstractTesting,
+      abstractTestingForPassingAndAnalytics: doesUserHaveRightsToMakeAttempts
+        ? await this.abstractTestingUseCase.getAbstractTestingWithQuestions(
+            launchedTesting.abstractTestingId,
+          )
+        : undefined,
     };
   }
 
