@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 export * from './currency';
 export * from './dto';
 export * from './language';

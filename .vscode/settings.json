@@ -1,7 +1,7 @@
 {
   "eslint.format.enable": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   "search.exclude": {
     ".git": true,
@@ -22,5 +22,6 @@
       "username": "username string",
       "password": "password string"
     }
-  ]
+  ],
+  "python.defaultInterpreterPath": "/home/nikel/.local/share/mise/installs/python/3.13.3/bin/python"
 }
