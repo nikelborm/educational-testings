@@ -32,7 +32,7 @@ export class LaunchedTestingDTO {
     givenAnswers: {
       id: number;
       freeFieldAnswer?: string;
-      answerOptionInstance: {}
+      answerOptionInstance: {};
     }[];
   }[];
   abstractTestingForPassingAndAnalytics?: AbstractTestingForPassingDTO;
